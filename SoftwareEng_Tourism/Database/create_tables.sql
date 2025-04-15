@@ -20,8 +20,6 @@ create table if not exists Customer
         foreign key (UserID) references User (UserID)
 );
 
-create index UserID
-    on Customer (UserID);
 
 create table if not exists CustomerPhone
 (
@@ -32,8 +30,6 @@ create table if not exists CustomerPhone
         foreign key (CustomerID) references Customer (customerID)
 );
 
-create index CustomerID
-    on CustomerPhone (CustomerID);
 
 create table if not exists ExtPartner
 (
@@ -60,11 +56,7 @@ create table if not exists Business
         foreign key (PartnerID) references ExtPartner (PartnerID)
 );
 
-create index PartnerID
-    on Business (PartnerID);
 
-create index UserID
-    on ExtPartner (UserID);
 
 create table if not exists Guide
 (
@@ -76,8 +68,7 @@ create table if not exists Guide
         foreign key (partnerID) references ExtPartner (PartnerID)
 );
 
-create index partnerID
-    on Guide (partnerID);
+
 
 create table if not exists LivingQuarter
 (
@@ -91,8 +82,11 @@ create table if not exists LivingQuarter
     accessibility enum ('Ναι', 'Οχι') ,
     phone         varchar(20)         ,
     UserID        bigint              ,
+    partnerID     bigint              ,
     constraint LivingQuarter_ibfk_1
-        foreign key (UserID) references User (UserID)
+        foreign key (UserID) references User (UserID),
+    constraint fkLivExt
+        foreign key (partnerID) references ExtPartner (PartnerID)
 );
 
 create table if not exists Hotel
@@ -104,8 +98,7 @@ create table if not exists Hotel
         foreign key (QuarterID) references LivingQuarter (quarterID)
 );
 
-create index UserID
-    on LivingQuarter (UserID);
+
 
 create table if not exists Museum
 (
@@ -128,8 +121,7 @@ create table if not exists Room
         foreign key (quarterID) references LivingQuarter (quarterID)
 );
 
-create index quarterID
-    on Room (quarterID);
+
 
 create table if not exists RoomsToLet
 (
@@ -142,13 +134,14 @@ create table if not exists RoomsToLet
 
 create table if not exists TourAgency
 (
-    AgencyID bigint auto_increment
+    AgencyID       bigint auto_increment
         primary key,
-    name     varchar(30) ,
-    email    varchar(70) ,
-    location varchar(50) ,
-    address  varchar(70) ,
-    UserID   bigint      ,
+    name           varchar(30)              ,
+    email          varchar(70)              ,
+    location       varchar(50)              ,
+    address        varchar(70)              ,
+    UserID         bigint                   ,
+    paymentMethods set ('Καρτα', 'Μετρητά') ,
     constraint TourAgency_ibfk_1
         foreign key (UserID) references User (UserID)
 );
@@ -178,10 +171,13 @@ create table if not exists Feedback
     fdate      date   ,
     PackageID  bigint ,
     CustomerID bigint ,
+    quarterID  bigint ,
     constraint Feedback_ibfk_1
         foreign key (PackageID) references Package (PackageID),
     constraint Feedback_ibfk_2
-        foreign key (CustomerID) references Customer (customerID)
+        foreign key (CustomerID) references Customer (customerID),
+    constraint Feedback_ibfk_3
+        foreign key (quarterID) references LivingQuarter (quarterID)
 );
 
 create table if not exists Answer
@@ -198,17 +194,7 @@ create table if not exists Answer
         foreign key (AgencyID) references TourAgency (AgencyID)
 );
 
-create index AgencyID
-    on Answer (AgencyID);
 
-create index FeedbackID
-    on Answer (FeedbackID);
-
-create index CustomerID
-    on Feedback (CustomerID);
-
-create index PackageID
-    on Feedback (PackageID);
 
 create table if not exists HistoryPackage
 (
@@ -220,11 +206,7 @@ create table if not exists HistoryPackage
         foreign key (PackageID) references Package (PackageID)
 );
 
-create index PackageID
-    on HistoryPackage (PackageID);
 
-create index AgencyID
-    on Package (AgencyID);
 
 create table if not exists Reservation
 (
@@ -244,17 +226,7 @@ create table if not exists Reservation
         foreign key (RoomID) references Room (RoomID)
 );
 
-create index CustomerID
-    on Reservation (CustomerID);
 
-create index PackageID
-    on Reservation (PackageID);
-
-create index RoomID
-    on Reservation (RoomID);
-
-create index UserID
-    on TourAgency (UserID);
 
 create table if not exists TourPhone
 (
@@ -265,8 +237,7 @@ create table if not exists TourPhone
         foreign key (AgencyID) references TourAgency (AgencyID)
 );
 
-create index AgencyID
-    on TourPhone (AgencyID);
+
 
 create table if not exists customerPayment
 (
@@ -300,8 +271,7 @@ create table if not exists partnerPackage
         foreign key (packageID) references Package (PackageID)
 );
 
-create index packageID
-    on partnerPackage (packageID);
+
 
 create table if not exists quarterPackage
 (
@@ -315,15 +285,5 @@ create table if not exists quarterPackage
         foreign key (quarterID) references LivingQuarter (quarterID)
 );
 
-create index quarterID
-    on quarterPackage (quarterID);
 
-create table if not exists tourPayment
-(
-    agencyID bigint                   not null,
-    method   set ('Μετρητά', 'Κάρτα') not null,
-    primary key (agencyID, method),
-    constraint tourPayment_ibfk_1
-        foreign key (agencyID) references TourAgency (AgencyID)
-);
 
