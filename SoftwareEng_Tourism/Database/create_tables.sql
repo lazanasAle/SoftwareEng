@@ -74,13 +74,8 @@ create table if not exists LivingQuarter
 (
     quarterID     bigint auto_increment
         primary key,
-    name          varchar(30)         ,
-    address       varchar(50)         ,
-    location      varchar(50)         ,
-    email         varchar(70)         ,
     amenities     text                ,
     accessibility enum ('Ναι', 'Οχι') ,
-    phone         varchar(20)         ,
     UserID        bigint              ,
     partnerID     bigint              ,
     constraint LivingQuarter_ibfk_1
