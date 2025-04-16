@@ -57,7 +57,6 @@ create table if not exists Business
 );
 
 
-
 create table if not exists Guide
 (
     partnerID bigint      ,
@@ -94,7 +93,6 @@ create table if not exists Hotel
 );
 
 
-
 create table if not exists Museum
 (
     PartnerID bigint auto_increment
@@ -115,7 +113,6 @@ create table if not exists Room
     constraint Room_ibfk_1
         foreign key (quarterID) references LivingQuarter (quarterID)
 );
-
 
 
 create table if not exists RoomsToLet
@@ -202,7 +199,6 @@ create table if not exists HistoryPackage
 );
 
 
-
 create table if not exists Reservation
 (
     ResID      bigint auto_increment
@@ -222,7 +218,6 @@ create table if not exists Reservation
 );
 
 
-
 create table if not exists TourPhone
 (
     Phone    varchar(20) not null
@@ -239,7 +234,8 @@ create table if not exists customerPayment
     customerID bigint      not null,
     cardNumber varchar(32) not null,
     ownerName  text        ,
-    cvc        varchar(3)  ,
+    cvv        varchar(3)  ,
+    exp_date   date        ,
     primary key (customerID, cardNumber),
     constraint customerPayment_ibfk_1
         foreign key (customerID) references Customer (customerID)
@@ -267,7 +263,6 @@ create table if not exists partnerPackage
 );
 
 
-
 create table if not exists quarterPackage
 (
     packageID bigint                                      not null,
@@ -279,6 +274,5 @@ create table if not exists quarterPackage
     constraint quarterPackage_ibfk_2
         foreign key (quarterID) references LivingQuarter (quarterID)
 );
-
 
 
