@@ -31,6 +31,7 @@ create table if not exists CustomerPhone
 );
 
 
+
 create table if not exists ExtPartner
 (
     PartnerID bigint auto_increment
@@ -57,6 +58,7 @@ create table if not exists Business
 );
 
 
+
 create table if not exists Guide
 (
     partnerID bigint      ,
@@ -66,7 +68,6 @@ create table if not exists Guide
     constraint Guide_ibfk_1
         foreign key (partnerID) references ExtPartner (PartnerID)
 );
-
 
 
 create table if not exists LivingQuarter
@@ -158,12 +159,12 @@ create table if not exists Feedback
 (
     FeedbackID bigint auto_increment
         primary key,
-    grade      int    not null,
-    content    text   ,
-    fdate      date   ,
-    PackageID  bigint ,
-    CustomerID bigint ,
-    quarterID  bigint ,
+    grade      int                      not null,
+    content    text                     ,
+    fdate      date default (curdate()) ,
+    PackageID  bigint                   ,
+    CustomerID bigint                   ,
+    quarterID  bigint                   ,
     constraint Feedback_ibfk_1
         foreign key (PackageID) references Package (PackageID),
     constraint Feedback_ibfk_2
@@ -176,10 +177,10 @@ create table if not exists Answer
 (
     AnswerID   bigint auto_increment
         primary key,
-    content    text   ,
-    fdate      date   ,
-    FeedbackID bigint ,
-    AgencyID   bigint ,
+    content    text                     ,
+    fdate      date default (curdate()) ,
+    FeedbackID bigint                   ,
+    AgencyID   bigint                   ,
     constraint Answer_ibfk_1
         foreign key (FeedbackID) references Feedback (FeedbackID),
     constraint Answer_ibfk_2
@@ -187,13 +188,12 @@ create table if not exists Answer
 );
 
 
-
 create table if not exists HistoryPackage
 (
     HpID      bigint auto_increment
         primary key,
-    rdate     date   not null,
-    PackageID bigint ,
+    rdate     date default (curdate()) ,
+    PackageID bigint                   ,
     constraint HistoryPackage_ibfk_1
         foreign key (PackageID) references Package (PackageID)
 );
@@ -205,7 +205,7 @@ create table if not exists Reservation
         primary key,
     people     bigint                                                    ,
     status     enum ('Ολοκληρωμένη', 'Ακυρωμένη', 'Σε αναμονή πληρωμής') ,
-    rdate      date                                                      not null,
+    rdate      date default (curdate())                                  ,
     CustomerID bigint                                                    ,
     PackageID  bigint                                                    ,
     RoomID     bigint                                                    ,
@@ -218,6 +218,7 @@ create table if not exists Reservation
 );
 
 
+
 create table if not exists TourPhone
 (
     Phone    varchar(20) not null
@@ -226,7 +227,6 @@ create table if not exists TourPhone
     constraint TourPhone_ibfk_1
         foreign key (AgencyID) references TourAgency (AgencyID)
 );
-
 
 
 create table if not exists customerPayment
@@ -261,6 +261,7 @@ create table if not exists partnerPackage
     constraint partnerPackage_ibfk_2
         foreign key (packageID) references Package (PackageID)
 );
+
 
 
 create table if not exists quarterPackage
