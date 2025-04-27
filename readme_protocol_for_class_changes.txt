@@ -1,6 +1,9 @@
+/*θα ονομάζετε το αρχείο commit_contents.txt*/
+
+
 class: <class_name> {
     attributes:
-  + attribute1  /* το "+" στην αρχή δηλώνει ότι προστέθηκε attribute αν αφαιρέσατε κάποιο βάζετε "-". Στην θέση του "attributeX" (πχ εκεί που γράφει "attribute1") γράφετε όλο το signature του attribute πχ αμα έιναι ένα απλό Public/Private/Protected attribute γράφετε public/private/protected (ό,τι ταιριάζει) <data_type> <attribute_name>  
+  + attribute1  /* το "+" στην αρχή δηλώνει ότι προστέθηκε attribute αν αφαιρέσατε κάποιο βάζετε "-". Στην θέση του "attributeX" (πχ εκεί που γράφει "attribute1") γράφετε όλο το signature του attribute πχ αμα έιναι ένα απλό Public/Private/Protected attribute γράφετε public/private/protected                      (ό,τι ταιριάζει) <data_type> <attribute_name>  
                   αν το attribute είναι static το γραφετε ρητά δίπλα από το Visibility (public/private/protected) το ίδιο ισχύει και για final δηλαδή: μια ολοκληρωμένη αλλαγή σε attribute θα εκφράζεται με τον εξής αναλυτικό τρόπο (EBNF Syntax):
                   <προσθήκη_attribute> ::= + [public|protected|private] [static] [final] <data_type> <attribute_name> 
                   <αφαίρεση_attribute> ::= - [public|protected|private] [static] [final] <data_type> <attribute_name> */
