@@ -1,0 +1,32 @@
+class: Screen{
+    attributes:
+    + protected GridPane grid
+    + protected Stage stage
+    methods:
+    + public Screen(GridPane grid, Scene scene)
+    + protected void renderStage(String title,int d1,int d2)
+    + protected void renderGrid()
+}
+
+class: ErrorMessage extends Screen{
+    methods:
+    + public ErrorMessage(GridPane grid, Scene scene, String message)
+    + public void displayError()
+}
+
+
+class: FormScreen extends Screen{
+
+    methods:
+    + public FormScreen(GridPane grid, Scene scene)
+    + protected void renderForm(String instructMessage, Label[] labels, TextField[] textFields)
+    + private void clearFields(TextField[] textFields)
+    + private void instructUser(String message)
+}
+
+class: CardScreen extends FormScreen{
+
+    methods:
+    + public CardScreen()
+    + private void renderCardForm()
+}
