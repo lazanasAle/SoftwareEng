@@ -31,7 +31,6 @@ create table if not exists CustomerPhone
 );
 
 
-
 create table if not exists ExtPartner
 (
     PartnerID bigint auto_increment
@@ -155,39 +154,6 @@ create table if not exists Package
         foreign key (AgencyID) references TourAgency (AgencyID)
 );
 
-create table if not exists Feedback
-(
-    FeedbackID bigint auto_increment
-        primary key,
-    grade      int                      not null,
-    content    text                     ,
-    fdate      date default (curdate()) ,
-    PackageID  bigint                   ,
-    CustomerID bigint                   ,
-    quarterID  bigint                   ,
-    constraint Feedback_ibfk_1
-        foreign key (PackageID) references Package (PackageID),
-    constraint Feedback_ibfk_2
-        foreign key (CustomerID) references Customer (customerID),
-    constraint Feedback_ibfk_3
-        foreign key (quarterID) references LivingQuarter (quarterID)
-);
-
-create table if not exists Answer
-(
-    AnswerID   bigint auto_increment
-        primary key,
-    content    text                     ,
-    fdate      date default (curdate()) ,
-    FeedbackID bigint                   ,
-    AgencyID   bigint                   ,
-    constraint Answer_ibfk_1
-        foreign key (FeedbackID) references Feedback (FeedbackID),
-    constraint Answer_ibfk_2
-        foreign key (AgencyID) references TourAgency (AgencyID)
-);
-
-
 create table if not exists HistoryPackage
 (
     HpID      bigint auto_increment
@@ -217,8 +183,6 @@ create table if not exists Reservation
         foreign key (RoomID) references Room (RoomID)
 );
 
-
-
 create table if not exists TourPhone
 (
     Phone    varchar(20) not null
@@ -227,6 +191,7 @@ create table if not exists TourPhone
     constraint TourPhone_ibfk_1
         foreign key (AgencyID) references TourAgency (AgencyID)
 );
+
 
 
 create table if not exists customerPayment
@@ -261,7 +226,6 @@ create table if not exists partnerPackage
     constraint partnerPackage_ibfk_2
         foreign key (packageID) references Package (PackageID)
 );
-
 
 
 create table if not exists quarterPackage
