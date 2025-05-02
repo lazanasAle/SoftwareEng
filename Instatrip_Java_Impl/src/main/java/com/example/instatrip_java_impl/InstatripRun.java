@@ -1,13 +1,14 @@
 package com.example.instatrip_java_impl;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-//jdk 23 everyone
+//jdk 21 everyone
 
 public class InstatripRun extends Application {
 
