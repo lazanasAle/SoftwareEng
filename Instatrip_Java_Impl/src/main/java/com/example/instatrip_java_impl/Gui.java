@@ -10,15 +10,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-class Screen {
+class Screen extends VBox{
 
 }
 
-class ListScreen{
+class ListScreen extends Screen{
 
 }
 
-class ErrorMessage{
+class ErrorMessage extends Screen{
     private Text error;
     Button ok;
     //maybe an icon
@@ -29,7 +29,7 @@ class ErrorMessage{
 }
 
 //new class
-class LoginScreen extends VBox{
+class LoginScreen extends Screen{
     private Text header;
     TextField password;
     TextField username;
@@ -82,7 +82,7 @@ class LoginScreen extends VBox{
 
 }
 
-class MainScreen{
+class MainScreen extends Screen{
 
 }
 

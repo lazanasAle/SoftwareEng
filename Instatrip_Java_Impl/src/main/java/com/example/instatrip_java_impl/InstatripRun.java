@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+//jdk 23 everyone
+
 public class InstatripRun extends Application {
 
     public static void main(String[] args) {
