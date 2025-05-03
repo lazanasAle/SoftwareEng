@@ -1,0 +1,14 @@
+class: LoginScreen {
+   + private TextField password
+   +private TextField username
+   + private GridPane container
+
+   + private Button Login
+   + private Label header
+
+  methods:
+
+  +public LoginScreen() /* Constructor*/
+  +public void Authorization(ActionEvent e) /*event handling when button login pressed*/
+
+  }
