@@ -123,12 +123,12 @@ class: ReservationFormScreen extends FormScreen{
     + public ReservationFormScreen()
     + private void renderReservationForm()
 }
-class: ResultScreen extends Screen{
+class: ResultScreen extends ListScreen{
     methods:
     + public ResultScreen()
     + private void renderResultList()
 }
-class: SuggestionScreen extends FormScreen{
+class: SuggestionScreen extends ListScreen{
     methods:
     + public SuggestionScreen()
     + private void renderSuggestions()
