@@ -1,0 +1,165 @@
+class: Screen{
+    attributes:
+    + protected GridPane grid
+    + protected Stage stage
+    methods:
+    + public Screen(GridPane grid, Scene scene)
+    + protected void renderStage(String title,int d1,int d2)
+    + protected void renderGrid()
+}
+
+class: ErrorMessage extends Screen{
+    methods:
+    + public ErrorMessage(String message)
+    + public void displayError()
+}
+
+
+class: FormScreen extends Screen{
+
+    methods:
+    + public FormScreen(GridPane grid, Scene scene)
+    + protected void renderForm(String instructMessage, Label[] labels, TextField[] textFields)
+    + private void clearFields(TextField[] textFields)
+    + private void instructUser(String message)
+}
+
+class: CardScreen extends FormScreen{
+
+    methods:
+    + public CardScreen()
+    + private void renderCardForm()
+}
+
+2ND COMMIT(3/5/2025)
+class: FormScreen{
+    attributes:
+    + private int gridPosition
+    + private final TextField[] textFields
+
+    methods:
+    - renderForm(String instructMessage,Label[] label,TextField[] textFields)
+    + protected renderFormElements(String instructMessage,Label[] label,TextField[] textFields)
+    + protected renderFormButtons(Label[] label,Button[] buttons)
+    + private renderFormSubmissionButton()
+}
+class:Screen{
+    attributes:
+        + protected final int widthOfScreen;
+     + protected final int heightOfScreen;
+     + protected final String screenTitle;
+
+    methods:
+    + private void renderStage()
+    + protected void renderLabel(String label)
+}
+class: CooperationListScreen extends ListScreen{
+    methods:
+    + public CooperationScreen()
+    + private void renderCooperationList()
+}
+class: CreatePackageForm extends FormScreen{
+    methods:
+    + public CreatePackageForm()
+    + private void renderPackageForm()
+}
+class: FilterScreen extends ListScreen{
+    methods:
+    + public FilterScreen()
+    + private void renderFilterOptions()
+}
+class: HistoryListScreen extends ListScreen{
+    methods:
+    + public HistoryListScreen()
+    + private void renderHistoryList()
+}
+class: ListScreen extends Screen{
+    attributes:
+    + private int gridPosition
+    + private final TextField[] textFields
+
+    methods:
+    - renderList(String instructMessage,Label[] label,TextField[] textFields)
+    + protected renderListElements(String instructMessage,Label[] label,TextField[] textFields)
+    + protected renderList(List<String> list)
+}
+class: LoginPage extends FormScreen{
+    methods:
+    + public LoginScreen()
+    + private void renderLoginForm()
+}
+class: MainScreen extends ListScreen{
+    methods:
+    + public MainScreen()
+    + private void renderMenu()
+}
+class: PackageDetailsScreen extends Screen{
+    methods:
+    + public PackageDetailsScreen()
+    + private void renderPackageDetails()
+}
+class: PackageListScreen extends ListScreen{
+    methods:
+    + public PackageListScreen()
+    + private void renderPackageList()
+}
+class PackageOptionsScreen extends ListScreen{
+    methods:
+    + public PackageOptionsScreen()
+    + private void renderPackageOptions()
+}
+class PaidPackageList extends ListScreen{
+    methods:
+    + public PaidPackageList()
+    + private void renderPackageList()
+}
+class QuarterListScreen extends ListScreen{
+    methods:
+    + public QuarterListScreen()
+    + private void renderQuarterList()
+}
+class: ReservationFormScreen extends FormScreen{
+    methods:
+    + public ReservationFormScreen()
+    + private void renderReservationForm()
+}
+class: ResultScreen extends Screen{
+    methods:
+    + public ResultScreen()
+    + private void renderResultList()
+}
+class: SuggestionScreen extends FormScreen{
+    methods:
+    + public SuggestionScreen()
+    + private void renderSuggestions()
+}
+
+
+Guys i created also some mock classes like "QuarterGUI","PackageGUI" so i can demonstrate mock data
+class: QuarterGUI{
+    attributes:
+    + private String apartmentName
+    + private String region
+    + private String apartmentType
+
+    methods:
+    + public QuarterGUI(String apartmentName, String region, String apartmentType)
+    + public String getApartmentName()
+    + public String getRegion()
+    + public String getApartmentType()
+}
+class:PackageGUI{
+    attributes:
+    + private String id
+    + private String name
+    + private String description
+    + private String price
+
+    methods:
+    + public PackageGUI(String id, String name, String description, String price)
+    + public String getId()
+    + public String getName()
+    + public String getDescription()
+    + public String getPrice()
+
+}
