@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -104,6 +105,68 @@ class LoginScreen extends Screen{
 }
 
 class MainScreen extends Screen{
+
+    private Button Logout;
+    private Button PayPack;
+    private Button MyPack;
+    private Button SearchPack;
+    private Button Cancel;
+    private Label header;
+
+    private VBox menu;
+
+    private Image image;
+
+
+    MainScreen(){
+        image=new Image("firstimage.png");
+        ImageView im=new ImageView(image);
+        im.setFitWidth(1200);
+        im.setFitHeight(800);
+        im.setPreserveRatio(true);
+
+        this.getChildren().add(im);
+
+        header=new Label("Welcome User");
+        header.setId("header");
+        header.setAlignment(Pos.CENTER);      // aligns text to center
+        header.setStyle("-fx-font-size: 16px; -fx-padding: 10;");
+
+        this.setAlignment(Pos.BOTTOM_LEFT);
+
+
+
+
+        Logout=new Button("Logout");
+        Logout.setId("Logout");
+        PayPack=new Button("Εξόφληση Πακέτων");
+        PayPack.setId("Paypack");
+        MyPack=new Button("Τα Πακέτα Μου");
+        MyPack.setId("MyPack");
+        Cancel=new Button("Ακυρωση Κρατησης");
+        Cancel.setId("Cancel");
+        SearchPack=new Button("Εξερεύνηση Πακέτων");
+        SearchPack.setId("SearchPack");
+
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+
+        menu=new VBox(10,header,SearchPack,PayPack,MyPack,Cancel,spacer,Logout);
+        menu.setPrefHeight(900);
+        menu.setMaxWidth(200);
+        menu.setPrefWidth(200);
+        menu.setId("menu");
+
+
+        HBox mainContent = new HBox(menu, im);
+
+
+
+        this.getChildren().addAll(mainContent);
+
+
+    }
+
 
 }
 

@@ -12,3 +12,21 @@ class: LoginScreen {
   +public void Authorization(ActionEvent e) /*event handling when button login pressed*/
 
   }
+class: MainScreen {
+(Ολα εχουν προστεθει)
+    private Button Logout;
+    private Button PayPack;
+    private Button MyPack;
+    private Button SearchPack;
+    private Button Cancel;
+    private Label header;
+
+    private VBox menu;
+
+    private Image image;
+
+  methods:
+
+  MainScreen()/*constructor*/
+
+  }

@@ -15,9 +15,9 @@ public class InstatripRun extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Scene login = new Scene(new LoginScreen(), 1400, 900);
-        login.getStylesheets().add("login.css");
-        primaryStage.setScene(login);
+        Scene menu = new Scene(new MainScreen(), 1400, 900);
+        menu.getStylesheets().add("MainPage.css");
+        primaryStage.setScene(menu);
         primaryStage.show();
 
     }
