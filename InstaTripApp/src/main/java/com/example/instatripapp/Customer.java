@@ -1,17 +1,40 @@
 package com.example.instatripapp;
 
+
+enum reservation_status{finished, canceled, waiting_payment}
+
+
 public class Customer {
-}
-class Reservation {
-    public final Customer reserver;
-    public Room reservedRoom;
-    public Voyage voyageRefered;
+    private int key;
+    public final String firstName;
+    public final String lastName;
+    public final String email;
+    public final String location;
 
-    // To be filled with more attributes and functions
-
-    Reservation(Customer reserver){
-        this.reserver=reserver;
+    public Customer(int key, String firstName, String lastName, String email, String location){
+        this.key=key;
+        this.firstName=new String(firstName);
+        this.lastName=new String(lastName);
+        this.email=new String(email);
+        this.location=new String(location);
     }
 
-    // To be filled with more attributes and functions
+}
+class Reservation {
+    private int key;
+    public int people;
+    public reservation_status status;
+    public final Customer reserver;
+    public Room reservedRoom;
+    public Voyage voyageReferred;
+
+    Reservation(int key, int people, Customer reserver, Voyage voyageReferred, Room room){
+        this.key=key;
+        this.people=people;
+        this.reserver=reserver;
+        this.voyageReferred=voyageReferred;
+        this.status=reservation_status.waiting_payment;
+        this.reservedRoom=room;
+    }
+
 }

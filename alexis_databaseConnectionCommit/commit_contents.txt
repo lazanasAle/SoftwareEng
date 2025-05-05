@@ -1,0 +1,49 @@
++class: DataSourceManager {
+    attributes:
+
+    + private connection db_con;
+    + public boolean success;
+
+    methods:
+
+    + public void connect();
+    + public void end();
+    + public List<Map<String, Object>> fetch(PreparedStatement stmt, Object[] args) throws SQLException;
+    + public boolean commit(PreparedStatement stmt, Object[] args) throws SQLException;
+    + public Connection getDb_con();
+}
+
+
++ enum reservation_status{finished, canceled, waiting_payment};
+
+class: Customer{
+    attributes:
+
+    + private int key;
+    + public final String firstName;
+    + public final String lastName;
+    + public final String email;
+    + public final String location;
+
+    methods:
+
+    + public Customer(int key, String firstName, String lastName, String email, String location);
+
+}
+
+class: Reservation{
+    attributes:
+
+    + private int key;
+    + public int people;
+    + public reservation_status status;
+
+    methods:
+
+    - Reservation(Customer reserver);
+    + Reservation(int key, int people, Customer reserver, Voyage voyageReferred, Room room);
+
+}
+
+
+/*Η κλάση DataBaseTester είναι εκεί για να τεστάρει απλά την σύνδεση στην βάση (για αυτό πρόσθεσα demo users)*/
