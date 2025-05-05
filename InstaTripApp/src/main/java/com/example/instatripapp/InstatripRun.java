@@ -5,7 +5,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-//jdk 21 everyone
+//jdk 23 everyone
 
 public class InstatripRun extends Application {
 
