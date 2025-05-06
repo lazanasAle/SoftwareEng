@@ -1,7 +1,6 @@
 package com.example.instatripapp;
 import java.util.Arrays;
 
-import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.geometry.HPos;
@@ -9,16 +8,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 
-import java.util.Arrays;
 import java.util.Objects;
 
 // super class for all screens
@@ -63,7 +59,7 @@ class Screen{
         root.getChildren().addAll(grid);
 
         Scene scene = new Scene(root, widthOfScreen, heightOfScreen);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/universal_styling.css")).toExternalForm());
         stage.setScene(scene);
     }
 
