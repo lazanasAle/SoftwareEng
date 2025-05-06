@@ -15,7 +15,7 @@ public class InstatripRun extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        LoginPage loginPage = new LoginPage();
+        CooperationListScreen loginPage = new CooperationListScreen();
 
     }
 }
