@@ -1,1 +1,11 @@
-Class: PaymentScreen extends Screen
+1o Commit:
+
+class: PaymentScreen extends Screen {
+  attributes:
+
+  methods:
+
+  + public PaymentScreen()
+  + private void renderMenu()
+  + private void handlePaymentSelection(String method)
+}
