@@ -9,3 +9,19 @@ class: PaymentScreen extends Screen {
   + private void renderMenu()
   + private void handlePaymentSelection(String method)
 }
+
+2o Commit:
+
+class: SearchScreen extends Screen {
+  attributes:
+  + protected TextField searchField;
+  + protected Button searchButton;
+  + protected ListView<String> resultsList;
+
+  methods:
+
+  + public SearchScreen(String title, int widthOfScreen, int heightOfScreen)
+  + private void addResultsList()
+  + protected void setupSearchUI()
+  + protected void performSearch(String query)
+}
