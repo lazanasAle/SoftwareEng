@@ -1,4 +1,4 @@
-package com.example;
+package com.example.instatripapp;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
