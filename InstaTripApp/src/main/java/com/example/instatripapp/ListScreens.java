@@ -1,12 +1,10 @@
 package com.example.instatripapp;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -149,27 +147,30 @@ class PackageListScreen extends ListScreen {
         renderArray(columnNames, Arrays.asList(packages), propertyNames, buttonName);
     }
 }
-class SuggestionScreen extends ListScreen {
-    public SuggestionScreen() {
+// no more ListScreen
+class SuggestionScreen extends Screen{
+    public SuggestionScreen(String[] recommendedResults) {
         super("Προτεινόμενα αποτελέσματα", 600, 600);
-        renderGrid(500);
-        renderSuggestions();
+        renderGrid(200);
+        renderLabel("Mήπως εννοείτε:");
+        renderSuggestions(recommendedResults);
+        renderSubmitButtons();
     }
 
-    private void renderSuggestions() {
-        renderLabel("Αποτελέσματα αναζήτησης για εσάς");
-
-        // Dummy data for demonstration
-        PackageGUI [] suggestions = {
-                new PackageGUI("1", "Πακέτο 1", "Περιγραφή 1", "100€"),
-                new PackageGUI("2", "Πακέτο 2", "Περιγραφή 2", "200€"),
-                new PackageGUI("3", "Πακέτο 3", "Περιγραφή 3", "300€")
-        };
-        String[] columnNames = {"ID", "Όνομα Πακέτου", "Περιγραφή", "Τιμή"};
-        String[] propertyNames = {"id", "name", "description", "price"};
-        String buttonName = "Επιλογή";
-
-        renderArray(columnNames, Arrays.asList(suggestions), propertyNames, buttonName);
+    private void renderSuggestions(String[] recommendedResults) {
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll(recommendedResults);
+        comboBox.setValue(recommendedResults[0]);
+        grid.add(comboBox, 0, 1, 2, 1);
+        GridPane.setHalignment(comboBox, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
+    }
+    private void renderSubmitButtons(){
+        Button submitButton = new Button("Υποβολή");
+        Button cancelButton = new Button("Ακύρωση");
+        grid.add(submitButton, 0, 2, 1, 1);
+        grid.add(cancelButton, 1, 2, 1, 1);
+        GridPane.setHalignment(submitButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
+        GridPane.setHalignment(cancelButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
     }
 }
 class CooperationListScreen extends ListScreen {

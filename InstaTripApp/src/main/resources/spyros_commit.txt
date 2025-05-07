@@ -177,3 +177,13 @@ class:
     +class SuggestionScreen extends ListScreen
 }
 rename css file
+
+5th Commit(7/5/2025):
+file: ListScreens{
+class:SuggestionScreen extends (+)Screen{
+methods:
+    + public SuggestionScreen(String[] recommendedResults)
+    + private void renderSuggestions(String[] recommendedResults)
+    + private void renderSubmitButtons()
+}
+}

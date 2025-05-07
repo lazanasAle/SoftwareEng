@@ -17,7 +17,8 @@ public class InstatripRun extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        SuggestionScreen suggestionScreen = new SuggestionScreen();
+        String[] recommendedResults = {"Ιθάκη","Θιάκη","Θράκη"};
+        SuggestionScreen suggestionScreen = new SuggestionScreen(recommendedResults);
 
     }
 }
