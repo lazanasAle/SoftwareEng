@@ -10,6 +10,8 @@ class: PaymentScreen extends Screen {
   + private void handlePaymentSelection(String method)
 }
 
+
+
 2o Commit:
 
 class: SearchScreen extends Screen {
@@ -23,5 +25,30 @@ class: SearchScreen extends Screen {
   + public SearchScreen(String title, int widthOfScreen, int heightOfScreen)
   + private void addResultsList()
   + protected void setupSearchUI()
+  + protected void performSearch(String query)
+}
+
+
+
+3o Commit:
+
+class: SearchHistoryScreen extends SearchScreen {
+  attributes:
+
+
+  methods:
+
+  + public SearchHistoryScreen()
+  + protected void performSearch(String query)
+}
+
+
+class: SearchPackageScreen extends SearchScreen {
+  attributes:
+
+
+  methods:
+
+  + public SearchPackageScreen()
   + protected void performSearch(String query)
 }
