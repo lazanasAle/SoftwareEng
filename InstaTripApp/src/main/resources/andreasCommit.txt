@@ -35,7 +35,6 @@ class: SearchScreen extends Screen {
 class: SearchHistoryScreen extends SearchScreen {
   attributes:
 
-
   methods:
 
   + public SearchHistoryScreen()
@@ -45,7 +44,6 @@ class: SearchHistoryScreen extends SearchScreen {
 
 class: SearchPackageScreen extends SearchScreen {
   attributes:
-
 
   methods:
 
