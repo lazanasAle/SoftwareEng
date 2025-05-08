@@ -47,3 +47,42 @@ class: Reservation{
 
 
 /*Η κλάση DataBaseTester είναι εκεί για να τεστάρει απλά την σύνδεση στην βάση (για αυτό πρόσθεσα demo users)*/
+
+2ND Commit
+
++interface: SpellCheckerIf {
+    attributes:
+
+    methods:
+
+    +public List<RuleMatch> check_spelling(String expression) throws IOException;
+    +public List<String> suggest_examples(List<RuleMatch> error_rules);
+}
+
+
++class: SpellChecker extends JLanguageTool implements SpellCheckerIf{
+    attributes:
+
+    methods:
+
+    +public void removeGrammarRules();
+    @Override
+    +public List<RuleMatch> check_spelling(String expression) throws IOException;
+    @Override
+    +public List<String> suggest_examples(List<RuleMatch> error_rules);\
+    +private void generateCombinations(String currentText, List<RuleMatch> rules, int ruleIndex, int offset, List<String> results);
+}
+
+
+
++class: EnglishSpellChecker extends SpellChecker{
+    public EnglishSpellChecker();
+}
+
+
+
++class: GreekSpellChecker extends SpellChecker{
+    public GreekSpellChecker();
+}
+
+/* Η κλάση checkingTest εκεί για να τεστάρει απλά αν δουλεύει σωστά ο ορθογραφικός έλεγχος*/
