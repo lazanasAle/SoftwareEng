@@ -1,0 +1,57 @@
+TEST GUI
+
+THAT GUI IS ONLY FOR TESTING PURPOSES
+THE COLLEAGUES THAT WANT TO CREATE USE CASE CODING CAN USE INSTATRIP APP, TILL THEY HAVE THE FINAL VERSION OF THE GUI
+
+1ST COMMIT (09.05)
+class: ContainerScreen extends Screen{
+    attributes:
+        +protected GridPane container;
+    methods:
+        +public ContainerScreen();
+        +private void renderContainer();
+        +protected void renderContainerLabel(String text);
+        +public void renderContainerLabels(String[] labels);
+
+}
+class: LayoutScreen extends Screen{
+    attributes:
+        +protected GridPane mainGrid;
+        +protected VBox navigation;
+    methods:
+        +public LayoutScreen(String title);
+        +private void renderMainGrid();
+        +private void renderNavMenu()
+        +protected void renderWelcomeLabel(String text)
+        +protected void renderButtonsInNavigation(String[] texts)
+        +private void renderLogOutButton()
+}
+class: Screen{
+    attributes:
+        + protected GridPane container;
+        + protected Stage stage;
+        + protected final int widthOfScreen=1272;
+        + protected final int heightOfScreen=720;
+        + private final String screenTitle;
+    methods:
+        +public Screen(String title)
+        +private void renderStage()
+        +protected void renderContainerLabel(String text)
+        +protected void renderInstruction(String text)
+        +protected void setHyperText(String text, String url)
+}
+class: MainScreen extends LayoutScreen{
+    methods:
+        +public MainScreen()
+        +private void renderMainScreenMenu()
+        +private void renderMainContainerText()
+}
+class: LoginPage extends ContainerScreen{
+    methods:
+        +public LoginPage()
+}
+class: ErrorMessage extends ContainerScreen{
+    methods:
+        +public ErrorMessage(String message)
+        +private void renderErrorMessage(String errorMessage)
+}
