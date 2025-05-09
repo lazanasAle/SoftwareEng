@@ -19,8 +19,8 @@ import java.util.Objects;
 public class Screen {
     protected GridPane container;
     protected Stage stage;
-    protected final int widthOfScreen=1272;
-    protected final int heightOfScreen=720;
+    protected final int widthOfScreen=1920;
+    protected final int heightOfScreen=1080;
     private final String screenTitle;
     public Screen(String title) {
         this.screenTitle = title;

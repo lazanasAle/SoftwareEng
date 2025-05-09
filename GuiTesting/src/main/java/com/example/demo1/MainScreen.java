@@ -11,7 +11,7 @@ public class MainScreen extends LayoutScreen {
         setHyperText("Δείτε Περισσότερα:","https://www.ithaca.gr/archiki/endiaferonta-ke-drastiriotites/paralies-gr/afales-gr/");
     }
     private void renderMainScreenMenu(){
-        String[] buttons = {"Συνεργασία","Προτάσεις","Προφίλ"};
+        String[] buttons = {"Συνεργασία","Προτάσεις","Προφίλ"}; // τι ρυθμισεις ειναι αυτές;;;;
         renderButtonsInNavigation(buttons);
     }
     private void renderMainContainerText(){

@@ -1,0 +1,48 @@
+.root {
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 20;
+}
+
+.card {
+    -fx-background-color: #E5E5E5;
+    -fx-background-radius: 15;
+    -fx-padding: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 2);
+    -fx-spacing: 10;
+}
+.listTitle {
+    -fx-text-fill: #5F9EE8;
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Manrope";
+}
+.listSubtitle{
+    -fx-text-fill: #5F9EE8;
+    -fx-font-size: 14px;
+    -fx-font-family: "Manrope";
+}
+.card-title {
+    -fx-text-fill: black;
+    -fx-font-size: 26px;
+    -fx-font-family: "Manrope";
+    -fx-font-weight: bold;
+}
+
+.card-paragraph {
+    -fx-text-fill: #000000;
+    -fx-font-size: 14px;
+    -fx-font-family: "Manrope";
+}
+
+.card-rating {
+    -fx-background-color: #444444;
+    -fx-min-height: 24;
+    -fx-min-width: 140;
+}
+
+.card-image-placeholder {
+    -fx-background-color: #E6E6E6;
+    -fx-min-width: 154;
+    -fx-min-height: 102;
+    -fx-background-radius: 12;
+}
