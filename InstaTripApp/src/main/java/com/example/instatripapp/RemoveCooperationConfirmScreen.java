@@ -1,4 +1,4 @@
-package com.example;
+package com.example.instatripapp;
 
 public class RemoveCooperationConfirmScreen extends ConfirmScreen {
 
