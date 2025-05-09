@@ -8,6 +8,7 @@
     -fx-text-fill: #333;
     -fx-font-weight: bold;
 }
+#cancelButton {-fx-background-color: #ff4d4d; -fx-text-fill: white;}
 .button {
     -fx-background-color: #00aaff;
     -fx-text-fill: white;
