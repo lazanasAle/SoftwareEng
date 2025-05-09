@@ -64,24 +64,12 @@ public class SpellChecker extends JLanguageTool implements SpellCheckerIf{
     }
 }
 
-class EnglishSpellChecker extends SpellChecker{
-    public EnglishSpellChecker(){
-        super("en-US");
-    }
-}
-
-class GreekSpellChecker extends SpellChecker{
-    public GreekSpellChecker(){
-        super("el-GR");
-    }
-}
-
 
 
 class checkingTest{
     public static void main(String []args) throws IOException {
-        EnglishSpellChecker englishChecker = new EnglishSpellChecker();
-        GreekSpellChecker greekChecker = new GreekSpellChecker();
+        SpellChecker englishChecker = new SpellChecker("en-US");
+        SpellChecker greekChecker = new SpellChecker("el-GR");
 
         List<RuleMatch> englishErrors = englishChecker.check_spelling("this is a textt with erors so many erors that makee me sickkk");
         List<RuleMatch> greekErrors = greekChecker.check_spelling("Μονήμερη εκδομή στην καλαμπάκα");

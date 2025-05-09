@@ -2,6 +2,8 @@ package com.example.instatripapp;
 
 import javafx.application.Application;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -15,7 +17,8 @@ public class InstatripRun extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        MainScreen mainScreen = new MainScreen();
-
+        String[] recommendedResults = {"Ιθάκη","Θιάκη","Θράκη"};
+        SuggestionScreen suggestionScreen = new SuggestionScreen(recommendedResults);
+        PaymentScreen pScreen = new PaymentScreen();
     }
 }
