@@ -1,4 +1,4 @@
-1o Commit:
+1o Commit: (Payment screen)
 
 class: PaymentScreen extends Screen {
   attributes:
@@ -12,7 +12,7 @@ class: PaymentScreen extends Screen {
 
 
 
-2o Commit:
+2o Commit: (Search screens)
 
 class: SearchScreen extends Screen {
   attributes:
@@ -30,7 +30,7 @@ class: SearchScreen extends Screen {
 
 
 
-3o Commit:
+3o Commit: (Search screens)
 
 class: SearchHistoryScreen extends SearchScreen {
   attributes:
@@ -49,4 +49,39 @@ class: SearchPackageScreen extends SearchScreen {
 
   + public SearchPackageScreen()
   + protected void performSearch(String query)
+}
+
+
+
+4o Commit: (Confirm screens)
+
+class: class ConfirmScreen extends Screen {
+  attributes:
+
+  + protected Text messageText;
+  + protected Button confirmButton;
+  + protected Button cancelButton;
+
+  methods:
+
+  + public ConfirmScreen(String title, String message)
+  + private void renderConfirmationMessage(String message)
+  + private void renderButtons()
+}
+
+
+class: class PackageConfirmScreen extends ConfirmScreen {
+  attributes:
+
+  methods:
+
+  + public PackageConfirmScreen()
+
+
+class: class RemoveCooperationConfirmScreen extends ConfirmScreen {
+  attributes:
+
+  methods:
+
+  + public RemoveCooperationConfirmScreen()
 }
