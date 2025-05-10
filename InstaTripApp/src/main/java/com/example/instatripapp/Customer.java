@@ -5,7 +5,7 @@ public class Customer {
 class Reservation {
     public final Customer reserver;
     public Room reservedRoom;
-    public Voyage voyageRefered;
+    public Package voyageRefered;
 
     // To be filled with more attributes and functions
 

@@ -1,7 +1,5 @@
 package com.example.instatripapp;
 
-import com.mysql.cj.jdbc.CallableStatement;
-import com.mysql.cj.jdbc.ClientPreparedStatement;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,7 +28,7 @@ public class DataSourceManager {
 
     }
 
-    public void end(){
+    private void end(){
         if(db_con!=null && success){
             try {
                 db_con.close();
@@ -45,6 +43,9 @@ public class DataSourceManager {
     //in this function only a select query is sent for searching no modification query is suitable here
 
     public List<Map<String, Object>> fetch(PreparedStatement stmt, Object[] args) throws SQLException {
+        if(db_con.isClosed()){
+            connect();
+        }
         List<Map<String, Object>> results=new ArrayList<>();
         if(args!=null) {
             for (int j = 0; j < args.length; ++j) {
@@ -65,12 +66,19 @@ public class DataSourceManager {
                 results.add(row);
             }
         }catch (SQLException excp){
+            end();
             return null;
         }
+        end();
         return results;
     }
 
+    //this is for modification queries
+
     public boolean commit(PreparedStatement stmt, Object[] args) throws SQLException{
+        if(db_con.isClosed()){
+            connect();
+        }
         if(args!=null) {
             for (int j = 0; j < args.length; ++j) {
                 stmt.setObject(j + 1, args[j]);
@@ -79,48 +87,20 @@ public class DataSourceManager {
         try {
             stmt.executeUpdate();
             int udateCount = stmt.getUpdateCount();
-            if(udateCount>0)
+            if(udateCount>0) {
+                end();
                 return true;
+            }
         }catch (SQLException excp){
+            end();
             return false;
         }
+        end();
         return false;
     }
 
     public Connection getDb_con(){
         return db_con;
-    }
-}
-
-
-class DatabaseTester{
-    public static void main(String []args) throws SQLException {
-        DataSourceManager dsm = new DataSourceManager();
-        dsm.connect();
-        if(!dsm.success){
-            System.out.println("connection error");
-            return;
-        }
-        String select_query="SELECT * FROM User";
-        String insert_query="INSERT INTO User (username, type) VALUES ('ivasilop','tour_office')";
-
-        Connection conn = dsm.getDb_con();
-        PreparedStatement insert_stmt = conn.prepareStatement(insert_query);
-        PreparedStatement select_stmt = conn.prepareStatement(select_query);
-
-        boolean outcome = dsm.commit(insert_stmt, null);
-        System.out.println(outcome);
-
-        List<Map<String, Object>> resultList = dsm.fetch(select_stmt, null);
-
-        for(Map<String, Object> row  : resultList){
-            row.forEach((key, value)->{
-                System.out.print(" |Key: "+key+" |Value: "+value);
-            });
-            System.out.println();
-        }
-
-        dsm.end();
     }
 }
 

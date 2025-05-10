@@ -63,25 +63,3 @@ public class SpellChecker extends JLanguageTool implements SpellCheckerIf{
         }
     }
 }
-
-
-
-class checkingTest{
-    public static void main(String []args) throws IOException {
-        SpellChecker englishChecker = new SpellChecker("en-US");
-        SpellChecker greekChecker = new SpellChecker("el-GR");
-
-        List<RuleMatch> englishErrors = englishChecker.check_spelling("this is a textt with erors so many erors that makee me sickkk");
-        List<RuleMatch> greekErrors = greekChecker.check_spelling("Μονήμερη εκδομή στην καλαμπάκα");
-
-        List<String> englishSuggestions = englishChecker.suggest_examples(englishErrors);
-        List<String> greekSuggestions = greekChecker.suggest_examples(greekErrors);
-
-        for(String engSuggestion : englishSuggestions){
-            System.out.println(engSuggestion);
-        }
-        for(String greekSuggestion : greekSuggestions){
-            System.out.println(greekSuggestion);
-        }
-    }
-}

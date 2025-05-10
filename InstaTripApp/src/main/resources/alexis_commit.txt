@@ -1,0 +1,164 @@
++class: DataSourceManager {
+    attributes:
+
+    + private connection db_con;
+    + public boolean success;
+
+    methods:
+
+    + public void connect();
+    + public void end();
+    + public List<Map<String, Object>> fetch(PreparedStatement stmt, Object[] args) throws SQLException;
+    + public boolean commit(PreparedStatement stmt, Object[] args) throws SQLException;
+    + public Connection getDb_con();
+}
+
+
++ enum reservation_status{finished, canceled, waiting_payment};
+
+class: Customer{
+    attributes:
+
+    + private int key;
+    + public final String firstName;
+    + public final String lastName;
+    + public final String email;
+    + public final String location;
+
+    methods:
+
+    + public Customer(int key, String firstName, String lastName, String email, String location);
+
+}
+
+class: Reservation{
+    attributes:
+
+    + private int key;
+    + public int people;
+    + public reservation_status status;
+
+    methods:
+
+    - Reservation(Customer reserver);
+    + Reservation(int key, int people, Customer reserver, Voyage voyageReferred, Room room);
+
+}
+
+
+/*Η κλάση DataBaseTester είναι εκεί για να τεστάρει απλά την σύνδεση στην βάση (για αυτό πρόσθεσα demo users)*/
+
+2ND Commit
+
++interface: SpellCheckerIf {
+    attributes:
+
+    methods:
+
+    +public List<RuleMatch> check_spelling(String expression) throws IOException;
+    +public List<String> suggest_examples(List<RuleMatch> error_rules);
+}
+
+
++class: SpellChecker extends JLanguageTool implements SpellCheckerIf{
+    attributes:
+
+    methods:
+
+    +public void removeGrammarRules();
+    @Override
+    +public List<RuleMatch> check_spelling(String expression) throws IOException;
+    @Override
+    +public List<String> suggest_examples(List<RuleMatch> error_rules);\
+    +private void generateCombinations(String currentText, List<RuleMatch> rules, int ruleIndex, int offset, List<String> results);
+}
+
+
+3RD Commit
+
+/*Η κλάση Voyage μετωνομάστηκε σε Package για να ταιριάζει με τα έγγραφα*/
+
+class: ConfirmScreen{
+    attributes:
+
+    +private Consumer<Integer> onSubmit;
+
+    methods:
+
+    -public ConfirmScreen(String title, String message);
+    +public ConfirmScreen(String title, String message, Consumer<Integer> onSubmit);
+}
+
+
+class: CreatePackageForm{
+    attributes:
+
+    methods:
+
+    -public CreatePackageForm();
+    +public CreatePackageForm(TourAgency organizer, DataSourceManager manager);
+    -private void renderPackageForm();
+    +private void renderPackageForm(TourAgency organizer, DataSourceManager manager);
+    +private void createPackageListener(TextField regionTextArea, TextField priceTextArea, TextField availablePeopleTextArea, DatePicker startDateTextAea, DatePicker endDateTextArea, Package newVoyage, DataSourceManager manager);
+}
+
+class: FormScreen{
+    attributes:
+
+    +protected Button submitButton;
+    +protected Button clearButton;
+
+    methods:
+
+    +protected void renderFormElements(Label[] labels, TextField[] textFields, DatePicker[] datePickers, Label[] dateLabels);
+}
+
+
++class ScreenRedirect{
+    attributes:
+
+    methods:
+
+    +public static void getPackageMenu(Package refered, DataSourceManager manager) throws SQLException;
+    +public static void launchErrorMsg(String Mesg);
+
+}
+
+
++class ScreenConnector{
+    attributes:
+
+    methods:
+
+    +public static void InsertPackage(Package refered, DataSourceManager manager);
+
+}
+
+
+class TourAgency{
+    attributes:
+
+    +public int key;
+
+    methods:
+
+    +public TourAgency(int key);
+    +public void createPackage(DataSourceManager manager);
+}
+
+class Package{
+    attributes:
+
+    +public String location;
+    +public double price;
+    +private voyageStatus status;
+    +public int maxParticipants;
+    +public LocalDate startDate;
+    +public LocalDate endDate;
+
+    methods:
+
+    +public void initializePackage(String location, double price, int maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate)
+}
+
+/* οι κλάσεις για testing αφαιρέθηκαν */

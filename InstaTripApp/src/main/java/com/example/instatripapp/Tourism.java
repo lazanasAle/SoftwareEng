@@ -1,10 +1,23 @@
 package com.example.instatripapp;
 
+import java.time.LocalDate;
 import java.util.*;
 
 
+enum voyageStatus{saved, in_progress, canceled};
+
 class TourAgency{
-    // To be filled with more attributes and functions
+
+    public int key;
+
+    public TourAgency(int key){
+        this.key=key;
+    }
+
+
+    void createPackage(DataSourceManager manager){
+        CreatePackageForm newPackageForm = new CreatePackageForm(this, manager);
+    }
 }
 
 class Program{
@@ -12,22 +25,34 @@ class Program{
 }
 
 
-class Voyage{
+class Package{
+
     public final TourAgency organizer;
     private LivingQuarter shelter;
     public Program program;
     public List<ExtPartner> partners;
+    public String location;
+    public double price;
+    private voyageStatus status;
+    public int maxParticipants;
+    public LocalDate startDate;
+    public LocalDate endDate;
 
-    // To be filled with more attributes and functions
-
-    Voyage(TourAgency organizer, LivingQuarter shelter, Program program){
+    Package(TourAgency organizer, LivingQuarter shelter, Program program){
         this.organizer=organizer;
         this.shelter=shelter;
         this.program=program;
         partners=new Vector<>();
     }
 
-    // To be filled with more attributes and functions
+    public void initializePackage(String location, double price, int maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate){
+        this.location = new String(location);
+        this.maxParticipants=maxParticipants;
+        this.price=price;
+        this.status=status;
+        this.startDate=startDate;
+        this.endDate=endDate;
+    }
 
 }
 

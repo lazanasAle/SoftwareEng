@@ -17,8 +17,9 @@ public class InstatripRun extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        String[] recommendedResults = {"Ιθάκη","Θιάκη","Θράκη"};
-        SuggestionScreen suggestionScreen = new SuggestionScreen(recommendedResults);
-        PaymentScreen pScreen = new PaymentScreen();
+        DataSourceManager manager = new DataSourceManager();
+        manager.connect();
+        TourAgency agency = new TourAgency(1);
+        agency.createPackage(manager);
     }
 }
