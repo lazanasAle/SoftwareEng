@@ -17,10 +17,8 @@ public class PaymentScreen extends Screen {
     private void renderMenu() {
         ComboBox<String> paymentMethods = new ComboBox<>();
         paymentMethods.getItems().addAll(
-            "Πιστωτική Κάρτα",
-            "Χρεωστική Κάρτα",
-            "Μετρητά",
-            "PayPal"
+            "Κάρτα",
+            "Μετρητά"
             );
 
         paymentMethods.setValue("Πιστωτική Κάρτα"); // default
