@@ -30,7 +30,7 @@ class HistoryListScreen extends ListScreen {
         String[] columnNames = {"ID", "Όνομα Πακέτου", "Περιγραφή", "Τιμή"};
         String[] propertyNames = {"id", "name", "description", "price"};
         String buttonName = "Λεπτομέρειες";
-        renderArray(columnNames, java.util.Arrays.asList(packages), propertyNames, buttonName);
+        renderArray(columnNames, java.util.Arrays.asList(packages), propertyNames, buttonName, null);
     }
 }
 class ResultScreen extends ListScreen {
@@ -52,7 +52,7 @@ class ResultScreen extends ListScreen {
         String[] columnNames = {"ID", "Όνομα Πακέτου", "Περιγραφή", "Τιμή"};
         String[] propertyNames = {"id", "name", "description", "price"};
         String buttonName = "Επιλογή Πακέτου";
-        renderArray(columnNames, Arrays.asList(packages), propertyNames,buttonName);
+        renderArray(columnNames, Arrays.asList(packages), propertyNames,buttonName, null);
     }
 }
 class PackageOptionsScreen extends ListScreen {
@@ -104,7 +104,7 @@ class QuarterListScreen extends ListScreen{
                 new QuarterGUI("Apartment C", "Region 3", "Type 3")
         );
 
-        renderArray(columnNames, quarters, propertyNames, buttonName);
+        renderArray(columnNames, quarters, propertyNames, buttonName, null);
     }
 
 }
@@ -125,25 +125,25 @@ class PaidPackageList extends ListScreen{
         String[] columnNames = {"ID", "Όνομα Πακέτου", "Περιγραφή", "Τιμή"};
         String[] propertyNames = {"id", "name", "description", "price"};
         String buttonName = "Κριτική";
-        renderArray(columnNames, Arrays.asList(packages), propertyNames,buttonName);
+        renderArray(columnNames, Arrays.asList(packages), propertyNames,buttonName, null);
     }
 }
 class PackageListScreen extends ListScreen {
 
-    public PackageListScreen(List<Map<String, Object>> packageQueryResult, TourAgency organizer) {
+    public PackageListScreen(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow popupWindow) {
         super("Λίστα Πακέτων", 1000, 950);
         renderGrid(900);
-        renderPackageList(packageQueryResult, organizer);
+        renderPackageList(packageQueryResult, organizer, popupWindow);
     }
 
-    private void renderPackageList(List<Map<String, Object>> packageQueryResult, TourAgency organizer) {
+    private void renderPackageList(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow pwindow) {
         renderLabel("Η Λίστα πακέτων σας");
         List<Package> selectedPackages = ScreenConnector.visualisePackages(packageQueryResult, organizer);
         List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
         String buttonName = "Επιλογή";
         String[] cnamesArray = new String[columnNames.size()];
         columnNames.toArray(cnamesArray);
-        renderArray(cnamesArray, selectedPackages, cnamesArray, buttonName);
+        renderArray(cnamesArray, selectedPackages, cnamesArray, buttonName, pwindow);
     }
 }
 
@@ -191,6 +191,6 @@ class CooperationListScreen extends ListScreen {
         String[] columnNames = {"Όνομα Διαμερίσματος", "Περιοχή", "Τύπος Διαμερίσματος"};
         String[] propertyNames = {"apartmentName", "region", "apartmentType"};
         String buttonName = "Επιλογή";
-        renderArray(columnNames, Arrays.asList(quarters), propertyNames, buttonName);
+        renderArray(columnNames, Arrays.asList(quarters), propertyNames, buttonName, null);
     }
 }

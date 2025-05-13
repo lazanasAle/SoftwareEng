@@ -1,4 +1,5 @@
 package com.example.instatripapp;
+import javafx.scene.Node;
 import javafx.util.Pair;
 
 import java.sql.Date;
@@ -33,8 +34,8 @@ public class ScreenRedirect {
 
     }
 
-    public static void launchPackageListScreen(List<Map<String, Object>> elements, TourAgency agency){
-        PackageListScreen packageListScreen = new PackageListScreen(elements, agency);
+    public static void launchPackageListScreen(List<Map<String, Object>> elements, TourAgency agency, PopupWindow pwindow){
+        PackageListScreen packageListScreen = new PackageListScreen(elements, agency, pwindow);
 
     }
 

@@ -16,17 +16,25 @@ public class ListScreen<T> extends Screen{
         // screen methods
         super(title, width, height);
     }
-    protected void renderArray(String[] columnNames, List<T> items, String[] propertyNames, String buttonName) {
+    protected void renderArray(String[] columnNames, List<T> items, String[] propertyNames, String buttonName, PopupWindow<T> popup) {
         TableView<T> dataTable = new TableView<>();
-        dataTable.setPrefWidth(widthOfScreen);
-        for (int i = 0; i < columnNames.length; i++) {
-            TableColumn<T, String> column = new TableColumn<>(columnNames[i]);
-            column.setCellValueFactory(new PropertyValueFactory<>(propertyNames[i]));
-            dataTable.getColumns().add(column);
-        }
+        UtilityHelper.populateTableView(dataTable, widthOfScreen, columnNames, propertyNames);
 
         // Add "Επιλογές" column
         TableColumn<T, Void> optionsColumn = new TableColumn<>("Επιλογές");
+        setOptionsColumn(optionsColumn, buttonName, dataTable, items, popup);
+    }
+
+    protected void renderList(List<String> items) {
+        int gridPosition=1;
+        for(String item : items) {
+            Button button = new Button(item);
+            grid.add(button, 0, gridPosition, 2, 1);
+            gridPosition++;
+            GridPane.setHalignment(button, javafx.geometry.HPos.CENTER); // Center the button in the grid cell
+        }
+    }
+    private void setOptionsColumn(TableColumn<T, Void> optionsColumn, String buttonName, TableView<T> dataTable, List<T> items, PopupWindow<T> options){
         optionsColumn.setCellFactory(col -> new TableCell<>() {
             private final Button button = new Button(buttonName);
 
@@ -38,6 +46,12 @@ public class ListScreen<T> extends Screen{
                 } else {
                     setGraphic(button);
                 }
+                if(options!=null) {
+                    button.setOnAction(e -> {
+                        T element = dataTable.getItems().get(getIndex());
+                        options.createPopup(element, button);
+                    });
+                }
             }
         });
 
@@ -46,14 +60,5 @@ public class ListScreen<T> extends Screen{
         dataTable.getItems().addAll(items);
         dataTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         grid.add(dataTable, 0, 1);
-    }
-    protected void renderList(List<String> items) {
-        int gridPosition=1;
-        for(String item : items) {
-            Button button = new Button(item);
-            grid.add(button, 0, gridPosition, 2, 1);
-            gridPosition++;
-            GridPane.setHalignment(button, javafx.geometry.HPos.CENTER); // Center the button in the grid cell
-        }
     }
 }

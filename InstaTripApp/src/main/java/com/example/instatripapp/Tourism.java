@@ -1,5 +1,16 @@
 package com.example.instatripapp;
 
+import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.constant.Constable;
@@ -52,7 +63,37 @@ class TourAgency{
 
     void finalizePackage(DataSourceManager manager) {
         List<Map<String, Object>> packages=ScreenConnector.takePackages(this, manager);
-        ScreenRedirect.launchPackageListScreen(packages, this);
+        ScreenRedirect.launchPackageListScreen(packages, this, new PopupWindow() {
+            @Override
+            public void createPopup(Object element, Node anchor) {
+                Stage popupStage = new Stage();
+                popupStage.initStyle(StageStyle.UNDECORATED);
+                popupStage.initModality(Modality.WINDOW_MODAL);
+                popupStage.initOwner(anchor.getScene().getWindow());
+
+                Button activateBtn = new Button("Ενεργοποίηση");
+                Button cancelBtn = new Button("Ακύρωση");
+                activateBtn.setStyle("-fx-background-color: green; -fx-text-fill: white;");
+                Button closeBtn = new Button("X");
+                cancelBtn.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+                closeBtn.setOnAction(e -> popupStage.close());
+
+                HBox header = new HBox(closeBtn);
+                header.setAlignment(Pos.TOP_RIGHT);
+
+                VBox layout = new VBox(10, header, activateBtn, cancelBtn);
+                layout.setPadding(new Insets(10));
+                layout.setStyle("-fx-background-color: white; -fx-border-color: gray;");
+
+                popupStage.setScene(new Scene(layout));
+
+                Bounds bounds = anchor.localToScreen(anchor.getBoundsInLocal());
+                popupStage.setX(bounds.getMinX());
+                popupStage.setY(bounds.getMaxY());
+
+                popupStage.show();
+            }
+        });
     }
 }
 
