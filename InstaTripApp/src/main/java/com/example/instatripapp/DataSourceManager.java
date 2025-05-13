@@ -10,6 +10,7 @@ import java.util.Map;
 public class DataSourceManager {
     private Connection db_con=null;
     public boolean success;
+    public String errMesg;
     public void connect(){
         db_con=null;
         try {
@@ -66,6 +67,7 @@ public class DataSourceManager {
                 results.add(row);
             }
         }catch (SQLException excp){
+            errMesg = new String(excp.getMessage());
             end();
             return null;
         }
@@ -92,6 +94,7 @@ public class DataSourceManager {
                 return true;
             }
         }catch (SQLException excp){
+            errMesg = new String(excp.getMessage());
             end();
             return false;
         }

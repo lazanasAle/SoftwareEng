@@ -162,3 +162,134 @@ class Package{
 }
 
 /* οι κλάσεις για testing αφαιρέθηκαν */
+
+4th Commit
+
+
+class: DataSourceManager{
+    attributes:
+
+    +public String errMesg;
+}
+
+
+class: ScreenRedirect{
+    attributes:
+
+    methods:
+
+    +public static void launchPackageListScreen(List<Map<String, Object>> elements, TourAgency agency, PopupWindow pwindow);
+
+}
+
+class: ScreenConnector{
+    attributes:
+
+    methods:
+
+    +public static List<Package> visualisePackages(List<Map<String, Object>> packageQueryResult, TourAgency organizer);
+    +public static List<Map<String, Object>> takePackages(TourAgency agency, DataSourceManager manager);
+    +public static void changeStatus(long key, DataSourceManager manager, String NewStatus);
+
+}
+
++interface: Searchable{
+    attributes:
+
+    methods:
+
+    +public abstract long getKey();
+
+}
+
+
+class: Package implements Searchable{
+    attributes:
+
+    private long key;
+
+    methods:
+
+    +public long getAgencyID();
+
+    +public LocalDate getStartDate();
+
+    +public LocalDate getEndDate();
+
+    +public double getPrice();
+
+    +public String getLocation();
+
+    +public long getPackageID();
+
+    +public long getMaxParticipants();
+
+    +public String getStatus();
+
+    @Override
+    +public long getKey();
+
+}
+
+
+/*πλέον ο τύπος του ListScreen (η οποία είναι generic κλάση) πρέπει να υλοποιεί την interface searchable και χρησιμοποιείται ως actionListener των κουμπιών στο Popup η χρήση του κλειδιού του δεδομένου που επιλέχθηκε*/
+/*Οι συναρτήσεις που εμφανίζουν το tableview με τα πακέτα παίρνουν πλέον ως όρισμα και το αντίστοιχο Popup window*/
+
+
++interface: PopupWindow<T> {
+    attributes:
+
+    methods:
+
+    public void createPopup(T element, Node anchor, long keySearch);
+}
+
+
+class: ListScreen<T extends Searchable> extends Screen{
+    attributes:
+
+    methods:
+
+    +private void setOptionsColumn(TableColumn<T, Void> optionsColumn, String buttonName, TableView<T> dataTable, List<T> items, PopupWindow<T> options);
+    +private void populateTableView( TableView<T> dataTable, int widthOfScreen, String[] columnNames, String[] propertyNames)
+
+}
+
+
+class: PackageListScreen extends ListScreen<Package> {
+    attributes:
+
+    methods:
+
+    -public PackageListScreen();
+    +public PackageListScreen(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow popupWindow) ;
+    -public PackageListScreen();
+    +public PackageListScreen(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow popupWindow);
+    -private void renderPackageList();
+    +private void renderPackageList(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow pwindow);
+}
+
+
+enum: voyageStatus{
+    attributes:
+
+    methods:
+
+    +public static voyageStatus fromString(String dbValue);
+
+    +public static String toString(voyageStatus statusValue);
+
+}
+
+
+class: TourAgency{
+    attributes:
+
+    methods:
+
+    +public void finalizePackage(DataSourceManager manager);
+
+}
+
+
+/*Προστέθηκε και ένα trigger στην ΒΔ που ελέγχει την ύπαρξη ή μη συνεργασίας με ξενοδοχέι σε πακέτα που αφορύν εκδρομές μη μονοήμερες και ο υπεύθυνος προσπάθησε να ενεργοποιήσει*/

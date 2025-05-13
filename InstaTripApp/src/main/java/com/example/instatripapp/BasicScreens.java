@@ -103,7 +103,7 @@ class MainScreen extends ListScreen {
 class ErrorMessage extends Screen {
     public ErrorMessage(String message) {
         // screen methods
-        super("Παράθυρο Σφάλματος", 400, 300);
+        super("Παράθυρο Σφάλματος", 800, 300);
         renderGrid(50);
         renderLabel("ΣΦΑΛΜΑ:");
         displayMessage(message);

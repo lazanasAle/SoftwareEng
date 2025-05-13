@@ -116,10 +116,10 @@ class ScreenConnector{
         try {
             boolean updated = manager.commit(stmt, new Object[]{NewStatus, key});
             if(!updated){
-                ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+                ScreenRedirect.launchErrorMsg(manager.errMesg);
             }
         }catch (SQLException e){
-            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+e.getMessage());
         }
     }
 }

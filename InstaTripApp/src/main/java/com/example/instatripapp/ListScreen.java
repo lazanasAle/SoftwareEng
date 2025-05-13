@@ -18,7 +18,7 @@ public class ListScreen<T extends Searchable> extends Screen{
     }
     protected void renderArray(String[] columnNames, List<T> items, String[] propertyNames, String buttonName, PopupWindow<T> popup) {
         TableView<T> dataTable = new TableView<>();
-        UtilityHelper.populateTableView(dataTable, widthOfScreen, columnNames, propertyNames);
+        populateTableView(dataTable, widthOfScreen, columnNames, propertyNames);
 
         // Add "Επιλογές" column
         TableColumn<T, Void> optionsColumn = new TableColumn<>("Επιλογές");
@@ -60,5 +60,15 @@ public class ListScreen<T extends Searchable> extends Screen{
         dataTable.getItems().addAll(items);
         dataTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         grid.add(dataTable, 0, 1);
+    }
+
+
+    private void populateTableView( TableView<T> dataTable, int widthOfScreen, String[] columnNames, String[] propertyNames){
+        dataTable.setPrefWidth(widthOfScreen);
+        for (int i = 0; i < columnNames.length; i++) {
+            TableColumn<T, String> column = new TableColumn<>(columnNames[i]);
+            column.setCellValueFactory(new PropertyValueFactory<>(propertyNames[i]));
+            dataTable.getColumns().add(column);
+        }
     }
 }

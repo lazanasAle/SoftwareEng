@@ -57,11 +57,11 @@ class TourAgency{
     }
 
 
-    void createPackage(DataSourceManager manager){
+    public void createPackage(DataSourceManager manager){
         ScreenRedirect.getCreatePackageScreen(this, manager);
     }
 
-    void finalizePackage(DataSourceManager manager) {
+    public void finalizePackage(DataSourceManager manager) {
         List<Map<String, Object>> packages=ScreenConnector.takePackages(this, manager);
         ScreenRedirect.launchPackageListScreen(packages, this, new PopupWindow() {
             @Override
