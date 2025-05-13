@@ -128,7 +128,7 @@ class PaidPackageList extends ListScreen{
         renderArray(columnNames, Arrays.asList(packages), propertyNames,buttonName, null);
     }
 }
-class PackageListScreen extends ListScreen {
+class PackageListScreen extends ListScreen<Package> {
 
     public PackageListScreen(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow popupWindow) {
         super("Λίστα Πακέτων", 1000, 950);

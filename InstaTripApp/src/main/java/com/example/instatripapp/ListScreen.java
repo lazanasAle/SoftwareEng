@@ -11,7 +11,7 @@ import java.util.List;
 // Strongly recommend to do this class into 2 classes
 // One is ArrayScreen and the other is ListScreen
 // Recommendation: is to put ListScreen to be a superclass to PackageDetailsScreen, PaymentScreen,FilterScreen,
-public class ListScreen<T> extends Screen{
+public class ListScreen<T extends Searchable> extends Screen{
     public ListScreen(String title, int width, int height) {
         // screen methods
         super(title, width, height);
@@ -49,7 +49,7 @@ public class ListScreen<T> extends Screen{
                 if(options!=null) {
                     button.setOnAction(e -> {
                         T element = dataTable.getItems().get(getIndex());
-                        options.createPopup(element, button);
+                        options.createPopup(element, button, element.getKey());
                     });
                 }
             }

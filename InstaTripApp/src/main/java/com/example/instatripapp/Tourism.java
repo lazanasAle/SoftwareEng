@@ -65,7 +65,7 @@ class TourAgency{
         List<Map<String, Object>> packages=ScreenConnector.takePackages(this, manager);
         ScreenRedirect.launchPackageListScreen(packages, this, new PopupWindow() {
             @Override
-            public void createPopup(Object element, Node anchor) {
+            public void createPopup(Object element, Node anchor, long keySearch) {
                 Stage popupStage = new Stage();
                 popupStage.initStyle(StageStyle.UNDECORATED);
                 popupStage.initModality(Modality.WINDOW_MODAL);
@@ -78,6 +78,12 @@ class TourAgency{
                 cancelBtn.setStyle("-fx-background-color: red; -fx-text-fill: white;");
                 closeBtn.setOnAction(e -> popupStage.close());
 
+                cancelBtn.setOnAction(e->{
+                    ScreenConnector.changeStatus(keySearch, manager, "Ακυρωμένο");
+                });
+                activateBtn.setOnAction(e->{
+                    ScreenConnector.changeStatus(keySearch, manager, "Ενεργοποιημένο");
+                });
                 HBox header = new HBox(closeBtn);
                 header.setAlignment(Pos.TOP_RIGHT);
 

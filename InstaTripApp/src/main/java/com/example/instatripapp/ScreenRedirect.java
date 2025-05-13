@@ -2,6 +2,7 @@ package com.example.instatripapp;
 import javafx.scene.Node;
 import javafx.util.Pair;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -99,5 +100,26 @@ class ScreenConnector{
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
         return null;
+    }
+
+    public static void changeStatus(long key, DataSourceManager manager, String NewStatus){
+        String query = "UPDATE Package SET status=? WHERE PackageID=?;";
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        try {
+            if(db_con.isClosed())
+                manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        try {
+            boolean updated = manager.commit(stmt, new Object[]{NewStatus, key});
+            if(!updated){
+                ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+            }
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
     }
 }

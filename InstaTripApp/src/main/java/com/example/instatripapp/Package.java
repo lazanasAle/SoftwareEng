@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Vector;
 
-public class Package{
+public class Package implements Searchable{
 
     public final TourAgency organizer;
     private LivingQuarter shelter;
@@ -69,6 +69,11 @@ public class Package{
     }
     public String getStatus(){
         return voyageStatus.toString(this.status);
+    }
+
+    @Override
+    public long getKey(){
+        return key;
     }
 
 }
