@@ -1,10 +1,41 @@
 package com.example.instatripapp;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.constant.Constable;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
 
-enum voyageStatus{saved, in_progress, canceled};
+enum voyageStatus{
+    saved,
+    active,
+    canceled,
+    finished;
+
+    public static voyageStatus fromString(String dbValue){
+        Map<String, voyageStatus> db_code_enum_mapper = Map.of(
+                "Ολοκληρωμένο", finished,
+                "Ακυρωμένο", canceled,
+                "Ενεργοποιημένο", active,
+                "Σε εξέλιξη", saved
+        );
+
+        return db_code_enum_mapper.get(dbValue);
+    }
+
+    public static String toString(voyageStatus statusValue){
+        Map<? extends Constable, String> db_code_enum_mapper = Map.of(
+                finished,"Ολοκληρωμένο",
+                canceled,"Ακυρωμένο",
+                active,"Ενεργοποιημένο",
+                saved,  "Σε εξέλιξη"
+        );
+        return db_code_enum_mapper.get(statusValue);
+    }
+
+};
 
 class TourAgency{
 
@@ -16,7 +47,12 @@ class TourAgency{
 
 
     void createPackage(DataSourceManager manager){
-        CreatePackageForm newPackageForm = new CreatePackageForm(this, manager);
+        ScreenRedirect.getCreatePackageScreen(this, manager);
+    }
+
+    void finalizePackage(DataSourceManager manager) {
+        List<Map<String, Object>> packages=ScreenConnector.takePackages(this, manager);
+        ScreenRedirect.launchPackageListScreen(packages, this);
     }
 }
 
@@ -25,36 +61,7 @@ class Program{
 }
 
 
-class Package{
 
-    public final TourAgency organizer;
-    private LivingQuarter shelter;
-    public Program program;
-    public List<ExtPartner> partners;
-    public String location;
-    public double price;
-    private voyageStatus status;
-    public int maxParticipants;
-    public LocalDate startDate;
-    public LocalDate endDate;
-
-    Package(TourAgency organizer, LivingQuarter shelter, Program program){
-        this.organizer=organizer;
-        this.shelter=shelter;
-        this.program=program;
-        partners=new Vector<>();
-    }
-
-    public void initializePackage(String location, double price, int maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate){
-        this.location = new String(location);
-        this.maxParticipants=maxParticipants;
-        this.price=price;
-        this.status=status;
-        this.startDate=startDate;
-        this.endDate=endDate;
-    }
-
-}
 
 
 class Participation {

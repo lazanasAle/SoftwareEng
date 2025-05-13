@@ -56,7 +56,7 @@ public class CreatePackageForm extends FormScreen{
             }
             try {
                 if(startDate.isAfter(LocalDate.now()) && endDate.isAfter(startDate)) {
-                    newVoyage.initializePackage(region, Double.parseDouble(priceString), Integer.parseInt(peopleString), voyageStatus.saved, startDate, endDate);
+                    newVoyage.initializePackage(region, Double.parseDouble(priceString), Long.parseLong(peopleString), voyageStatus.saved, startDate, endDate);
                     stage.close();
                     ScreenRedirect.getPackageMenu(newVoyage, manager);
                 }

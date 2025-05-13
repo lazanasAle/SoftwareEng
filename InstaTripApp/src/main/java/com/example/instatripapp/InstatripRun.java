@@ -20,6 +20,6 @@ public class InstatripRun extends Application {
         DataSourceManager manager = new DataSourceManager();
         manager.connect();
         TourAgency agency = new TourAgency(1);
-        agency.createPackage(manager);
+        agency.finalizePackage(manager);
     }
 }

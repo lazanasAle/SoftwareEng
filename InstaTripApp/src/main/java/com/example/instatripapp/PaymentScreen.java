@@ -18,7 +18,7 @@ public class PaymentScreen extends Screen {
         ComboBox<String> paymentMethods = new ComboBox<>();
         paymentMethods.getItems().addAll("Μετρητά", "Κάρτα");
 
-        paymentMethods.setValue("Πιστωτική Κάρτα"); // default
+        paymentMethods.setValue("Κάρτα"); // default
         Button confirmButton = new Button("Επιβεβαίωση");
         confirmButton.setOnAction(e -> handlePaymentSelection(paymentMethods.getValue()));
         grid.add(paymentMethods, 0, 3, 2, 1); // Span 2 columns

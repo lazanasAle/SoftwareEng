@@ -5,8 +5,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 
 import javax.swing.*;
-import java.util.Arrays;
-import java.util.List;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.*;
 
 // Strongly recommend to do this class into 2 classes
 // One is ArrayScreen and the other is ListScreen
@@ -128,25 +129,25 @@ class PaidPackageList extends ListScreen{
     }
 }
 class PackageListScreen extends ListScreen {
-    public PackageListScreen() {
-        super("Λίστα Πακέτων", 600, 600);
-        renderGrid(500);
-        renderPackageList();
+
+    public PackageListScreen(List<Map<String, Object>> packageQueryResult, TourAgency organizer) {
+        super("Λίστα Πακέτων", 1000, 950);
+        renderGrid(900);
+        renderPackageList(packageQueryResult, organizer);
     }
 
-    private void renderPackageList() {
+    private void renderPackageList(List<Map<String, Object>> packageQueryResult, TourAgency organizer) {
         renderLabel("Η Λίστα πακέτων σας");
-        PackageGUI[] packages = {
-                new PackageGUI("1", "Πακέτο 1", "Περιγραφή 1", "100€"),
-                new PackageGUI("2", "Πακέτο 2", "Περιγραφή 2", "200€"),
-                new PackageGUI("3", "Πακέτο 3", "Περιγραφή 3", "300€")
-        };
-        String[] columnNames = {"ID", "Όνομα Πακέτου", "Περιγραφή", "Τιμή"};
-        String[] propertyNames = {"id", "name", "description", "price"};
+        List<Package> selectedPackages = ScreenConnector.visualisePackages(packageQueryResult, organizer);
+        List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
         String buttonName = "Επιλογή";
-        renderArray(columnNames, Arrays.asList(packages), propertyNames, buttonName);
+        String[] cnamesArray = new String[columnNames.size()];
+        columnNames.toArray(cnamesArray);
+        renderArray(cnamesArray, selectedPackages, cnamesArray, buttonName);
     }
 }
+
+
 // no more ListScreen
 class SuggestionScreen extends Screen{
     public SuggestionScreen(String[] recommendedResults) {
