@@ -23,6 +23,7 @@ public class DataSourceManager {
             db_con=DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + databaseName + "?sslmode=require", userName, password);
             success=true;
         }catch (Exception exp){
+            System.out.println(exp);
             success=false;
             db_con=null;
         }
