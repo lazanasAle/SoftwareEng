@@ -1,6 +1,16 @@
 package com.example.instatripapp;
+
+import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.util.Pair;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -10,7 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.Semaphore;
 
 
 public class ScreenRedirect {
@@ -40,6 +50,10 @@ public class ScreenRedirect {
 
     }
 
+    public static void launchSearchScreen(SearchContent content, TourAgency organizer, DataSourceManager manager){
+        SearchPackageScreen searchPackageScreen = new SearchPackageScreen(content, organizer, manager);
+    }
+
     public static void launchErrorMsg(String Mesg) {
         ErrorMessage errorScreen = new ErrorMessage(Mesg);
     }
@@ -48,7 +62,7 @@ public class ScreenRedirect {
 
 class ScreenConnector{
     public static void InsertPackage(Package refered, DataSourceManager manager){
-        String query = "INSERT INTO Package (startDate, endDate, location, price, status, AgencyID, maxParticipants) VALUES (?, ?, ?, ?, 'Σε εξέλιξη', ?, ?);";
+        String query = "INSERT INTO Package (startDate, endDate, location, description, price, status, AgencyID, maxParticipants) VALUES (?, ?, ?, ?, ?, 'Σε εξέλιξη', ?, ?);";
         PreparedStatement stmt = null;
         try {
             stmt = manager.getDb_con().prepareStatement(query);
@@ -56,7 +70,7 @@ class ScreenConnector{
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
         try {
-            boolean inserted=manager.commit(stmt, new Object[]{refered.startDate, refered.endDate, refered.location, refered.price, refered.organizer.key, refered.maxParticipants});
+            boolean inserted=manager.commit(stmt, new Object[]{refered.startDate, refered.endDate, refered.location, refered.getDescription(), refered.price, refered.organizer.key, refered.maxParticipants});
             if(!inserted){
                 ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
             }
@@ -73,20 +87,21 @@ class ScreenConnector{
             Date end = (Date) row.get("endDate");
             LocalDate endDate = end.toLocalDate();
             String location = String.valueOf(row.get("location"));
+            String description = String.valueOf(row.get("description"));
             Double price = (Double) row.get("price");
             String statusString = String.valueOf(row.get("status"));
             voyageStatus status = voyageStatus.fromString(statusString);
             Long agencyID = (Long) row.get("AgencyID");
             Long maxParticipants = (Long) row.get("maxParticipants");
             Package newVoyage = new Package(organizer, null, null);
-            newVoyage.initializePackage(location, price, maxParticipants, status, startDate, endDate, package_id);
+            newVoyage.initializePackage(location, price, maxParticipants, status, startDate, endDate, package_id, description);
             selectedPackages.add(newVoyage);
         }
          return selectedPackages;
     }
 
-    public static List<Map<String, Object>> takePackages(TourAgency agency, DataSourceManager manager){
-        String query = "SELECT PackageID, startDate, endDate, location, price, status, AgencyID, maxParticipants FROM Package WHERE AgencyID=?;";
+    public static List<Map<String, Object>> takePackages(TourAgency agency, DataSourceManager manager, SearchContent cntnt){
+        String query = "SELECT PackageID, startDate, endDate, location, price, description, status, AgencyID, maxParticipants FROM Package WHERE AgencyID=? AND (description LIKE ? OR location LIKE ?);";
         PreparedStatement stmt = null;
         try {
             stmt=manager.getDb_con().prepareStatement(query);
@@ -94,7 +109,8 @@ class ScreenConnector{
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
         try{
-            var ret = manager.fetch(stmt, new Integer[]{agency.key});
+            String desc="%"+cntnt.content+"%";
+            var ret = manager.fetch(stmt, new Object[]{agency.key, desc, desc});
             return ret;
         } catch (SQLException e) {
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
@@ -122,4 +138,57 @@ class ScreenConnector{
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+e.getMessage());
         }
     }
+
+    public static void afterSearchPerform(TourAgency organizerMember, DataSourceManager manager, SearchContent content){
+        List<Map<String, Object>> packages = ScreenConnector.takePackages(organizerMember, manager, content);
+        ScreenRedirect.launchPackageListScreen(packages, organizerMember, new PopupWindow() {
+            @Override
+            public void createPopup(Object element, Node anchor, long keySearch) {
+                Stage popupStage = new Stage();
+                popupStage.initStyle(StageStyle.UNDECORATED);
+                popupStage.initModality(Modality.WINDOW_MODAL);
+                popupStage.initOwner(anchor.getScene().getWindow());
+
+                Button detailsBtn = new Button("Λεπτομέρειες");
+                Button cancelBtn = new Button("Ακύρωση");
+                detailsBtn.setStyle("-fx-background-color: green; -fx-text-fill: white;");
+                Button closeBtn = new Button("X");
+                cancelBtn.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+                closeBtn.setOnAction(e -> popupStage.close());
+
+                cancelBtn.setOnAction(e -> {
+                    ScreenConnector.changeStatus(keySearch, manager, "Ακυρωμένο");
+                    popupStage.close();
+                });
+                detailsBtn.setOnAction(e -> {
+                    popupStage.close();
+                    if (element instanceof Package) {
+                        Package packageElement = (Package) element;
+                        Button optionBtn = new Button("Οριστικοποίηση");
+                        optionBtn.setOnAction((event) -> {
+                            ScreenConnector.changeStatus(keySearch, manager, "Ενεργοποιημένο");
+                        });
+                        popupStage.close();
+                        PackageDetailsScreen pds = new PackageDetailsScreen(packageElement, optionBtn);
+                    }
+                });
+                HBox header = new HBox(closeBtn);
+                header.setAlignment(Pos.TOP_RIGHT);
+
+                VBox layout = new VBox(10, header, detailsBtn, cancelBtn);
+                layout.setPadding(new Insets(10));
+                layout.setStyle("-fx-background-color: white; -fx-border-color: gray;");
+
+                popupStage.setScene(new Scene(layout));
+
+                Bounds bounds = anchor.localToScreen(anchor.getBoundsInLocal());
+                popupStage.setX(bounds.getMinX());
+                popupStage.setY(bounds.getMaxY());
+
+                popupStage.show();
+            }
+        });
+    }
 }
+
+

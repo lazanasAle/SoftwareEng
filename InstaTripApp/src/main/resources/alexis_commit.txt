@@ -292,4 +292,98 @@ class: TourAgency{
 }
 
 
-/*Προστέθηκε και ένα trigger στην ΒΔ που ελέγχει την ύπαρξη ή μη συνεργασίας με ξενοδοχέι σε πακέτα που αφορύν εκδρομές μη μονοήμερες και ο υπεύθυνος προσπάθησε να ενεργοποιήσει*/
+/*Προστέθηκε και ένα trigger στην ΒΔ που ελέγχει την ύπαρξη ή μη συνεργασίας με ξενοδοχείο σε πακέτα που αφορούν εκδρομές μη μονοήμερες και ο υπεύθυνος προσπάθησε να ενεργοποιήσει*/
+
+5th Commit
+
+/*Προστέθηκε λειτουργικότητα της αναζήτησης στο use case οριστικοποίησης πακέτου. Πλέον ματσάρει με την περιγραφή του εγγράφου*/
+
+class: FormScreen {
+    attributes:
+
+    methods:
+
+    +protected void renderFormElements(Label[] labels, TextField[] textFields, DatePicker[] datePickers, Label[] dateLabels, TextArea[] areas, Label[] areaLabels);
+
+}
+
+class: Package {
+    attributes:
+
+    +private String description;
+
+    methods:
+
+    -public void initializePackage(String location, double price, long maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate, long key);
+    +public void initializePackage(String location, double price, long maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate, long key, String description);
+    +public void initializePackage(String location, double price, long maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate, String description);
+    +public String getDescription();
+
+}
+
+class: PackageDetailsScreen{
+    attributes:
+
+    methods:
+
+    -public PackageDetailsScreen();
+    +public PackageDetailsScreen(Package pkg, Button optionBtn);
+    -private void renderPackageDetails();
+    +private void renderPackageDetails(Package pkg, Button optionButton);
+}
+
+class: ScreenRedirect{
+    attributes:
+
+    methods:
+
+    +public static void launchSearchScreen(SearchContent content, TourAgency organizer, DataSourceManager manager);
+    +public static void afterSearchPerform(TourAgency organizerMember, DataSourceManager manager, SearchContent content);
+
+}
+
++class: SearchContent{
+    attributes:
+
+    methods:
+
+    +public SearchContent(String text);
+}
+
+class: SearchHistoryScreen{
+    attributes:
+
+    methods:
+
+    -public SearchHistoryScreen();
+    +public SearchHistoryScreen(SearchContent content);
+    -protected void performSearch(String query);
+    +protected void performSearch(String query, SearchContent content);
+}
+
+class: SearchPackageScreen{
+    attributes:
+
+    +private TourAgency organizerMember;
+    +private DataSourceManager manager;
+
+    methods:
+    -public SearchPackageScreen();
+    +public SearchPackageScreen(SearchContent content, TourAgency organizerMember, DataSourceManager manager);
+    -protected void performSearch(String query);
+    +protected void performSearch(String query, SearchContent content) throws IOException;
+}
+
+class: SearchScreen{
+    attributes:
+
+    methods:
+
+    -public SearchScreen(String title, int widthOfScreen, int heightOfScreen);
+    +public SearchScreen(String title, int widthOfScreen, int heightOfScreen, SearchContent content);
+    -protected void setupSearchUI();
+    +protected void setupSearchUI(SearchContent content);
+    -protected void performSearch(String query);
+    +protected void performSearch(String query, SearchContent content) throws IOException;
+}
+

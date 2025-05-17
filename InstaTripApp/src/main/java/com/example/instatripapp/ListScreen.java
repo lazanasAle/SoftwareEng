@@ -1,9 +1,6 @@
 package com.example.instatripapp;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 
@@ -23,6 +20,7 @@ public class ListScreen<T extends Searchable> extends Screen{
         // Add "Επιλογές" column
         TableColumn<T, Void> optionsColumn = new TableColumn<>("Επιλογές");
         setOptionsColumn(optionsColumn, buttonName, dataTable, items, popup);
+
     }
 
     protected void renderList(List<String> items) {
@@ -71,4 +69,5 @@ public class ListScreen<T extends Searchable> extends Screen{
             dataTable.getColumns().add(column);
         }
     }
+
 }

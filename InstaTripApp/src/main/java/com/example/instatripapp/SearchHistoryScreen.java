@@ -7,15 +7,15 @@ import javafx.scene.text.Text;
 public class SearchHistoryScreen extends SearchScreen {
 
 
-    public SearchHistoryScreen() {
-        super("Ιστορικό Αναζητήσεων", 1000, 750);
+    public SearchHistoryScreen(SearchContent content) {
+        super("Ιστορικό Αναζητήσεων", 1000, 750, content);
         renderLabel("Αναζήτηση Ιστορικού");
         renderGrid(500);
     }
 
 
     @Override
-    protected void performSearch(String query) {
+    protected void performSearch(String query, SearchContent content) {
         resultsList.getItems().clear();
         resultsList.setVisible(true); // Show the field when a search is performed
 

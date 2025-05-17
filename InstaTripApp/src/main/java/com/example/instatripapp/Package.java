@@ -17,6 +17,7 @@ public class Package implements Searchable{
     public LocalDate startDate;
     public LocalDate endDate;
     private long key;
+    private String description;
 
 
     Package(TourAgency organizer, LivingQuarter shelter, Program program){
@@ -34,14 +35,18 @@ public class Package implements Searchable{
         this.startDate=startDate;
         this.endDate=endDate;
     }
-    public void initializePackage(String location, double price, long maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate, long key){
-        this.location = new String(location);
-        this.maxParticipants=maxParticipants;
-        this.price=price;
-        this.status=status;
-        this.startDate=startDate;
-        this.endDate=endDate;
+
+
+
+    public void initializePackage(String location, double price, long maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate, long key, String description){
+        initializePackage(location, price, maxParticipants, status, startDate, endDate);
         this.key=key;
+        this.description=description;
+    }
+
+    public void initializePackage(String location, double price, long maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate, String description){
+        initializePackage(location, price, maxParticipants, status, startDate, endDate);
+        this.description=description;
     }
 
     public long getAgencyID(){
@@ -69,6 +74,9 @@ public class Package implements Searchable{
     }
     public String getStatus(){
         return voyageStatus.toString(this.status);
+    }
+    public String getDescription(){
+        return this.description;
     }
 
     @Override

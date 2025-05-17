@@ -1,36 +1,41 @@
 package com.example.instatripapp;
 
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+
 public class PackageDetailsScreen extends Screen {;
     private int gridPosition = 1;
-    public PackageDetailsScreen() {
+
+    public PackageDetailsScreen(Package pkg, Button optionBtn) {
         // screen methods
-        super("Package Details", 800, 700);
+        super("Package Details", 1000, 700);
         renderGrid(600);
         renderLabel("Λεπτομέρειες Πακέτου");
-        renderPackageDetails();
+        renderPackageDetails(pkg, optionBtn);
     }
 
-    private void renderPackageDetails() {
-        PackageGUI packageGUI = new PackageGUI("1", "Sample Package", "This is a sample package description.", "100€");
+    private void renderPackageDetails(Package pkg, Button optionButton) {
 
 
-        Text idText = new Text("ID: " + packageGUI.getId());
 
-        Text nameText = new Text("Name: " + packageGUI.getName());
+        Text idText = new Text("ID: " + pkg.getPackageID());
 
-        Text descriptionText = new Text("Description: " + packageGUI.getDescription());
+        Text locationText = new Text("Location: " + pkg.getLocation());
 
-        Text priceText = new Text("Price: " + packageGUI.getPrice());
+        Text descriptionText = new Text("Description: " + pkg.getDescription());
+
+        Text priceText = new Text("Price: " + pkg.getPrice());
 
         // Add the package details to the grid
-        Text[] labels = {idText, nameText, descriptionText, priceText};
+        Text[] labels = {idText, locationText, descriptionText, priceText};
 
-        Button backButton = new Button("Πληρωμή");
-        Button cooperationButton = new Button("Συνεργασία");
-        Button[] buttons = {backButton, cooperationButton};
+        optionButton.addEventHandler(ActionEvent.ACTION, event -> {
+            this.stage.close();
+        });
+
+        Button[] buttons = {optionButton};
         addElementsToGrid(labels, buttons);
     }
     private void addElementsToGrid(Text[] label,Button[] button) {

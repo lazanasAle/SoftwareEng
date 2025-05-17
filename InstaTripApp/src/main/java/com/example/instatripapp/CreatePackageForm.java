@@ -1,16 +1,14 @@
 package com.example.instatripapp;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class CreatePackageForm extends FormScreen{
 
     public CreatePackageForm(TourAgency organizer, DataSourceManager manager) {
-        super("Δημιουργία Πακέτου", 700, 500);
+        super("Δημιουργία Πακέτου", 700, 600);
         renderGrid(200);
         renderLabel("Συμπληρώστε τα στοιχεία του πακέτου σας");
         renderPackageForm(organizer, manager);
@@ -24,8 +22,10 @@ public class CreatePackageForm extends FormScreen{
         TextField availablePeopleTextArea = new TextField();
         Label priceLabel = new Label("Εκτιμώμενη Τιμή:");
         TextField priceTextArea = new TextField();
+        Label descriptionLabel = new Label("Περιγραφή Εκδρομής");
+        TextArea descriptionTextArea = new TextArea();
         Label startDateLabel = new Label("Ημερομηνία Έναρξης");
-        DatePicker startDateTextAea = new DatePicker();
+        DatePicker startDateTextArea = new DatePicker();
         Label endDateLabel = new Label("Ημερομηνία Επιστροφής");
         DatePicker endDateTextArea=new DatePicker();
         Label imageLabel = new Label("Εικόνες για ταξίδια:");
@@ -34,21 +34,27 @@ public class CreatePackageForm extends FormScreen{
 
         // renderForm Details
         renderFormElements(
-            new Label[]{regionLabel, availablePeopleLabel, priceLabel},
-            new TextField[]{regionTextArea, availablePeopleTextArea, priceTextArea}, new DatePicker[]{startDateTextAea, endDateTextArea}, new Label[] {startDateLabel, endDateLabel});
+                new Label[]{regionLabel, availablePeopleLabel, priceLabel},
+                new TextField[]{regionTextArea, availablePeopleTextArea, priceTextArea},
+                new DatePicker[]{startDateTextArea, endDateTextArea},
+                new Label[] {startDateLabel, endDateLabel},
+                new TextArea[]{descriptionTextArea},
+                new Label[]{descriptionLabel}
+        );
         renderFormButtons(new Label[]{imageLabel}, new Button[]{uploadButton});
 
         submitButton.setOnAction(e->{
-            createPackageListener(regionTextArea, priceTextArea, availablePeopleTextArea, startDateTextAea, endDateTextArea, newVoyage, manager);
+            createPackageListener(regionTextArea, priceTextArea, availablePeopleTextArea, startDateTextArea, endDateTextArea, descriptionTextArea, newVoyage, manager);
         });
     }
 
-    private void createPackageListener(TextField regionTextArea, TextField priceTextArea, TextField availablePeopleTextArea, DatePicker startDateTextAea, DatePicker endDateTextArea, Package newVoyage, DataSourceManager manager){
+    private void createPackageListener(TextField regionTextArea, TextField priceTextArea, TextField availablePeopleTextArea, DatePicker startDateTextAea, DatePicker endDateTextArea, TextArea descriptionArea, Package newVoyage, DataSourceManager manager){
             var region = regionTextArea.getText();
             var priceString = priceTextArea.getText();
             var peopleString = availablePeopleTextArea.getText();
             var startDate = startDateTextAea.getValue();
             var endDate = endDateTextArea.getValue();
+            var description = descriptionArea.getText();
             boolean condition = region==null || region.isEmpty() || priceString==null || priceString.isEmpty() || peopleString==null || peopleString.isEmpty() || startDate==null || endDate==null;
             if(condition){
                 ScreenRedirect.launchErrorMsg("Συμπληρώστε όλα τα πεδία της φόρμας");
@@ -56,7 +62,7 @@ public class CreatePackageForm extends FormScreen{
             }
             try {
                 if(startDate.isAfter(LocalDate.now()) && endDate.isAfter(startDate)) {
-                    newVoyage.initializePackage(region, Double.parseDouble(priceString), Long.parseLong(peopleString), voyageStatus.saved, startDate, endDate);
+                    newVoyage.initializePackage(region, Double.parseDouble(priceString), Long.parseLong(peopleString), voyageStatus.saved, startDate, endDate, description);
                     stage.close();
                     ScreenRedirect.getPackageMenu(newVoyage, manager);
                 }

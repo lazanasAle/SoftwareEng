@@ -1,9 +1,6 @@
 package com.example.instatripapp;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 
@@ -36,6 +33,15 @@ public class FormScreen extends Screen{
             grid.add(datePickers[j], 1, gridPosition+j+1);
         }
         gridPosition+=datePickers.length;
+    }
+
+    protected void renderFormElements(Label[] labels, TextField[] textFields, DatePicker[] datePickers, Label[] dateLabels, TextArea[] areas, Label[] areaLabels){
+        renderFormElements(labels, textFields, datePickers, dateLabels);
+        for(int j=0; j< areas.length; ++j){
+            grid.add(areaLabels[j], 0, gridPosition+j+1);
+            grid.add(areas[j],1, gridPosition+j+1);
+        }
+        gridPosition+=areas.length+1;
     }
 
     protected void renderFormButtons(Label[] labels, Button[] buttons) {

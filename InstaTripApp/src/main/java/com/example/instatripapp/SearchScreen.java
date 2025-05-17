@@ -4,17 +4,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
+
+import java.io.IOException;
+
 
 public class SearchScreen extends Screen {
     protected TextField searchField;
     protected Button searchButton;
     protected ListView<String> resultsList;
 
-    public SearchScreen(String title, int widthOfScreen, int heightOfScreen) {
+    public SearchScreen(String title, int widthOfScreen, int heightOfScreen, SearchContent content) {
         super(title, widthOfScreen, heightOfScreen);
         renderGrid(500);
-        setupSearchUI();
+        setupSearchUI(content);
         addResultsList();
     }
 
@@ -25,11 +27,20 @@ public class SearchScreen extends Screen {
         resultsList.setVisible(false); // Hide the field initially
     }
 
-    protected void setupSearchUI() {
+    protected void setupSearchUI(SearchContent content) {
         searchField = new TextField();
         searchButton = new Button("Αναζήτηση");
 
-        searchButton.setOnAction(e -> performSearch(searchField.getText()));
+        searchButton.setOnAction(e -> {
+            try {
+                String txt = searchField.getText();
+                content.content=txt;
+                performSearch(txt, content);
+            } catch (IOException ex) {
+                ScreenRedirect.launchErrorMsg("Σφάλμα Ι/Ο");
+            }
+
+        });
 
         grid.add(searchField, 0, 1);
         grid.add(searchButton, 0, 2, 2, 1); // Span 2 columns
@@ -37,7 +48,7 @@ public class SearchScreen extends Screen {
     }
 
     // Μεθοδος για override από τις υποκλάσεις
-    protected void performSearch(String query) {
+    protected void performSearch(String query, SearchContent content) throws IOException {
         resultsList.setVisible(true);
     }
 }

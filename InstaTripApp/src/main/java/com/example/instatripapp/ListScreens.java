@@ -139,11 +139,16 @@ class PackageListScreen extends ListScreen<Package> {
     private void renderPackageList(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow pwindow) {
         renderLabel("Η Λίστα πακέτων σας");
         List<Package> selectedPackages = ScreenConnector.visualisePackages(packageQueryResult, organizer);
-        List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
-        String buttonName = "Επιλογή";
-        String[] cnamesArray = new String[columnNames.size()];
-        columnNames.toArray(cnamesArray);
-        renderArray(cnamesArray, selectedPackages, cnamesArray, buttonName, pwindow);
+        try {
+            List<String> columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
+            columnNames.remove("description");
+            String buttonName = "Επιλογή";
+            String[] cnamesArray = new String[columnNames.size()];
+            columnNames.toArray(cnamesArray);
+            renderArray(cnamesArray, selectedPackages, cnamesArray, buttonName, pwindow);
+        }catch (NoSuchElementException exe){
+            ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-/*package com.example.instatripapp;
+package com.example.instatripapp;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,4 +62,4 @@ public class SpellChecker extends JLanguageTool implements SpellCheckerIf{
             generateCombinations(sb.toString(), rules, ruleIndex + 1, newOffset, results);
         }
     }
-}*/
+}
