@@ -1,6 +1,9 @@
 package com.example.instatripapp;
 
 import java.lang.constant.Constable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -47,7 +50,7 @@ class TourAgency{
     }
 
     public void finalizePackage(DataSourceManager manager){
-        SearchContent cntnt = new SearchContent("");
+        StringWrapper cntnt = new StringWrapper("");
         ScreenRedirect.launchPackageSearchScreen(cntnt, this, manager);
     }
 }
@@ -61,16 +64,52 @@ class Program{
 
 
 class Participation {
-    public final TourAgency organizer;
+    //public final TourAgency organizer; //Βγαζει error
     public ExtPartner partner;
     public LivingQuarter shelter;
+    private DataSourceManager manager;
+    private long ExtPartnerID;
+    private String Status;
+    private long PackID;
 
-    // To be filled with more attributes and functions
 
-    Participation(TourAgency agency, ExtPartner partner, LivingQuarter shelter){
-        organizer=agency;
+
+
+    Participation(TourAgency agency, ExtPartner partner){
+        //organizer=agency;
         this.partner=partner;
-        this.shelter=shelter;
+    }
+
+    Participation(long ExtPartnerID,String Status,long PackID){
+        this.ExtPartnerID=ExtPartnerID;
+        this.Status=Status;
+        this.PackID=PackID;
+        SaveToDb();
+    }
+
+    public void SaveToDb() {
+        String query = "insert into partnerPackage (partnerID,packageID,status) values (?,?,?)";
+
+        PreparedStatement stmt = null;
+        manager=new DataSourceManager();
+
+        Connection db_con = manager.getDb_con();
+
+        try {
+            manager.connect();
+            stmt = manager.getDb_con().prepareStatement(query);
+        } catch (SQLException e) {
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        try {
+            boolean inserted=manager.commit(stmt, new Object[]{this.ExtPartnerID,this.PackID,this.Status});
+            if(!inserted){
+                ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+            }
+        } catch (SQLException e) {
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+
     }
 
     // To be filled with more attributes and functions

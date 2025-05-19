@@ -5,6 +5,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
+import java.util.List;
+
 public class PackageDetailsScreen extends Screen {;
     private int gridPosition = 1;
 
@@ -50,4 +52,41 @@ public class PackageDetailsScreen extends Screen {;
 
         }
     }
+
+    private static Package pack;
+    public PackageDetailsScreen(List<Package> selectedPackages) {
+        // screen methods
+        super("Package Details", 800, 700);
+        renderGrid(600);
+        renderLabel("Λεπτομέρειες Πακέτου");
+        renderPackageDetails(selectedPackages);
+    }
+
+
+    //its only for extpartner
+    private void renderPackageDetails(List<Package> selectedPackages) {
+        pack=selectedPackages.get(0);
+        Text TourName = new Text("Name: " + pack.getName());
+        Text descriptionText = new Text("Description: " + pack.getDescription());
+        Text startDate=new Text("The starting Day:"+pack.startDate);
+        Text endDate=new Text("End Day is:"+pack.endDate);
+        // Add the package details to the grid
+        Text[] labels = {TourName, descriptionText, startDate,endDate};
+
+        //Button backButton = new Button("Πληρωμή");
+        Button cooperationButton = new Button("Συνεργασία");
+        Button[] buttons = {cooperationButton};
+        addElementsToGrid(labels, buttons);
+
+        cooperationButton.setOnAction(e->{
+            send_coop_suggestion_selelct( selectedPackages);
+        });
+    }
+
+    public void send_coop_suggestion_selelct(List<Package> selectedPackages){
+        pack=selectedPackages.get(0);
+        ScreenRedirect.create_coop_form_screen(pack);
+
+    }
+
 }

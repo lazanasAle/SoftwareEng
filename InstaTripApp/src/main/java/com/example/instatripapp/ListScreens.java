@@ -1,8 +1,15 @@
 package com.example.instatripapp;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.*;
 
 // Strongly recommend to do this class into 2 classes
@@ -29,14 +36,29 @@ class HistoryListScreen extends ListScreen {
         renderArray(columnNames, java.util.Arrays.asList(packages), propertyNames, buttonName, null);
     }
 }
-class ResultScreen extends ListScreen {
-    public ResultScreen() {
-        super("Αποτελέσματα", 600, 600);
-        renderGrid(500);
-        renderResultList();
+class ResultScreen extends PackageListScreen {
+    private List<Package> selectedPackages;
+
+    public ResultScreen(List<Map<String, Object>> result) {
+        super(result);
+
+        renderPackageList(result);
+        selectedPackages=ScreenRedirect.send(result);
+        Button submit=new Button("Submit");
+
+        grid.add(submit,1,10);
+
+        submit.setOnAction(e->{
+            selectedPackages=ScreenRedirect.send(result);
+            PackageDetailsScreen pack=new PackageDetailsScreen(selectedPackages);
+        });
+
     }
 
-    private void renderResultList() {
+
+
+
+    /*private void renderResultList() {
         renderLabel("Αποτελέσματα Πακέτων");
         // Sample data for packages
         PackageGUI[] packages = {
@@ -49,8 +71,9 @@ class ResultScreen extends ListScreen {
         String[] propertyNames = {"id", "name", "description", "price"};
         String buttonName = "Επιλογή Πακέτου";
         renderArray(columnNames, Arrays.asList(packages), propertyNames,buttonName, null);
-    }
+    }*/
 }
+
 class PackageOptionsScreen extends ListScreen {
     public PackageOptionsScreen() {
         super("Επιλογές Πακέτου", 800, 500);
@@ -148,33 +171,117 @@ class PackageListScreen extends ListScreen<Package> {
             ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
         }
     }
+
+
+    public PackageListScreen(List<Map<String, Object>> result) {
+        super("Λίστα Πακέτων", 1000, 950);
+        renderGrid(900);
+        renderPackageList(result);
+    }
+
+    public void renderPackageList(List<Map<String, Object>> packageQueryResult) {
+        renderLabel("Ενεργες εκδρομες στην περιοχη σας");
+        List<Package> separated = ScreenRedirect.send(packageQueryResult);
+
+        List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
+        String buttonName = "Αιτήμα";
+        String[] cnamesArray = new String[columnNames.size()];
+        columnNames.toArray(cnamesArray);
+        renderArray(cnamesArray,separated, cnamesArray,buttonName);
+
+
+
+        Button keywords=new Button("Λεξεις Κλειδία");
+
+
+
+        grid.add(keywords,0,10);
+
+        keywords.setOnAction(e->keywords_commit(keywords));
+
+
+    }
+
+    public void keywords_commit(Button ownerButton){
+
+        Stage KeyPage=new Stage();
+
+        Label title=new Label("Εισαγεται τις λεξεις κλειδια");
+        TextField insert=new TextField("keywords");
+        Button submit=new Button("Submit");
+
+        submit.setOnAction(e->{
+            String keywords=insert.getText();
+            try {
+                ScreenConnector.keywords_transfer(keywords);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            finally{
+                KeyPage.close();
+            }
+        });
+
+        VBox layout = new VBox(15);
+        layout.setPadding(new Insets(20));
+        layout.setAlignment(Pos.CENTER);
+
+        layout.getChildren().addAll(title,insert,submit);
+
+        Scene scene = new Scene(layout, 300, 200);
+
+        KeyPage.setScene(scene);
+        KeyPage.initModality(Modality.APPLICATION_MODAL); // Block other windows
+        KeyPage.showAndWait();
+
+    }
 }
 
 
 // no more ListScreen
 class SuggestionScreen extends Screen{
+    private String[] suggestedWords;
+    private ArrayList<String> getValues;
     public SuggestionScreen(String[] recommendedResults) {
         super("Προτεινόμενα αποτελέσματα", 600, 600);
         renderGrid(200);
         renderLabel("Mήπως εννοείτε:");
-        renderSuggestions(recommendedResults);
-        renderSubmitButtons();
+        suggestedWords=new String[1]; //θεμα με μεγεθος παιρνει ενα και δεν βγαζει exception
+        getValues=new ArrayList<>();
+        String select=renderSuggestions(recommendedResults);
+        renderSubmitButtons(select);
     }
 
-    private void renderSuggestions(String[] recommendedResults) {
+    private String renderSuggestions(String[] recommendedResults) {
         ComboBox<String> comboBox = new ComboBox<>();
         comboBox.getItems().addAll(recommendedResults);
         comboBox.setValue(recommendedResults[0]);
+        String select=comboBox.getValue();
         grid.add(comboBox, 0, 1, 2, 1);
-        GridPane.setHalignment(comboBox, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
+        GridPane.setHalignment(comboBox, javafx.geometry.HPos.CENTER);
+        return select;
     }
-    private void renderSubmitButtons(){
+    private void renderSubmitButtons(String select){
         Button submitButton = new Button("Υποβολή");
+
+        submitButton.setOnAction(e->{
+            ShowCorrectPack(select);
+        });
+
         Button cancelButton = new Button("Ακύρωση");
         grid.add(submitButton, 0, 2, 1, 1);
         grid.add(cancelButton, 1, 2, 1, 1);
         GridPane.setHalignment(submitButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
         GridPane.setHalignment(cancelButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
+    }
+    public void ShowCorrectPack(String select){
+        this.suggestedWords[0]= select;
+        System.out.println("Selected"+select);
+        try {
+            SearchContent s=new SearchContent(suggestedWords);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 class CooperationListScreen extends ListScreen {

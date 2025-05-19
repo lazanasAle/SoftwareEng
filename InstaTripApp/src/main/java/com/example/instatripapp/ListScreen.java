@@ -23,6 +23,15 @@ public class ListScreen<T extends Searchable> extends Screen{
 
     }
 
+    protected void renderArray(String[] columnNames, List<T> items, String[] propertyNames,String buttonName) {
+        TableView<T> dataTable = new TableView<>();
+        populateTableView(dataTable, widthOfScreen, columnNames, propertyNames);
+
+        // Add "Επιλογές" column
+        TableColumn<T, Void> optionsColumn = new TableColumn<>("Επιλογές");
+        setOptionsColumn(optionsColumn, buttonName, dataTable, items, null);
+    }
+
     protected void renderList(List<String> items) {
         int gridPosition=1;
         for(String item : items) {
@@ -50,6 +59,13 @@ public class ListScreen<T extends Searchable> extends Screen{
                         options.createPopup(element, button, element.getKey());
                     });
                 }
+                else if (buttonName.equals("Αιτήμα")){
+                    button.setOnAction((e->{
+
+                        //Pacsend_coop_suggestion_select()
+                    }));
+                }
+                else System.out.println("NOt Valid");
             }
         });
 

@@ -13,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -50,11 +51,11 @@ public class ScreenRedirect {
 
     }
 
-    public static void launchPackageSearchScreen(SearchContent content, TourAgency organizer, DataSourceManager manager){
+    public static void launchPackageSearchScreen(StringWrapper content, TourAgency organizer, DataSourceManager manager){
         SearchPackageScreen searchPackageScreen = new SearchPackageScreen(content, organizer, manager);
     }
 
-    public static void launchPartnerSearchScreen(SearchContent content, Package pkg, DataSourceManager manager){
+    public static void launchPartnerSearchScreen(StringWrapper content, Package pkg, DataSourceManager manager){
         SearchPartnerScreen searchPartnerScreen = new SearchPartnerScreen(content, pkg, manager);
     }
 
@@ -97,6 +98,46 @@ public class ScreenRedirect {
         popupStage.setY(bounds.getMaxY());
 
         popupStage.show();
+    }
+
+    public static List<Package> send(List<Map<String, Object>> results){
+        List<Package> selectedPackages = new ArrayList<>();
+        for(Map<String, Object> row : results){
+            long PackageID= (long) row.get("PackageID");
+            String email = String.valueOf(row.get("email"));
+            String name = String.valueOf(row.get("name"));
+            Date start = (Date) row.get("startDate");
+            LocalDate startDate = start.toLocalDate();
+            Date end = (Date) row.get("endDate");
+            LocalDate endDate = end.toLocalDate();
+            String description=String.valueOf(row.get("description"));
+            Long maxParticipants = (Long) row.get("maxParticipants");
+
+
+
+            Package newVoyage = new Package();
+            newVoyage.initializePackage(PackageID,endDate,name,description,email,startDate,maxParticipants);
+            selectedPackages.add(newVoyage);
+        }
+        return selectedPackages;
+
+
+    }
+    public static void make_result_screen(List<Map<String, Object>> keywords){
+        ResultScreen packageListScreen=new ResultScreen(keywords);
+
+    }
+    public static void launchSuggestionScreen(List<String> suggestions){
+        String suggest[] = new String[suggestions.size()];
+        for(int i=0;i<suggestions.size();i++){
+            suggest[i]= suggestions.get(i);
+            System.out.println(suggest[i]);
+        }
+        SuggestionScreen suggestionScreen=new SuggestionScreen(suggest);
+    }
+
+    public static void create_coop_form_screen(Package pack) {
+        PackageCoopForm packageCoopForm=new PackageCoopForm(pack);
     }
 
 }
@@ -142,7 +183,7 @@ class ScreenConnector{
          return selectedPackages;
     }
 
-    public static List<Map<String, Object>> takePackages(TourAgency agency, DataSourceManager manager, SearchContent cntnt){
+    public static List<Map<String, Object>> takePackages(TourAgency agency, DataSourceManager manager, StringWrapper strwrapper){
         String query = "SELECT PackageID, startDate, endDate, location, price, description, status, AgencyID, maxParticipants FROM Package WHERE AgencyID=? AND (description LIKE ? OR location LIKE ?);";
         PreparedStatement stmt = null;
         Connection db_con = manager.getDb_con();
@@ -154,7 +195,7 @@ class ScreenConnector{
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
         try{
-            String desc="%"+cntnt.content+"%";
+            String desc="%"+strwrapper.content+"%";
             var ret = manager.fetch(stmt, new Object[]{agency.key, desc, desc});
             return ret;
         } catch (SQLException e) {
@@ -184,7 +225,7 @@ class ScreenConnector{
         }
     }
 
-    public static void afterPackageSearchPerform(TourAgency organizerMember, DataSourceManager manager, SearchContent content){
+    public static void afterPackageSearchPerform(TourAgency organizerMember, DataSourceManager manager, StringWrapper content){
         List<Map<String, Object>> packages = ScreenConnector.takePackages(organizerMember, manager, content);
         ScreenRedirect.launchPackageListScreen(packages, organizerMember, new PopupWindow<>() {
             @Override
@@ -211,7 +252,9 @@ class ScreenConnector{
                 });
                 Button cooperationButton = new Button("Αναζήτηση Συνεργασιών");
                 cooperationButton.setOnAction(event -> {
-                    ScreenRedirect.launchPartnerSearchScreen(content, packageElement, manager);
+                    voyageStatus status =voyageStatus.fromString(packageElement.getStatus());
+                    if (status == voyageStatus.saved)
+                        ScreenRedirect.launchPartnerSearchScreen(content, packageElement, manager);
                 });
 
                 cooperationButton.setStyle("-fx-background-color: blue; -fx-text-fill: white");
@@ -237,7 +280,7 @@ class ScreenConnector{
         return selectedPartners;
     }
 
-    public static List<Map<String, Object>> takePartners(Package pkg, DataSourceManager manager, SearchContent cntnt){
+    public static List<Map<String, Object>> takePartners(Package pkg, DataSourceManager manager, StringWrapper cntnt){
         String query = "SELECT PartnerID, name, address, location, schedule, phone, email, description, partnerType FROM ExtPartner WHERE location=? AND (description LIKE ? OR name LIKE ?);";
         PreparedStatement stmt = null;
         Connection db_con = manager.getDb_con();
@@ -259,7 +302,7 @@ class ScreenConnector{
     }
 
 
-    public static void afterPartnerSearchPerform(Package pkgMember, DataSourceManager manager, SearchContent content) {
+    public static void afterPartnerSearchPerform(Package pkgMember, DataSourceManager manager, StringWrapper content) {
         List<Map<String, Object>> partners = ScreenConnector.takePartners(pkgMember, manager, content);
         ScreenRedirect.launchPartnerListScreen(partners, pkgMember, new PopupWindow<>() {
             @Override
@@ -282,6 +325,71 @@ class ScreenConnector{
                 ScreenRedirect.createPopup(element, anchor, new Button[]{detailsBtn});
             }
         });
+    }
+
+    public static void search_coop_msg(String location, DataSourceManager manager){
+
+        String query="Select PackageID,email,TourAgency.name,startDate,endDate,description,maxParticipants from TourAgency inner join Package on TourAgency.AgencyID=Package.AgencyID where Package.location=? and status='Σε εξέλιξη';";
+        PreparedStatement stmt = null;
+
+        Connection db_con = manager.getDb_con();
+
+
+
+        try{
+            manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+
+            List<Map<String,Object>> res =manager.fetch(stmt,new String[]{location});
+
+            PackageListScreen packageListScreen=new PackageListScreen(res);
+
+
+        }catch (SQLException e){
+            //ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+            System.out.println(e);
+        }
+
+
+
+    }
+
+    public static void keywords_transfer(String keywords) throws IOException {
+        String keys[]=keywords.split(",");
+        SearchContent searchContent=new SearchContent(keys);
+        //testing
+        /*System.out.println(keywords);
+        for(int i=0;i< keys.length;i++){
+            System.out.println(keys[i]);
+        }*/
+    }
+
+    public static void activate(String nameExtPart, String nameAgency, String emailTourAgent,long packid) {
+        String query="select PartnerID from ExtPartner where name=?;";
+        String status="Σε αναμονή";
+        PreparedStatement stmt = null;
+        DataSourceManager manager=new DataSourceManager();
+
+        Connection db_con = manager.getDb_con();
+
+        try{
+            manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+
+            List<Map<String,Object>> res =manager.fetch(stmt,new String[]{nameExtPart});
+            Map<String, Object> row = res.get(0);
+            long KeyPartner=(long)row.get("PartnerID");
+            System.out.println(KeyPartner + packid);
+
+            Participation participation=new Participation(KeyPartner,status,packid);
+
+
+
+
+        }catch (SQLException e){
+            //ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+            System.out.println(e);
+        }
     }
 }
 

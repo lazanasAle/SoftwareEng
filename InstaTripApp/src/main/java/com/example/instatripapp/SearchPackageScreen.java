@@ -10,7 +10,7 @@ public class SearchPackageScreen extends SearchScreen {
 
     private TourAgency  organizerMember;
     private DataSourceManager manager;
-    public SearchPackageScreen(SearchContent content, TourAgency organizerMember, DataSourceManager manager) {
+    public SearchPackageScreen(StringWrapper content, TourAgency organizerMember, DataSourceManager manager) {
         super("Αναζήτηση Πακέτων", 1000, 750, content);
         this.organizerMember=organizerMember;
         this.manager=manager;
@@ -20,7 +20,7 @@ public class SearchPackageScreen extends SearchScreen {
 
 
     @Override
-    protected void performSearch(String query, SearchContent content) throws IOException {
+    protected void performSearch(String query, StringWrapper content) throws IOException {
         resultsList.getItems().clear();
         resultsList.setVisible(true);
         if (!query.isBlank()) {
@@ -40,7 +40,7 @@ public class SearchPackageScreen extends SearchScreen {
     }
 
     @Override
-    protected void setupSearchUI(SearchContent content){
+    protected void setupSearchUI(StringWrapper content){
         super.setupSearchUI(content);
 
         resultsList.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {

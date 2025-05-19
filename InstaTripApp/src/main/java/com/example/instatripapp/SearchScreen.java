@@ -13,7 +13,7 @@ public class SearchScreen extends Screen {
     protected Button searchButton;
     protected ListView<String> resultsList;
 
-    public SearchScreen(String title, int widthOfScreen, int heightOfScreen, SearchContent content) {
+    public SearchScreen(String title, int widthOfScreen, int heightOfScreen, StringWrapper content) {
         super(title, widthOfScreen, heightOfScreen);
         renderGrid(500);
         addResultsList();
@@ -27,7 +27,7 @@ public class SearchScreen extends Screen {
         resultsList.setVisible(false); // Hide the field initially
     }
 
-    protected void setupSearchUI(SearchContent content) {
+    protected void setupSearchUI(StringWrapper content) {
         searchField = new TextField();
         searchButton = new Button("Αναζήτηση");
 
@@ -48,7 +48,7 @@ public class SearchScreen extends Screen {
     }
 
     // Μεθοδος για override από τις υποκλάσεις
-    protected void performSearch(String query, SearchContent content) throws IOException {
+    protected void performSearch(String query, StringWrapper content) throws IOException {
         resultsList.setVisible(true);
     }
 }

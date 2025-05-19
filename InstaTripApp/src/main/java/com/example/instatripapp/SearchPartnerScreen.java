@@ -9,7 +9,7 @@ public class SearchPartnerScreen extends SearchScreen{
 
     private Package pkgMember;
     private DataSourceManager manager;
-    public SearchPartnerScreen(SearchContent content, Package pkgMember, DataSourceManager manager) {
+    public SearchPartnerScreen(StringWrapper content, Package pkgMember, DataSourceManager manager) {
         super("Αναζήτηση Συνεργατών", 1000, 750, content);
         this.pkgMember=pkgMember;
         this.manager=manager;
@@ -19,7 +19,7 @@ public class SearchPartnerScreen extends SearchScreen{
 
 
     @Override
-    protected void performSearch(String query, SearchContent content) throws IOException {
+    protected void performSearch(String query, StringWrapper content) throws IOException {
         resultsList.getItems().clear();
         resultsList.setVisible(true);
         if (!query.isBlank()) {
@@ -39,7 +39,7 @@ public class SearchPartnerScreen extends SearchScreen{
     }
 
     @Override
-    protected void setupSearchUI(SearchContent content){
+    protected void setupSearchUI(StringWrapper content){
         super.setupSearchUI(content);
 
         resultsList.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {

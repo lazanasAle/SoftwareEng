@@ -17,5 +17,8 @@ public class InstatripRun extends Application {
         manager.connect();
         TourAgency agency = new TourAgency(1);
         agency.finalizePackage(manager);
+
+        /*ExtPartner extPartner = new ExtPartner("ParisValianatos-Studios", manager);
+        extPartner.SearchCooparation(manager);*/
     }
 }

@@ -1,6 +1,11 @@
 package com.example.instatripapp;
 
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.Map;
+
 enum partnerType {
     quarter,
     other;
@@ -36,6 +41,37 @@ public class ExtPartner implements Searchable {
         this.email=email;
         this.description=description;
         this.ptype=ptype;
+    }
+
+    public ExtPartner(String username,DataSourceManager manager){
+        String query="Select address,location,phone,email from ExtPartner where name=?";
+        PreparedStatement stmt = null;
+
+        Connection db_con = manager.getDb_con();
+        try{
+            stmt=manager.getDb_con().prepareStatement(query);
+
+            List<Map<String,Object>> res =manager.fetch(stmt,new String[]{username});
+
+            var row=res.getFirst();
+
+            addressName=new String(String.valueOf(row.get("address")));
+            location=new String(String.valueOf(row.get("location")));
+            phone=new String(String.valueOf(row.get("phone")));
+            email=new String(String.valueOf(row.get("email")));
+
+            //System.out.println(address + location + phone + email);
+
+        }catch (Exception e){
+            System.out.println(e);
+
+        }
+    }
+
+    public void SearchCooparation(DataSourceManager manager){
+        //System.out.println(this.location);
+        ScreenConnector.search_coop_msg(this.location,manager);
+
     }
 
     @Override
