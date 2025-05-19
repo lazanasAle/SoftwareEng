@@ -3,18 +3,16 @@ package com.example.demo1;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
-public class DataScreen<T extends DisplayableItem> extends LayoutScreen{
-    public DataScreen(String screenName) {
+public class ListScreen<T extends DisplayableItem> extends LayoutScreen{
+    public ListScreen(String screenName) {
         super(screenName);
         renderButtonsInNavigation(new String[]{"Εκ νέου Αναζήτηση"});
         renderContainer(800, 500);
