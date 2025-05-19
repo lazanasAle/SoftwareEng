@@ -16,8 +16,8 @@ public class SearchScreen extends Screen {
     public SearchScreen(String title, int widthOfScreen, int heightOfScreen, SearchContent content) {
         super(title, widthOfScreen, heightOfScreen);
         renderGrid(500);
-        setupSearchUI(content);
         addResultsList();
+        setupSearchUI(content);
     }
 
      private void addResultsList() {

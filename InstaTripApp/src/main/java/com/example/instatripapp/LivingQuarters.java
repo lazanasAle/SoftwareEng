@@ -2,41 +2,21 @@ package com.example.instatripapp;
 
 import java.util.*;
 
-class LivingQuarter {
+class LivingQuarter extends ExtPartner {
     protected HashSet<Room> rooms;
 
-    // To be filled with more attributes and functions
 
-    LivingQuarter(){
+    LivingQuarter(Long partner_id, String partnerName, String addressName, String location, String schedule, String phone, String email, String description, partnerType ptype){
+        super(partner_id, partnerName, addressName, location, schedule, phone, email, description, ptype);
         rooms=new HashSet<>();
     }
 
-    // To be filled with more attributes and functions
+
 }
 
 class Room {
-    // To be filled with more attributes and functions
-}
-class Hotel extends LivingQuarter {
 
-    // To be filled with more attributes and functions
-
-    Hotel(){
-        super();
-    }
-
-    // To be filled with more attributes and functions
 }
 
-
-class RoomsLet extends LivingQuarter {
-    // To be filled with more attributes and functions
-
-    RoomsLet(){
-        super();
-    }
-
-    // To be filled with more attributes and functions
-}
 
 

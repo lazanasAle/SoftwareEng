@@ -1,18 +1,5 @@
 package com.example.instatripapp;
 
-import javafx.application.Platform;
-import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-
 import java.lang.constant.Constable;
 import java.util.*;
 
@@ -61,7 +48,7 @@ class TourAgency{
 
     public void finalizePackage(DataSourceManager manager){
         SearchContent cntnt = new SearchContent("");
-        ScreenRedirect.launchSearchScreen(cntnt, this, manager);
+        ScreenRedirect.launchPackageSearchScreen(cntnt, this, manager);
     }
 }
 

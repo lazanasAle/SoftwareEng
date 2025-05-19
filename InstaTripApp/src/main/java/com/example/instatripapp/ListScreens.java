@@ -1,12 +1,8 @@
 package com.example.instatripapp;
 
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 
-import javax.swing.*;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.*;
 
 // Strongly recommend to do this class into 2 classes
@@ -83,31 +79,33 @@ class FilterScreen extends ListScreen {
         renderList(filterOptions);
     }
 }
-class QuarterListScreen extends ListScreen{
-    public QuarterListScreen() {
-        super("Λίστα Καταλυμάτων", 700, 700);
-        renderGrid(500);
-        renderQuarterList();
+
+class PartnerListScreen extends ListScreen<ExtPartner>{
+    public PartnerListScreen(List<Map<String, Object>> partnerQueryResult, Package refered, PopupWindow pwindow) {
+        super("Λίστα Συνεργατών", 1000, 950);
+        renderGrid(900);
+        renderPartnerList(partnerQueryResult, refered, pwindow);
     }
 
-    private void renderQuarterList() {
-        renderLabel("Επιλέξτε κατάλυμα:");
-
-        String[] columnNames = {"Apartment Name", "Region", "Apartment Type"};
-        String[] propertyNames = {"apartmentName", "region", "apartmentType"};
-        String buttonName = "Select";
-
-        // Dummy data for demonstration
-        List<QuarterGUI> quarters = List.of(
-                new QuarterGUI("Apartment A", "Region 1", "Type 1"),
-                new QuarterGUI("Apartment B", "Region 2", "Type 2"),
-                new QuarterGUI("Apartment C", "Region 3", "Type 3")
-        );
-
-        renderArray(columnNames, quarters, propertyNames, buttonName, null);
+    private void renderPartnerList(List<Map<String, Object>> partnerQueryResult, Package refered, PopupWindow pwindow) {
+        renderLabel("Βρείτε πιθανούς εξωτερικούς συνεργάτες");
+        List<ExtPartner> selectedPartners = ScreenConnector.visualisePartners(partnerQueryResult, refered);
+        try {
+            List<String> columnNames = new ArrayList<>(partnerQueryResult.getFirst().keySet());
+            columnNames.remove("description");
+            columnNames.remove("schedule");
+            columnNames.remove("address");
+            String buttonName = "Λεπτομέρειες";
+            String[] cnamesArray = new String[columnNames.size()];
+            columnNames.toArray(cnamesArray);
+            renderArray(cnamesArray, selectedPartners, cnamesArray, buttonName, pwindow);
+        }catch (NoSuchElementException exe){
+            ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+        }
     }
 
 }
+
 class PaidPackageList extends ListScreen{
     public PaidPackageList() {
         super("Λίστα Πακέτων", 1000, 1000);

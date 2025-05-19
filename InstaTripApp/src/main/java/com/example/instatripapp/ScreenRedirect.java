@@ -1,5 +1,6 @@
 package com.example.instatripapp;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,7 +21,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
 
 
 public class ScreenRedirect {
@@ -50,13 +50,55 @@ public class ScreenRedirect {
 
     }
 
-    public static void launchSearchScreen(SearchContent content, TourAgency organizer, DataSourceManager manager){
+    public static void launchPackageSearchScreen(SearchContent content, TourAgency organizer, DataSourceManager manager){
         SearchPackageScreen searchPackageScreen = new SearchPackageScreen(content, organizer, manager);
+    }
+
+    public static void launchPartnerSearchScreen(SearchContent content, Package pkg, DataSourceManager manager){
+        SearchPartnerScreen searchPartnerScreen = new SearchPartnerScreen(content, pkg, manager);
     }
 
     public static void launchErrorMsg(String Mesg) {
         ErrorMessage errorScreen = new ErrorMessage(Mesg);
     }
+
+    public static void launchPartnerListScreen(List<Map<String, Object>> elements, Package pkg, PopupWindow pwindow){
+        PartnerListScreen partnerListScreen = new PartnerListScreen(elements, pkg, pwindow);
+    }
+
+    public static void createPopup(Object element, Node anchor, Button[] actionButtons) {
+        Stage popupStage = new Stage();
+        popupStage.initStyle(StageStyle.UNDECORATED);
+        popupStage.initModality(Modality.WINDOW_MODAL);
+        popupStage.initOwner(anchor.getScene().getWindow());
+
+        Button closeBtn = new Button("X");
+        closeBtn.setOnAction(e -> popupStage.close());
+
+        for( Button btn : actionButtons){
+            btn.addEventHandler(ActionEvent.ACTION, (event)->{
+                popupStage.close();
+            });
+        }
+
+        HBox header = new HBox(closeBtn);
+        header.setAlignment(Pos.TOP_RIGHT);
+
+        VBox layout = new VBox(10);
+        layout.getChildren().add(header);
+        layout.getChildren().addAll(actionButtons);
+        layout.setPadding(new Insets(10));
+        layout.setStyle("-fx-background-color: white; -fx-border-color: gray;");
+
+        popupStage.setScene(new Scene(layout));
+
+        Bounds bounds = anchor.localToScreen(anchor.getBoundsInLocal());
+        popupStage.setX(bounds.getMinX());
+        popupStage.setY(bounds.getMaxY());
+
+        popupStage.show();
+    }
+
 }
 
 
@@ -103,9 +145,12 @@ class ScreenConnector{
     public static List<Map<String, Object>> takePackages(TourAgency agency, DataSourceManager manager, SearchContent cntnt){
         String query = "SELECT PackageID, startDate, endDate, location, price, description, status, AgencyID, maxParticipants FROM Package WHERE AgencyID=? AND (description LIKE ? OR location LIKE ?);";
         PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
         try {
+            if(db_con.isClosed())
+                manager.connect();
             stmt=manager.getDb_con().prepareStatement(query);
-        } catch (SQLException e) {
+        }catch (SQLException e){
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
         try{
@@ -139,53 +184,102 @@ class ScreenConnector{
         }
     }
 
-    public static void afterSearchPerform(TourAgency organizerMember, DataSourceManager manager, SearchContent content){
+    public static void afterPackageSearchPerform(TourAgency organizerMember, DataSourceManager manager, SearchContent content){
         List<Map<String, Object>> packages = ScreenConnector.takePackages(organizerMember, manager, content);
-        ScreenRedirect.launchPackageListScreen(packages, organizerMember, new PopupWindow() {
+        ScreenRedirect.launchPackageListScreen(packages, organizerMember, new PopupWindow<>() {
             @Override
             public void createPopup(Object element, Node anchor, long keySearch) {
-                Stage popupStage = new Stage();
-                popupStage.initStyle(StageStyle.UNDECORATED);
-                popupStage.initModality(Modality.WINDOW_MODAL);
-                popupStage.initOwner(anchor.getScene().getWindow());
 
                 Button detailsBtn = new Button("Λεπτομέρειες");
                 Button cancelBtn = new Button("Ακύρωση");
                 detailsBtn.setStyle("-fx-background-color: green; -fx-text-fill: white;");
-                Button closeBtn = new Button("X");
                 cancelBtn.setStyle("-fx-background-color: red; -fx-text-fill: white;");
-                closeBtn.setOnAction(e -> popupStage.close());
 
                 cancelBtn.setOnAction(e -> {
                     ScreenConnector.changeStatus(keySearch, manager, "Ακυρωμένο");
-                    popupStage.close();
                 });
+                Package packageElement = (Package) element;
+
                 detailsBtn.setOnAction(e -> {
-                    popupStage.close();
-                    if (element instanceof Package) {
-                        Package packageElement = (Package) element;
+
                         Button optionBtn = new Button("Οριστικοποίηση");
                         optionBtn.setOnAction((event) -> {
                             ScreenConnector.changeStatus(keySearch, manager, "Ενεργοποιημένο");
                         });
-                        popupStage.close();
+
                         PackageDetailsScreen pds = new PackageDetailsScreen(packageElement, optionBtn);
+                });
+                Button cooperationButton = new Button("Αναζήτηση Συνεργασιών");
+                cooperationButton.setOnAction(event -> {
+                    ScreenRedirect.launchPartnerSearchScreen(content, packageElement, manager);
+                });
+
+                cooperationButton.setStyle("-fx-background-color: blue; -fx-text-fill: white");
+                ScreenRedirect.createPopup(element, anchor, new Button[]{detailsBtn, cancelBtn, cooperationButton});
+            }
+        });
+    }
+    public static List<ExtPartner> visualisePartners(List<Map<String, Object>> packageQueryResult, Package pkgRefered){
+        List<ExtPartner> selectedPartners = new ArrayList<>();
+        for(Map<String, Object> row : packageQueryResult){
+            Long partner_id = (Long) row.get("PartnerID");
+            String partnerName = String.valueOf(row.get("name"));
+            String addressName = String.valueOf(row.get("address"));
+            String location = String.valueOf(row.get("location"));
+            String schedule = String.valueOf(row.get("schedule"));
+            String phone = String.valueOf(row.get("phone"));
+            String email = String.valueOf(row.get("email"));
+            String description = String.valueOf(row.get("description"));
+            partnerType ptype = partnerType.fromString(String.valueOf(row.get("partnerType")));
+            ExtPartner partner = new ExtPartner(partner_id, partnerName, addressName, location, schedule, phone, email, description, ptype);
+            selectedPartners.add(partner);
+        }
+        return selectedPartners;
+    }
+
+    public static List<Map<String, Object>> takePartners(Package pkg, DataSourceManager manager, SearchContent cntnt){
+        String query = "SELECT PartnerID, name, address, location, schedule, phone, email, description, partnerType FROM ExtPartner WHERE location=? AND (description LIKE ? OR name LIKE ?);";
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        try {
+            if(db_con.isClosed())
+                manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        try{
+            String desc="%"+cntnt.content+"%";
+            var ret = manager.fetch(stmt, new Object[]{pkg.location, desc, desc});
+            return ret;
+        } catch (SQLException e) {
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        return null;
+    }
+
+
+    public static void afterPartnerSearchPerform(Package pkgMember, DataSourceManager manager, SearchContent content) {
+        List<Map<String, Object>> partners = ScreenConnector.takePartners(pkgMember, manager, content);
+        ScreenRedirect.launchPartnerListScreen(partners, pkgMember, new PopupWindow<>() {
+            @Override
+            public void createPopup(Object element, Node anchor, long keySearch) {
+
+                Button detailsBtn = new Button("Λεπτομέρειες");
+                detailsBtn.setStyle("-fx-background-color: green; -fx-text-fill: white;");
+
+                detailsBtn.setOnAction(e -> {
+                    if (element instanceof ExtPartner) {
+                        ExtPartner partnerElement = (ExtPartner) element;
+                        Button optionBtn = new Button("Οριστικοποίηση");
+                        optionBtn.setOnAction((event) -> {
+                            ScreenConnector.changeStatus(keySearch, manager, "Ενεργοποιημένο");
+                        });
+
+
                     }
                 });
-                HBox header = new HBox(closeBtn);
-                header.setAlignment(Pos.TOP_RIGHT);
-
-                VBox layout = new VBox(10, header, detailsBtn, cancelBtn);
-                layout.setPadding(new Insets(10));
-                layout.setStyle("-fx-background-color: white; -fx-border-color: gray;");
-
-                popupStage.setScene(new Scene(layout));
-
-                Bounds bounds = anchor.localToScreen(anchor.getBoundsInLocal());
-                popupStage.setX(bounds.getMinX());
-                popupStage.setY(bounds.getMaxY());
-
-                popupStage.show();
+                ScreenRedirect.createPopup(element, anchor, new Button[]{detailsBtn});
             }
         });
     }
