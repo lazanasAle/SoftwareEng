@@ -55,3 +55,112 @@ class: ErrorMessage extends ContainerScreen{
         +public ErrorMessage(String message)
         +private void renderErrorMessage(String errorMessage)
 }
+commit 19/05/2025
+(Μετανομασία της DataScreen από ListScreen)
++public class CardScreen extends FormScreen{
+	+ private final String[] labels;
+    	+ public CardScreen();
+}
+public class ContainerScreen extends Screen{
+	+ private void renderContainerLabel();
+}
++public class CooperationListScreen extends DataScreen<QuarterGUI>{
+	+ public CooperationListScreen();
+}
++public class DataScreen<T extends DisplayableItem> extends LayoutScreen{
+	+ public DataScreen(String screenname);
+	+ protected void renderListContent(T[] listOfObjects);
+	+ private HBox createCard(T object);
+
+}
++public interface DisplayableItem {
+    +String getName();
+    +String getDescription();
+    +double getPrice();
+}
+public class ErrorMessage extendsContainerScreen{
+
+	+private void renderCloseButton()
+}
++public class FormScreen extends LayoutScreen {
+	public FormScreen(String windowTitle)
+	protected void renderCheckbox(String checkboxTitle)
+	protected void renderCheckbox(String checkboxTitle)
+	protected void renderFormSubmissionButton()
+}
++public class HistoryListScreen extends DataScreen<PackageGUI>{
+	public HistoryListScreen()
+}
+public class LayoutScreen extends Screen{
+	+private void addBackButton()
+	+protected void renderContainerLabel(String label);
+	+protected void renderHorizontalBar();
+	+private void renderProfileIcon();
+	+ private void renderProfileButton();
+	+protected void renderInstruction(String text);
+}
+public class LoginPage extends +ContainerScreen{
+	+private void renderContainerLabels(String[] labels);
+	+private void renderSubmissionButtons();
+
+}
++public class MyPackageListScreen extends DataScreen<PackageGUI>{
+	public MyPackageListScreen()
+}
++public class PackageCoopForm extends FormScreen{
+	private final String[] labels
+	public PackageCoopForm()
+}
+<<DEMONSTRATION REASONS>>
++public class PackageGUI implements DisplayableItem{
+	private int id
+    private String name
+    private String description
+    private double price
+	public int getId()
+	public String getName()
+	public String getDescription()
+	public double getPrice()
+	public static PackageGUI[] getPackages()
+
+}
++public class QuarterGUI implements DisplayableItem{
+    private int id
+    private String name
+    private String description
+    private double price
+    public int getId()
+    public String getName()
+    public String getDescription()
+    public double getPrice()
+    public static QuarterGUI[] getPackages()
+}
++public class PackageOptionsList extends ++LayoutScreen{
+    private final String[] labels;
+    public PackageOptionsList()
+    private void renderPackageOptionsList()
+    private void renderMainContainerText()
+}
++public class PaidPackageList extends DataScreen<PackageGUI>{
+    public PaidPackageList()
+}
++public class PaymentScreen extends FormScreen{
+    private final String[] labels;
+    public PaymentScreen()
+}
++public class QuarterPackageList extends DataScreen<QuarterGUI>{
+    public QuarterPackageList()
+}
++public class ReservationForm extends FormScreen{
+    private final String[] labels;
+    public ReservationForm()
+}
++public class ResultScreen extends DataScreen<PackageGUI>{
+    public ResultScreen()
+}
++public class SuggestionScreen extends +FormScreen{
+    private final String[] labels;
+    public SuggestionScreen()
+}
+GUYS NOTICE THE CHANGES THAT I RECCOMEND IN when i have extends
+for example suggestion screen should extend from formscreen

@@ -5,13 +5,15 @@ package com.example.demo1;
 public class MainScreen extends LayoutScreen {
     public MainScreen(){
         super("Κύρια Οθόνη");
+        renderWelcomeLabel("Καλωσήρθατε στην εφαρμογή μας!");
         renderMainScreenMenu();
+        renderContainer(700, 150);
         renderContainerLabel("Προτεινόμενος Προορισμός:Αφάλες Ιθάκης");
         renderMainContainerText();
-        setHyperText("Δείτε Περισσότερα:","https://www.ithaca.gr/archiki/endiaferonta-ke-drastiriotites/paralies-gr/afales-gr/");
+        renderHorizontalBar();
     }
     private void renderMainScreenMenu(){
-        String[] buttons = {"Συνεργασία","Προτάσεις","Προφίλ"}; // τι ρυθμισεις ειναι αυτές;;;;
+        String[] buttons = {"Εξερεύνηση Πακέτων","Εξόφληση Πακέτων","Τα Πακέτα Μου","Ακύρωση κράτησης"}; // τι ρυθμισεις ειναι αυτές;;;;
         renderButtonsInNavigation(buttons);
     }
     private void renderMainContainerText(){

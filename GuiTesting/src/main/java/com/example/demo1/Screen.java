@@ -15,14 +15,15 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.net.URI;
 import java.util.Objects;
+import java.util.Stack;
 
 public class Screen {
-    protected GridPane container;
     protected Stage stage;
-    protected final int widthOfScreen=1920;
-    protected final int heightOfScreen=1080;
+    protected final int widthOfScreen=1272; // paris was 1920
+    protected final int heightOfScreen=900; // paris was 1080
     private final String screenTitle;
     public Screen(String title) {
+
         this.screenTitle = title;
         this.stage = new Stage();
         renderStage();
@@ -35,29 +36,4 @@ public class Screen {
         stage.show();
     }
 
-    protected void renderContainerLabel(String text){
-        Label label = new Label(text);
-        label.getStyleClass().add("containerLabel");
-        container.add(label, 0, 0,2,1);
-        GridPane.setHalignment(label, HPos.CENTER); // Center the label in the grid cell
-    }
-    protected void renderInstruction(String text){
-        Text instruction = new Text(text);
-        instruction.getStyleClass().add("instructionText");
-        instruction.setWrappingWidth(600); // Set the maximum width for the text
-        container.add(instruction, 0, 1,2,1);
-        GridPane.setHalignment(instruction, HPos.CENTER); // Center the label in the grid cell
-    }
-    protected void setHyperText(String text, String url) {
-        Button hyperlink = new Button(text);
-        hyperlink.getStyleClass().add("hyperlink");
-        hyperlink.setOnAction(e -> {
-            try {
-                Desktop.getDesktop().browse(new URI(url));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-        container.add(hyperlink, 0,2,2,1);
-    }
 }
