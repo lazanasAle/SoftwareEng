@@ -1,5 +1,5 @@
 package com.example.demo1;
-
+// demonstration data
 public class PackageGUI implements DisplayableItem{
     private int id;
     private String name;
