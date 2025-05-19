@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -140,6 +141,10 @@ public class ScreenRedirect {
         PackageCoopForm packageCoopForm=new PackageCoopForm(pack);
     }
 
+    public static void GetToMain(String typeuser, String username) {
+        MainScreen client=new MainScreen(typeuser,username);
+
+    }
 }
 
 
@@ -391,6 +396,60 @@ class ScreenConnector{
             System.out.println(e);
         }
     }
+
+    public static boolean IsValidUser(String password, String username, DataSourceManager manager) {
+        String query="select password_hash from User where username=?;";
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        boolean found;
+
+        try{
+            manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+
+            List<Map<String,Object>> res =manager.fetch(stmt,new String[]{username});
+            Map<String, Object> row = res.get(0);
+            String pass=String.valueOf(row.get("password_hash"));
+
+            if (BCrypt.checkpw(password, pass)) {
+                System.out.println("✅ Login successful");
+                found=true;
+            } else {
+                ScreenRedirect.launchErrorMsg("Λαθος Κωδικος");
+                found=false;
+            }
+
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+            System.out.println(e);
+            found=false;
+        }
+        return found;
+    }
+
+    public static String GetUserType(String username, DataSourceManager manager) {
+        String query="Select type from User where username=?;";
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        String type;
+        try{
+            manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+
+            List<Map<String,Object>> res =manager.fetch(stmt,new String[]{username});
+            Map<String, Object> row = res.get(0);
+            type=String.valueOf(row.get("type"));
+            System.out.println(type);
+
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+            System.out.println(e);
+            type=null;
+            
+        }
+        return type;
+    }
 }
+
 
 

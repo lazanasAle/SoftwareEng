@@ -1,7 +1,9 @@
 package com.example.instatripapp;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -13,8 +15,10 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.mindrot.jbcrypt.BCrypt;
 
 
+import java.util.List;
 import java.util.Objects;
 
 // super class for all screens
@@ -76,27 +80,79 @@ class Screen{
 
 // see comments in ListScreen.java
 class MainScreen extends ListScreen {
-    public MainScreen() {
+    String usertype;
+    String name;
+    //crete 3 constructrors one for each user
+
+    public MainScreen(String usertype,String name) {
         // screen methods
         super("Κύριο Μενού", 650, 500);
-        renderGrid(300);
-        renderLabel("Καλώς ήρθατε στο InstaTrip κύριε Μανωλάτο!");
+        this.name=name;
+        this.usertype=usertype;
+
+        renderGrid(400);
+        renderLabel("Καλώς ήρθατε στο InstaTrip κ. "+name);
         renderMenu();
     }
 
-    private void renderMenu() {
-        String[] menuOptions = {
-                "Επιλογή Πακέτου",
-                "Ιστορικό Πακέτων",
-                "Φίλτρα",
-                "Συνεργάτες",
-                "Αξιολόγηση Πακέτου",
-                "Πληρωμή Πακέτου"
-        };
-        renderList(Arrays.asList(menuOptions));
+    public static void GetFunction(String Action){
+        switch (Action){
+            case "Επιλογή Πακέτου":
+                //Customer.searchpack();
+                System.out.println("Επιλογη Πακετου");
+                break;
+            case "Πληρωμή Πακέτου":
+                System.out.println("Πληρωμη Πακετου");
+                break;
+                //Customer.paypack();
+            case "Δημιουργια Πακετου":
+                //TourAgency.createPackage(DataSourceManager manager);
+                System.out.println("Δημιουργια Πακετου");
+                break;
+            case "Αναζητηση ΣυνεργατηΤΓ":
+                System.out.println("Πληρωμη Πακετου");
+                break;
+            case "Αναζητηση Συνεργατη":
+                System.out.println("Πληρωμη Πακετου");
+                break;
+            case "Τροποιηση Συνεργασιας":
+                System.out.println("Πληρωμη Πακετου");
+                break;
+            case "Ακυρωση Συνεργαιας":
+                System.out.println("Πληρωμη Πακετου");
+                break;
+            default:
+                System.out.println("problem");
+                break;
+        }
     }
 
+    private void renderMenu() {
+        System.out.println(usertype);
+        if("client".equals(this.usertype)){
+            String[] menuOptions = {"Επιλογή Πακέτου", "Πληρωμή Πακέτου"};
+            renderListMain(Arrays.asList(menuOptions));
+
+        } else if ("tour_office".equals(this.usertype)) {
+            String[] menuOptions = {"Δημιουργια Πακετου","Αναζητηση ΣυνεργατηΤΓ"};
+            renderListMain(Arrays.asList(menuOptions));
+        } else if ("partner".equals(this.usertype)) {
+            String[] menuOptions = {"Αναζητηση Συνεργατη","Τροποιηση Συνεργασιας","Ακυρωση Συνεργαιας"};
+            renderListMain(Arrays.asList(menuOptions));
+        }
+        else{
+            ScreenRedirect.launchErrorMsg("Not Valid");
+        }
+
+
+
+
+    }
+
+
 }
+
+
 
 
 
@@ -125,11 +181,17 @@ class ErrorMessage extends Screen {
 }
 
 class LoginPage extends FormScreen{
-    public LoginPage() {
+    String username;
+    String password;
+    String typeuser;
+    DataSourceManager manager;
+    public LoginPage(DataSourceManager manager) {
         super("Σύνδεση Χρήστη", 700, 600);
         renderGrid(400);
         renderLabel("INSTATRIP");
         renderLoginForm();
+        this.manager=manager;
+        manager.connect();
     }
 
     private void renderLoginForm() {
@@ -143,6 +205,22 @@ class LoginPage extends FormScreen{
         renderFormElements(
                 new Label[]{usernameLabel, passwordLabel},
                 new TextField[]{usernameField, passwordField});
+
+        submitButton.setOnAction(e->{
+            username=new String(usernameField.getText());
+            password=new String(passwordField.getText());
+            if(CheckIn()){
+                IndentifyUser();
+            }
+        });
+    }
+    public boolean CheckIn(){
+        manager.connect();
+        return(ScreenConnector.IsValidUser(password,username,manager));
+    }
+    public void IndentifyUser(){
+        typeuser=ScreenConnector.GetUserType(username,manager);
+        ScreenRedirect.GetToMain(typeuser,username);
     }
 }
 
