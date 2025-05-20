@@ -425,6 +425,10 @@ class ScreenConnector{
             stmt=db_con.prepareStatement(query);
 
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{username});
+            if(res.isEmpty()){
+                ScreenRedirect.launchErrorMsg("Λάθος Όνομα Χρήστη");
+                return -1;
+            }
             Map<String, Object> row = res.get(0);
             String pass=String.valueOf(row.get("password_hash"));
             key= (long) row.get("UserID");

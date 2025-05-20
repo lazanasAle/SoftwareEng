@@ -46,6 +46,10 @@ public class CreatePackageForm extends FormScreen{
         submitButton.setOnAction(e->{
             createPackageListener(regionTextArea, priceTextArea, availablePeopleTextArea, startDateTextArea, endDateTextArea, descriptionTextArea, newVoyage, manager);
         });
+        clearButton.setOnAction(e->{
+            stage.close();
+            ScreenRedirect.getCreatePackageScreen(organizer, manager);
+        });
     }
 
     private void createPackageListener(TextField regionTextArea, TextField priceTextArea, TextField availablePeopleTextArea, DatePicker startDateTextAea, DatePicker endDateTextArea, TextArea descriptionArea, Package newVoyage, DataSourceManager manager){
