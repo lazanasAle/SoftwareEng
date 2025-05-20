@@ -45,12 +45,22 @@ public class FormScreen extends Screen{
     }
 
     protected void renderFormButtons(Label[] labels, Button[] buttons) {
-        for(int i=0; i<labels.length; i++) {
-            grid.add(labels[i], 0, gridPosition+i+1);
-            grid.add(buttons[i], 1, gridPosition+i+1);
+        if (labels == null) {
+            for (int i = 0; i < buttons.length; i++) {
+                grid.add(buttons[i], 0, gridPosition + i + 1);
+            }
 
+            gridPosition += buttons.length + 1;
+
+        } else {
+            for (int i = 0; i < labels.length; i++) {
+                grid.add(labels[i], 0, gridPosition + i + 1);
+                grid.add(buttons[i], 1, gridPosition + i + 1);
+
+            }
+
+            gridPosition += labels.length + 1;
         }
-        gridPosition += labels.length + 1;
     }
     private void renderFormSubmissionButtons(){
         // Create submit and clear buttons

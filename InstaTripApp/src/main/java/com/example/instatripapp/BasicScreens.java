@@ -157,7 +157,7 @@ class MainScreen extends ListScreen {
             String[] menuOptions = {"Αναζητηση Συνεργατη","Τροποιηση Συνεργασιας","Ακυρωση Συνεργαιας"};
             renderListMain(Arrays.asList(menuOptions));
             particularId=ScreenConnector.GetPartID(manager,usertype,userID);
-            user=new ExtPartner(particularId);
+            user=new ExtPartner(particularId,manager);
         }
         else{
             ScreenRedirect.launchErrorMsg("Not Valid");
