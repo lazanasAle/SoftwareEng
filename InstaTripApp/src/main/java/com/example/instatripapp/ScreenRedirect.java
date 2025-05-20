@@ -12,7 +12,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.mindrot.jbcrypt.BCrypt;
 
+import java.awt.dnd.DropTarget;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -123,23 +125,27 @@ public class ScreenRedirect {
 
 
     }
-    public static void make_result_screen(List<Map<String, Object>> keywords){
-        ResultScreen packageListScreen=new ResultScreen(keywords);
+    public static void make_result_screen(List<Map<String, Object>> keywords, DataSourceManager manager){
+        ResultScreen packageListScreen=new ResultScreen(keywords,manager);
 
     }
-    public static void launchSuggestionScreen(List<String> suggestions){
+    public static void launchSuggestionScreen(List<String> suggestions,DataSourceManager manager){
         String suggest[] = new String[suggestions.size()];
         for(int i=0;i<suggestions.size();i++){
             suggest[i]= suggestions.get(i);
             System.out.println(suggest[i]);
         }
-        SuggestionScreen suggestionScreen=new SuggestionScreen(suggest);
+        SuggestionScreen suggestionScreen=new SuggestionScreen(suggest,manager);
     }
 
-    public static void create_coop_form_screen(Package pack) {
-        PackageCoopForm packageCoopForm=new PackageCoopForm(pack);
+    public static void create_coop_form_screen(Package pack,DataSourceManager manager) {
+        PackageCoopForm packageCoopForm=new PackageCoopForm(pack,manager);
     }
 
+    public static void GetToMain(String typeuser, String username,DataSourceManager manager,long key) {
+        MainScreen client=new MainScreen(typeuser,username,manager,key);
+
+    }
 }
 
 
@@ -147,9 +153,15 @@ class ScreenConnector{
     public static void InsertPackage(Package refered, DataSourceManager manager){
         String query = "INSERT INTO Package (startDate, endDate, location, description, price, status, AgencyID, maxParticipants) VALUES (?, ?, ?, ?, ?, 'Σε εξέλιξη', ?, ?);";
         PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+
         try {
+            if(db_con.isClosed()){
+                manager.connect();
+            }
             stmt = manager.getDb_con().prepareStatement(query);
         } catch (SQLException e) {
+
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
         try {
@@ -337,12 +349,15 @@ class ScreenConnector{
 
 
         try{
-            manager.connect();
-            stmt=manager.getDb_con().prepareStatement(query);
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+            stmt=db_con.prepareStatement(query);
 
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{location});
 
-            PackageListScreen packageListScreen=new PackageListScreen(res);
+            PackageListScreen packageListScreen=new PackageListScreen(res,manager);
 
 
         }catch (SQLException e){
@@ -354,9 +369,9 @@ class ScreenConnector{
 
     }
 
-    public static void keywords_transfer(String keywords) throws IOException {
+    public static void keywords_transfer(String keywords,DataSourceManager manager) throws IOException {
         String keys[]=keywords.split(",");
-        SearchContent searchContent=new SearchContent(keys);
+        SearchContent searchContent=new SearchContent(keys,manager);
         //testing
         /*System.out.println(keywords);
         for(int i=0;i< keys.length;i++){
@@ -364,17 +379,21 @@ class ScreenConnector{
         }*/
     }
 
-    public static void activate(String nameExtPart, String nameAgency, String emailTourAgent,long packid) {
+    public static void activate(String nameExtPart, String nameAgency, String emailTourAgent,long packid,DataSourceManager manager) {
         String query="select PartnerID from ExtPartner where name=?;";
         String status="Σε αναμονή";
         PreparedStatement stmt = null;
-        DataSourceManager manager=new DataSourceManager();
+
 
         Connection db_con = manager.getDb_con();
 
         try{
-            manager.connect();
-            stmt=manager.getDb_con().prepareStatement(query);
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+            stmt=db_con.prepareStatement(query);
+
 
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{nameExtPart});
             Map<String, Object> row = res.get(0);
@@ -391,6 +410,118 @@ class ScreenConnector{
             System.out.println(e);
         }
     }
+
+    public static long IsValidUser(String password, String username, DataSourceManager manager) {
+        String query="select password_hash,UserID from User where username=?;";
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        long key;
+
+        try{
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+            stmt=db_con.prepareStatement(query);
+
+            List<Map<String,Object>> res =manager.fetch(stmt,new String[]{username});
+            if(res.isEmpty()){
+                ScreenRedirect.launchErrorMsg("Λάθος Όνομα Χρήστη");
+                return -1;
+            }
+            Map<String, Object> row = res.get(0);
+            String pass=String.valueOf(row.get("password_hash"));
+            key= (long) row.get("UserID");
+
+            if (BCrypt.checkpw(password, pass)) {
+                System.out.println("✅ Login successful");
+                return key;
+
+            } else {
+                ScreenRedirect.launchErrorMsg("Λαθος Κωδικος");
+                key=-1;
+            }
+
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+
+            key=-1;
+        }
+        return key;
+    }
+
+    public static String GetUserType(String username, DataSourceManager manager) {
+        String query="Select type from User where username=?;";
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        String type;
+        try{
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+            stmt=db_con.prepareStatement(query);
+            List<Map<String,Object>> res =manager.fetch(stmt,new String[]{username});
+            Map<String, Object> row = res.get(0);
+            type=String.valueOf(row.get("type"));
+            System.out.println(type);
+
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+            System.out.println(e);
+            type=null;
+            
+        }
+        return type;
+    }
+
+    public static long GetPartID(DataSourceManager manager, String usertype, long userID) {
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        long partid=-1;
+        try {
+            manager.connect();
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+
+            if ("client".equals(usertype)) {
+                String query="Select customerID from Customer where UserID=? ";
+                stmt=db_con.prepareStatement(query);
+                List<Map<String,Object>> res =manager.fetch(stmt,new Long[]{userID});
+                Map<String, Object> row = res.get(0);
+                partid=(long) row.get("customerID");
+
+            }
+            else if ("tour_office".equals(usertype)) {
+                String query="Select AgencyID from TourAgency where UserID=? ";
+                stmt=db_con.prepareStatement(query);
+                List<Map<String,Object>> res =manager.fetch(stmt,new Long[]{userID});
+                Map<String, Object> row = res.get(0);
+                partid=(long) row.get("AgencyID");
+
+            }
+            else if ("partner".equals(usertype)) {
+                String query="Select PartnerID from ExtPartner where UserID=? ";
+                stmt=db_con.prepareStatement(query);
+                List<Map<String,Object>> res =manager.fetch(stmt,new Long[]{userID});
+                Map<String, Object> row = res.get(0);
+                partid=(long) row.get("PartnerID");
+
+            }
+            else {
+                ScreenRedirect.launchErrorMsg("Not valid");
+            }
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφαλμα στη ΒΔ "+e);
+
+        }
+        return partid;
+
+    }
+
 }
+
 
 

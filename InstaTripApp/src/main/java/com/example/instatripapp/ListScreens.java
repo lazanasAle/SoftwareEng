@@ -38,11 +38,12 @@ class HistoryListScreen extends ListScreen {
 }
 class ResultScreen extends PackageListScreen {
     private List<Package> selectedPackages;
+    DataSourceManager manager;
 
-    public ResultScreen(List<Map<String, Object>> result) {
-        super(result);
-
-        renderPackageList(result);
+    public ResultScreen(List<Map<String, Object>> result,DataSourceManager manager) {
+        super(result,manager);
+        this.manager=manager;
+        renderPackageList(result,manager);
         selectedPackages=ScreenRedirect.send(result);
         Button submit=new Button("Submit");
 
@@ -50,7 +51,7 @@ class ResultScreen extends PackageListScreen {
 
         submit.setOnAction(e->{
             selectedPackages=ScreenRedirect.send(result);
-            PackageDetailsScreen pack=new PackageDetailsScreen(selectedPackages);
+            PackageDetailsScreen pack=new PackageDetailsScreen(selectedPackages,manager);
         });
 
     }
@@ -150,6 +151,7 @@ class PaidPackageList extends ListScreen{
     }
 }
 class PackageListScreen extends ListScreen<Package> {
+    DataSourceManager manager;
 
     public PackageListScreen(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow popupWindow) {
         super("Λίστα Πακέτων", 1000, 950);
@@ -173,13 +175,14 @@ class PackageListScreen extends ListScreen<Package> {
     }
 
 
-    public PackageListScreen(List<Map<String, Object>> result) {
+    public PackageListScreen(List<Map<String, Object>> result,DataSourceManager manager) {
         super("Λίστα Πακέτων", 1000, 950);
         renderGrid(900);
-        renderPackageList(result);
+        this.manager=manager;
+        renderPackageList(result,manager);
     }
 
-    public void renderPackageList(List<Map<String, Object>> packageQueryResult) {
+    public void renderPackageList(List<Map<String, Object>> packageQueryResult,DataSourceManager manager) {
         renderLabel("Ενεργες εκδρομες στην περιοχη σας");
         List<Package> separated = ScreenRedirect.send(packageQueryResult);
 
@@ -197,12 +200,12 @@ class PackageListScreen extends ListScreen<Package> {
 
         grid.add(keywords,0,10);
 
-        keywords.setOnAction(e->keywords_commit(keywords));
+        keywords.setOnAction(e->keywords_commit(keywords,manager));
 
 
     }
 
-    public void keywords_commit(Button ownerButton){
+    public void keywords_commit(Button ownerButton,DataSourceManager manager){
 
         Stage KeyPage=new Stage();
 
@@ -213,7 +216,7 @@ class PackageListScreen extends ListScreen<Package> {
         submit.setOnAction(e->{
             String keywords=insert.getText();
             try {
-                ScreenConnector.keywords_transfer(keywords);
+                ScreenConnector.keywords_transfer(keywords,manager);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -242,10 +245,12 @@ class PackageListScreen extends ListScreen<Package> {
 class SuggestionScreen extends Screen{
     private String[] suggestedWords;
     private ArrayList<String> getValues;
-    public SuggestionScreen(String[] recommendedResults) {
+    DataSourceManager manager;
+    public SuggestionScreen(String[] recommendedResults,DataSourceManager manager) {
         super("Προτεινόμενα αποτελέσματα", 600, 600);
         renderGrid(200);
         renderLabel("Mήπως εννοείτε:");
+        this.manager=manager;
         suggestedWords=new String[1]; //θεμα με μεγεθος παιρνει ενα και δεν βγαζει exception
         getValues=new ArrayList<>();
         String select=renderSuggestions(recommendedResults);
@@ -265,7 +270,7 @@ class SuggestionScreen extends Screen{
         Button submitButton = new Button("Υποβολή");
 
         submitButton.setOnAction(e->{
-            ShowCorrectPack(select);
+            ShowCorrectPack(select,manager);
         });
 
         Button cancelButton = new Button("Ακύρωση");
@@ -274,11 +279,11 @@ class SuggestionScreen extends Screen{
         GridPane.setHalignment(submitButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
         GridPane.setHalignment(cancelButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
     }
-    public void ShowCorrectPack(String select){
+    public void ShowCorrectPack(String select,DataSourceManager manager){
         this.suggestedWords[0]= select;
         System.out.println("Selected"+select);
         try {
-            SearchContent s=new SearchContent(suggestedWords);
+            SearchContent s=new SearchContent(suggestedWords,manager);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -20,6 +20,7 @@ enum partnerType {
 }
 
 public class ExtPartner implements Searchable {
+    String username;
     Long partner_id;
     String partnerName;
     String addressName;
@@ -43,18 +44,29 @@ public class ExtPartner implements Searchable {
         this.ptype=ptype;
     }
 
-    public ExtPartner(String username,DataSourceManager manager){
-        String query="Select address,location,phone,email from ExtPartner where name=?";
+    public ExtPartner(long key,DataSourceManager manager) {
+        this.partner_id=key;
+        getExt(key,manager);
+
+    }
+
+    public void getExt(long partner_id,DataSourceManager manager){
+
+        String query="Select address,location,phone,email from ExtPartner where PartnerID=?";
         PreparedStatement stmt = null;
 
         Connection db_con = manager.getDb_con();
+
         try{
+            if(db_con.isClosed())
+                manager.connect();
             stmt=manager.getDb_con().prepareStatement(query);
 
-            List<Map<String,Object>> res =manager.fetch(stmt,new String[]{username});
+            List<Map<String,Object>> res =manager.fetch(stmt,new Long[]{partner_id});
 
             var row=res.getFirst();
 
+            //partnerName=new String(String.valueOf(row.get("name")));
             addressName=new String(String.valueOf(row.get("address")));
             location=new String(String.valueOf(row.get("location")));
             phone=new String(String.valueOf(row.get("phone")));

@@ -9,6 +9,7 @@ import java.util.List;
 
 public class PackageDetailsScreen extends Screen {;
     private int gridPosition = 1;
+    DataSourceManager manager;
 
     public PackageDetailsScreen(Package pkg, Button optionBtn) {
         // screen methods
@@ -54,11 +55,12 @@ public class PackageDetailsScreen extends Screen {;
     }
 
     private static Package pack;
-    public PackageDetailsScreen(List<Package> selectedPackages) {
+    public PackageDetailsScreen(List<Package> selectedPackages,DataSourceManager manager) {
         // screen methods
         super("Package Details", 800, 700);
         renderGrid(600);
         renderLabel("Λεπτομέρειες Πακέτου");
+        this.manager=manager;
         renderPackageDetails(selectedPackages);
     }
 
@@ -79,13 +81,13 @@ public class PackageDetailsScreen extends Screen {;
         addElementsToGrid(labels, buttons);
 
         cooperationButton.setOnAction(e->{
-            send_coop_suggestion_selelct( selectedPackages);
+            send_coop_suggestion_selelct(selectedPackages,manager);
         });
     }
 
-    public void send_coop_suggestion_selelct(List<Package> selectedPackages){
+    public void send_coop_suggestion_selelct(List<Package> selectedPackages,DataSourceManager manager){
         pack=selectedPackages.get(0);
-        ScreenRedirect.create_coop_form_screen(pack);
+        ScreenRedirect.create_coop_form_screen(pack,manager);
 
     }
 

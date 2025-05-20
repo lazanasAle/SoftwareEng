@@ -36,6 +36,20 @@ public class ListScreen<T extends Searchable> extends Screen{
         int gridPosition=1;
         for(String item : items) {
             Button button = new Button(item);
+            button.setMaxWidth(Double.MAX_VALUE);
+            grid.add(button, 0, gridPosition, 2, 1);
+            gridPosition++;
+            GridPane.setHalignment(button, javafx.geometry.HPos.CENTER); // Center the button in the grid cell
+        }
+    }
+    protected void renderListMain(List<String> items) {
+        int gridPosition=1;
+        for(String item : items) {
+            Button button = new Button(item);
+            button.setMaxWidth(Double.MAX_VALUE);
+
+            button.setOnAction(e->{MainScreen.GetFunction(item);});
+
             grid.add(button, 0, gridPosition, 2, 1);
             gridPosition++;
             GridPane.setHalignment(button, javafx.geometry.HPos.CENTER); // Center the button in the grid cell

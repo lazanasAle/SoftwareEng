@@ -38,10 +38,10 @@ enum voyageStatus{
 
 class TourAgency{
 
-    public int key;
+    public long key;
 
-    public TourAgency(int key){
-        this.key=key;
+    public TourAgency(long key){
+        this.key= key;
     }
 
 

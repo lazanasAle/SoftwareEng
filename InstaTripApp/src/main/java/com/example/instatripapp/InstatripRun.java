@@ -15,8 +15,11 @@ public class InstatripRun extends Application {
     public void start(Stage primaryStage) {
         DataSourceManager manager = new DataSourceManager();
         manager.connect();
-        TourAgency agency = new TourAgency(1);
-        agency.createPackage(manager);
+
+        LoginPage loginPage=new LoginPage(manager);
+       // Bcrypt b=new Bcrypt(manager);
+        //TourAgency agency = new TourAgency(1);
+        //agency.finalizePackage(manager);
 
         /*ExtPartner extPartner = new ExtPartner("ParisValianatos-Studios", manager);
         extPartner.SearchCooparation(manager);*/
