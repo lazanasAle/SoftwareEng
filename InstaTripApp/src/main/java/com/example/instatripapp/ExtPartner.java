@@ -68,6 +68,11 @@ public class ExtPartner implements Searchable {
         }
     }
 
+    public ExtPartner(long key) {
+        this.partner_id=key;
+
+    }
+
     public void SearchCooparation(DataSourceManager manager){
         //System.out.println(this.location);
         ScreenConnector.search_coop_msg(this.location,manager);

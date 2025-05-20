@@ -82,13 +82,20 @@ class Screen{
 class MainScreen extends ListScreen {
     String usertype;
     String name;
+    static DataSourceManager manager;
+    long userID;
+    static Object user;
+    long particularId;
+
     //crete 3 constructrors one for each user
 
-    public MainScreen(String usertype,String name) {
+    public MainScreen(String usertype,String name,DataSourceManager manager,long userID) {
         // screen methods
         super("Κύριο Μενού", 650, 500);
         this.name=name;
         this.usertype=usertype;
+        this.manager=manager;
+        this.userID=userID;
 
         renderGrid(400);
         renderLabel("Καλώς ήρθατε στο InstaTrip κ. "+name);
@@ -105,12 +112,16 @@ class MainScreen extends ListScreen {
                 System.out.println("Πληρωμη Πακετου");
                 break;
                 //Customer.paypack();
-            case "Δημιουργια Πακετου":
-                //TourAgency.createPackage(DataSourceManager manager);
-                System.out.println("Δημιουργια Πακετου");
+            case "Δημιουργια Πακετου":{
+                TourAgency Agent=(TourAgency) user;
+                Agent.createPackage(manager);
+                //System.out.println("Δημιουργια Πακετου");
+                }
                 break;
-            case "Αναζητηση ΣυνεργατηΤΓ":
-                System.out.println("Πληρωμη Πακετου");
+            case "Τα πακετα μου": {
+                TourAgency Agent = (TourAgency) user;
+                Agent.finalizePackage(manager);
+            }
                 break;
             case "Αναζητηση Συνεργατη":
                 System.out.println("Πληρωμη Πακετου");
@@ -128,17 +139,23 @@ class MainScreen extends ListScreen {
     }
 
     private void renderMenu() {
-        System.out.println(usertype);
+        //System.out.println(usertype);
         if("client".equals(this.usertype)){
             String[] menuOptions = {"Επιλογή Πακέτου", "Πληρωμή Πακέτου"};
             renderListMain(Arrays.asList(menuOptions));
+            particularId=ScreenConnector.GetPartID(manager,usertype,userID);
+            user=new Customer();
 
         } else if ("tour_office".equals(this.usertype)) {
-            String[] menuOptions = {"Δημιουργια Πακετου","Αναζητηση ΣυνεργατηΤΓ"};
+            String[] menuOptions = {"Δημιουργια Πακετου","Τα πακετα μου"};
             renderListMain(Arrays.asList(menuOptions));
+            particularId=ScreenConnector.GetPartID(manager,usertype,userID);
+            user=new TourAgency(particularId);
         } else if ("partner".equals(this.usertype)) {
             String[] menuOptions = {"Αναζητηση Συνεργατη","Τροποιηση Συνεργασιας","Ακυρωση Συνεργαιας"};
             renderListMain(Arrays.asList(menuOptions));
+            particularId=ScreenConnector.GetPartID(manager,usertype,userID);
+            user=new ExtPartner(particularId);
         }
         else{
             ScreenRedirect.launchErrorMsg("Not Valid");
@@ -184,6 +201,7 @@ class LoginPage extends FormScreen{
     String username;
     String password;
     String typeuser;
+    long keyus;
     DataSourceManager manager;
     public LoginPage(DataSourceManager manager) {
         super("Σύνδεση Χρήστη", 700, 600);
@@ -209,18 +227,20 @@ class LoginPage extends FormScreen{
         submitButton.setOnAction(e->{
             username=new String(usernameField.getText());
             password=new String(passwordField.getText());
-            if(CheckIn()){
-                IndentifyUser();
+            if((keyus=CheckIn())>0){
+                this.stage.close();
+                IndentifyUser(keyus);
             }
         });
     }
-    public boolean CheckIn(){
+    public long CheckIn(){
         manager.connect();
         return(ScreenConnector.IsValidUser(password,username,manager));
     }
-    public void IndentifyUser(){
+    public void IndentifyUser(long keyus){
         typeuser=ScreenConnector.GetUserType(username,manager);
-        ScreenRedirect.GetToMain(typeuser,username);
+        ScreenRedirect.GetToMain(typeuser,username,manager,keyus);
+
     }
 }
 

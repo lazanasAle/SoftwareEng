@@ -141,8 +141,8 @@ public class ScreenRedirect {
         PackageCoopForm packageCoopForm=new PackageCoopForm(pack);
     }
 
-    public static void GetToMain(String typeuser, String username) {
-        MainScreen client=new MainScreen(typeuser,username);
+    public static void GetToMain(String typeuser, String username,DataSourceManager manager,long key) {
+        MainScreen client=new MainScreen(typeuser,username,manager,key);
 
     }
 }
@@ -152,9 +152,15 @@ class ScreenConnector{
     public static void InsertPackage(Package refered, DataSourceManager manager){
         String query = "INSERT INTO Package (startDate, endDate, location, description, price, status, AgencyID, maxParticipants) VALUES (?, ?, ?, ?, ?, 'Σε εξέλιξη', ?, ?);";
         PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+
         try {
+            if(db_con.isClosed()){
+                manager.connect();
+            }
             stmt = manager.getDb_con().prepareStatement(query);
         } catch (SQLException e) {
+
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
         try {
@@ -378,8 +384,12 @@ class ScreenConnector{
         Connection db_con = manager.getDb_con();
 
         try{
-            manager.connect();
-            stmt=manager.getDb_con().prepareStatement(query);
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+            stmt=db_con.prepareStatement(query);
+
 
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{nameExtPart});
             Map<String, Object> row = res.get(0);
@@ -397,34 +407,39 @@ class ScreenConnector{
         }
     }
 
-    public static boolean IsValidUser(String password, String username, DataSourceManager manager) {
-        String query="select password_hash from User where username=?;";
+    public static long IsValidUser(String password, String username, DataSourceManager manager) {
+        String query="select password_hash,UserID from User where username=?;";
         PreparedStatement stmt = null;
         Connection db_con = manager.getDb_con();
-        boolean found;
+        long key;
 
         try{
-            manager.connect();
-            stmt=manager.getDb_con().prepareStatement(query);
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+            stmt=db_con.prepareStatement(query);
 
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{username});
             Map<String, Object> row = res.get(0);
             String pass=String.valueOf(row.get("password_hash"));
+            key= (long) row.get("UserID");
 
             if (BCrypt.checkpw(password, pass)) {
                 System.out.println("✅ Login successful");
-                found=true;
+                return key;
+
             } else {
                 ScreenRedirect.launchErrorMsg("Λαθος Κωδικος");
-                found=false;
+                key=-1;
             }
 
         }catch (SQLException e){
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
-            System.out.println(e);
-            found=false;
+
+            key=-1;
         }
-        return found;
+        return key;
     }
 
     public static String GetUserType(String username, DataSourceManager manager) {
@@ -433,9 +448,11 @@ class ScreenConnector{
         Connection db_con = manager.getDb_con();
         String type;
         try{
-            manager.connect();
-            stmt=manager.getDb_con().prepareStatement(query);
-
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+            stmt=db_con.prepareStatement(query);
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{username});
             Map<String, Object> row = res.get(0);
             type=String.valueOf(row.get("type"));
@@ -449,6 +466,53 @@ class ScreenConnector{
         }
         return type;
     }
+
+    public static long GetPartID(DataSourceManager manager, String usertype, long userID) {
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        long partid=-1;
+        try {
+            manager.connect();
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+
+            if ("client".equals(usertype)) {
+                String query="Select customerID from Customer where UserID=? ";
+                stmt=db_con.prepareStatement(query);
+                List<Map<String,Object>> res =manager.fetch(stmt,new Long[]{userID});
+                Map<String, Object> row = res.get(0);
+                partid=(long) row.get("customerID");
+
+            }
+            else if ("tour_office".equals(usertype)) {
+                String query="Select AgencyID from TourAgency where UserID=? ";
+                stmt=db_con.prepareStatement(query);
+                List<Map<String,Object>> res =manager.fetch(stmt,new Long[]{userID});
+                Map<String, Object> row = res.get(0);
+                partid=(long) row.get("AgencyID");
+
+            }
+            else if ("partner".equals(usertype)) {
+                String query="Select PartnerID from ExtPartner where UserID=? ";
+                stmt=db_con.prepareStatement(query);
+                List<Map<String,Object>> res =manager.fetch(stmt,new Long[]{userID});
+                Map<String, Object> row = res.get(0);
+                partid=(long) row.get("PartnerID");
+
+            }
+            else {
+                ScreenRedirect.launchErrorMsg("Not valid");
+            }
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφαλμα στη ΒΔ "+e);
+
+        }
+        return partid;
+
+    }
+
 }
 
 
