@@ -60,9 +60,20 @@ public class CreatePackageForm extends FormScreen{
                 ScreenRedirect.launchErrorMsg("Συμπληρώστε όλα τα πεδία της φόρμας");
                 return;
             }
+            boolean regionStringHasDigits = region.matches(".*\\d.*");
+            if(regionStringHasDigits){
+                ScreenRedirect.launchErrorMsg("Συμπληρώστε Σωστά τα πεδία της φόρμας");
+                return;
+            }
+
             try {
                 if(startDate.isAfter(LocalDate.now()) && endDate.isAfter(startDate)) {
-                    newVoyage.initializePackage(region, Double.parseDouble(priceString), Long.parseLong(peopleString), voyageStatus.saved, startDate, endDate, description);
+                    Long voyagers = Long.parseLong(peopleString);
+                    if(voyagers<=0){
+                        ScreenRedirect.launchErrorMsg("Συμπληρώστε Σωστά τα πεδία της φόρμας");
+                        return;
+                    }
+                    newVoyage.initializePackage(region, Double.parseDouble(priceString), voyagers, voyageStatus.saved, startDate, endDate, description);
                     stage.close();
                     ScreenRedirect.getPackageMenu(newVoyage, manager);
                 }
