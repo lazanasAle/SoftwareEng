@@ -123,8 +123,10 @@ class MainScreen extends ListScreen {
                 Agent.finalizePackage(manager);
             }
                 break;
-            case "Αναζητηση Συνεργατη":
-                System.out.println("Πληρωμη Πακετου");
+            case "Αναζητηση Συνεργατη": {
+                ExtPartner extPartner = (ExtPartner) user;
+                extPartner.SearchCooparation(manager);
+            }
                 break;
             case "Τροποιηση Συνεργασιας":
                 System.out.println("Πληρωμη Πακετου");

@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.awt.dnd.DropTarget;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -124,21 +125,21 @@ public class ScreenRedirect {
 
 
     }
-    public static void make_result_screen(List<Map<String, Object>> keywords){
-        ResultScreen packageListScreen=new ResultScreen(keywords);
+    public static void make_result_screen(List<Map<String, Object>> keywords, DataSourceManager manager){
+        ResultScreen packageListScreen=new ResultScreen(keywords,manager);
 
     }
-    public static void launchSuggestionScreen(List<String> suggestions){
+    public static void launchSuggestionScreen(List<String> suggestions,DataSourceManager manager){
         String suggest[] = new String[suggestions.size()];
         for(int i=0;i<suggestions.size();i++){
             suggest[i]= suggestions.get(i);
             System.out.println(suggest[i]);
         }
-        SuggestionScreen suggestionScreen=new SuggestionScreen(suggest);
+        SuggestionScreen suggestionScreen=new SuggestionScreen(suggest,manager);
     }
 
-    public static void create_coop_form_screen(Package pack) {
-        PackageCoopForm packageCoopForm=new PackageCoopForm(pack);
+    public static void create_coop_form_screen(Package pack,DataSourceManager manager) {
+        PackageCoopForm packageCoopForm=new PackageCoopForm(pack,manager);
     }
 
     public static void GetToMain(String typeuser, String username,DataSourceManager manager,long key) {
@@ -348,12 +349,15 @@ class ScreenConnector{
 
 
         try{
-            manager.connect();
-            stmt=manager.getDb_con().prepareStatement(query);
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+            stmt=db_con.prepareStatement(query);
 
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{location});
 
-            PackageListScreen packageListScreen=new PackageListScreen(res);
+            PackageListScreen packageListScreen=new PackageListScreen(res,manager);
 
 
         }catch (SQLException e){
@@ -365,9 +369,9 @@ class ScreenConnector{
 
     }
 
-    public static void keywords_transfer(String keywords) throws IOException {
+    public static void keywords_transfer(String keywords,DataSourceManager manager) throws IOException {
         String keys[]=keywords.split(",");
-        SearchContent searchContent=new SearchContent(keys);
+        SearchContent searchContent=new SearchContent(keys,manager);
         //testing
         /*System.out.println(keywords);
         for(int i=0;i< keys.length;i++){
@@ -375,11 +379,11 @@ class ScreenConnector{
         }*/
     }
 
-    public static void activate(String nameExtPart, String nameAgency, String emailTourAgent,long packid) {
+    public static void activate(String nameExtPart, String nameAgency, String emailTourAgent,long packid,DataSourceManager manager) {
         String query="select PartnerID from ExtPartner where name=?;";
         String status="Σε αναμονή";
         PreparedStatement stmt = null;
-        DataSourceManager manager=new DataSourceManager();
+
 
         Connection db_con = manager.getDb_con();
 

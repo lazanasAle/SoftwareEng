@@ -20,13 +20,13 @@ class PackageCoopForm extends FormScreen{
     String NameExtParner;
     long packnum;
     DataSourceManager manager;
-    PackageCoopForm(Package pack){
+    PackageCoopForm(Package pack,DataSourceManager manager){
         super("Εισαγωγη Συνεργασιας", 700, 500);
         renderGrid(200);
         this.TourAgencyName=new String(pack.getName());
         this.Email=new String(pack.getEmail());
         this.packnum= pack.getKey();
-
+        this.manager=manager;
         System.out.println(NameExtParner);
         //this.Place=new String(pack.location);
         renderLabel("Συμπληρώστε τα στοιχεία της Συνεργασιας");
@@ -72,7 +72,7 @@ class PackageCoopForm extends FormScreen{
                 System.out.println(commit[0]+commit[1]+commit[2]);
                 //contents_commit(); δεν χρειαζεται η εναλλακτικη*/
             }
-            else  ScreenConnector.activate(ExtnameArea.getText(),NameAgencyArea.getText(),communicationArea.getText(),packnum);
+            else  ScreenConnector.activate(ExtnameArea.getText(),NameAgencyArea.getText(),communicationArea.getText(),packnum,manager);
             ((Stage) send.getScene().getWindow()).close();
             for (Window window : Window.getWindows()) {
                 if (window instanceof Stage) {

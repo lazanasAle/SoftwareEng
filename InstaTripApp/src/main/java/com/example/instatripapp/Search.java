@@ -16,18 +16,19 @@ class SearchContent {
 
 
 
-    public SearchContent(String[] keywords) throws IOException {
+    public SearchContent(String[] keywords,DataSourceManager manager) throws IOException {
         this.Keywords=keywords;
         this.spell = new SpellChecker("el");
+        this.manager=manager;
         for(int i=0;i<Keywords.length;i++){
             List<RuleMatch> errors = spell.check_spelling(Keywords[i]);
             if(!errors.isEmpty()) {
                 List<String> suggestions = spell.suggest_examples(errors);
 
-                ScreenRedirect.launchSuggestionScreen(suggestions);
+                ScreenRedirect.launchSuggestionScreen(suggestions,manager);
             }
             else {
-                DataSourceManager manager=new DataSourceManager();
+
                 manager.connect();
 
                 String query="SELECT PackageID,email, TourAgency.name, startDate, endDate, description, maxParticipants\n" +
@@ -49,7 +50,7 @@ class SearchContent {
                     partres = manager.fetch(stmt, new String[]{keypp});
 
 
-                    ScreenRedirect.make_result_screen(partres);
+                    ScreenRedirect.make_result_screen(partres,manager);
 
                 }catch(Exception e){
                     System.out.println(e);
