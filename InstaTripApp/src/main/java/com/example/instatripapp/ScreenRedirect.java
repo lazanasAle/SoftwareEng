@@ -150,6 +150,9 @@ public class ScreenRedirect {
 
         SearchPackageScreen searchScreen=new SearchPackageScreen(cntnt,customer,manager);
     }
+    public static void launchPackageListScreen(DataSourceManager manager,List<Map<String, Object>> result){
+        PackageListScreen packageListScreen=new PackageListScreen(result,manager);
+    }
 }
 
 
@@ -526,7 +529,7 @@ class ScreenConnector{
     }
 
     private static void launchFilterScreen(Customer client, DataSourceManager manager, StringWrapper content) {
-        FilterScreen filter=new FilterScreen();
+        FilterScreen filter=new FilterScreen(content,manager);
     }
 }
 
