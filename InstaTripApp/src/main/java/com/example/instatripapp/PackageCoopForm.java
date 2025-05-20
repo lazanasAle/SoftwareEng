@@ -73,6 +73,7 @@ class PackageCoopForm extends FormScreen{
                 //contents_commit(); δεν χρειαζεται η εναλλακτικη*/
             }
             else  ScreenConnector.activate(ExtnameArea.getText(),NameAgencyArea.getText(),communicationArea.getText(),packnum,manager);
+
             //Θελει φτιαξιμο για να κλεινουν ολες οι οθονες μετα το περας
             //((Stage) send.getScene().getWindow()).close();
             //for (Window window : Window.getWindows()) {

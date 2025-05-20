@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.awt.dnd.DropTarget;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -145,6 +144,11 @@ public class ScreenRedirect {
     public static void GetToMain(String typeuser, String username,DataSourceManager manager,long key) {
         MainScreen client=new MainScreen(typeuser,username,manager,key);
 
+    }
+
+    public static void launchSearchScreen(StringWrapper cntnt, DataSourceManager manager,Customer customer) {
+
+        SearchPackageScreen searchScreen=new SearchPackageScreen(cntnt,customer,manager);
     }
 }
 
@@ -517,6 +521,13 @@ class ScreenConnector{
 
     }
 
+    public static void afterCommitPerform(Customer client, DataSourceManager manager, StringWrapper content) {
+        ScreenConnector.launchFilterScreen(client, manager, content);
+    }
+
+    private static void launchFilterScreen(Customer client, DataSourceManager manager, StringWrapper content) {
+        FilterScreen filter=new FilterScreen();
+    }
 }
 
 

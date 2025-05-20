@@ -20,6 +20,7 @@ public class SearchScreen extends Screen {
         setupSearchUI(content);
     }
 
+
      private void addResultsList() {
         resultsList = new ListView<>();
         resultsList.setPrefWidth(500); // Set a preferred height for the ListView

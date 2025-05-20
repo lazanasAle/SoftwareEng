@@ -8,8 +8,11 @@ import java.util.List;
 
 public class SearchPackageScreen extends SearchScreen {
 
+    //μηπως θελει user
     private TourAgency  organizerMember;
     private DataSourceManager manager;
+    private Customer client;
+
     public SearchPackageScreen(StringWrapper content, TourAgency organizerMember, DataSourceManager manager) {
         super("Αναζήτηση Πακέτων", 1000, 750, content);
         this.organizerMember=organizerMember;
@@ -17,6 +20,15 @@ public class SearchPackageScreen extends SearchScreen {
         renderLabel("Αναζήτηση Πακέτων");
         renderGrid(500);
     }
+
+    public SearchPackageScreen(StringWrapper content, Customer client, DataSourceManager manager) {
+        super("Αναζήτηση Πακέτων", 1000, 750, content);
+        this.client=client;
+        this.manager=manager;
+        renderLabel("Αναζήτηση Πακέτων");
+        renderGrid(500);
+    }
+
 
 
     @Override
@@ -32,7 +44,15 @@ public class SearchPackageScreen extends SearchScreen {
             }
             else{
                 stage.close();
-                ScreenConnector.afterPackageSearchPerform(organizerMember, manager, content);
+                if(this.organizerMember!=null){
+                    ScreenConnector.afterPackageSearchPerform(organizerMember, manager, content);
+                }
+                else if(this.client!=null){
+                    ScreenConnector.afterCommitPerform(client,manager,content);
+                }
+                else{
+                    System.out.println("error");
+                }
             }
         } else {
             resultsList.getItems().add("Παρακαλώ εισάγετε κάποιο όρο αναζήτησης.");
@@ -47,10 +67,21 @@ public class SearchPackageScreen extends SearchScreen {
             if (newSelection != null) {
                 content.content = newSelection;
                 stage.close();
-                ScreenConnector.afterPackageSearchPerform(organizerMember, manager, content);
+                if(this.organizerMember!=null){
+                    ScreenConnector.afterPackageSearchPerform(organizerMember, manager, content);
+                }
+                else if(this.client!=null){
+                    ScreenConnector.afterCommitPerform(client,manager,content);
+                }
+                else{
+                    System.out.println("error");
+                }
+
             }
         });
 
     }
+
+
 }
 

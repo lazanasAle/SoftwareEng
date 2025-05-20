@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.checkerframework.checker.units.qual.C;
 import org.mindrot.jbcrypt.BCrypt;
 
 
@@ -104,9 +105,11 @@ class MainScreen extends ListScreen {
 
     public static void GetFunction(String Action){
         switch (Action){
-            case "Επιλογή Πακέτου":
-                //Customer.searchpack();
-                System.out.println("Επιλογη Πακετου");
+            case "Επιλογή Πακέτου": {
+                Customer cust=(Customer)user;
+                cust.searchpack(manager);
+            }
+
                 break;
             case "Πληρωμή Πακέτου":
                 System.out.println("Πληρωμη Πακετου");
@@ -146,7 +149,7 @@ class MainScreen extends ListScreen {
             String[] menuOptions = {"Επιλογή Πακέτου", "Πληρωμή Πακέτου"};
             renderListMain(Arrays.asList(menuOptions));
             particularId=ScreenConnector.GetPartID(manager,usertype,userID);
-            user=new Customer();
+            user=new Customer(particularId);
 
         } else if ("tour_office".equals(this.usertype)) {
             String[] menuOptions = {"Δημιουργια Πακετου","Τα πακετα μου"};
