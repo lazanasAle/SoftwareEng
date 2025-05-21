@@ -71,7 +71,7 @@ public class CreatePackageForm extends FormScreen{
             }
 
             try {
-                if(startDate.isAfter(LocalDate.now()) && endDate.isAfter(startDate)) {
+                if(startDate.isAfter(LocalDate.now()) && (endDate.isAfter(startDate) || endDate.equals(startDate))) {
                     Long voyagers = Long.parseLong(peopleString);
                     if(voyagers<=0){
                         ScreenRedirect.launchErrorMsg("Συμπληρώστε Σωστά τα πεδία της φόρμας");
