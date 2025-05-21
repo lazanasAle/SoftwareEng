@@ -50,11 +50,12 @@ class SearchContent {
                     System.out.println("Querying with: " + keypp);
                     partres = manager.fetch(stmt, new String[]{keypp});
 
-
-                    ScreenRedirect.make_result_screen(partres,manager);
-
-                }catch(NoSuchElementException e){
-                    ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+                    if (!partres.isEmpty()){
+                        ScreenRedirect.make_result_screen(partres,manager);
+                    }
+                    else {
+                        ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+                    }
                 }
                 catch (SQLException exe){
                     ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+exe);

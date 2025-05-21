@@ -209,7 +209,7 @@ class PackageListScreen extends ListScreen<Package> {
 
         Stage KeyPage=new Stage();
 
-        Label title=new Label("Εισαγεται τις λεξεις κλειδια");
+        Label title=new Label("Εισάγετε τις λέξεις κλειδιά");
         TextField insert=new TextField("keywords");
         Button submit=new Button("Submit");
 
