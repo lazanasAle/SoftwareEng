@@ -246,6 +246,7 @@ class SuggestionScreen extends Screen{
     private String[] suggestedWords;
     private ArrayList<String> getValues;
     DataSourceManager manager;
+    ComboBox<String> SuggestBox;
     public SuggestionScreen(String[] recommendedResults,DataSourceManager manager) {
         super("Προτεινόμενα αποτελέσματα", 600, 600);
         renderGrid(200);
@@ -253,24 +254,23 @@ class SuggestionScreen extends Screen{
         this.manager=manager;
         suggestedWords=new String[1]; //θεμα με μεγεθος παιρνει ενα και δεν βγαζει exception
         getValues=new ArrayList<>();
-        String select=renderSuggestions(recommendedResults);
-        renderSubmitButtons(select);
+        renderSuggestions(recommendedResults);
+        renderSubmitButtons();
     }
 
-    private String renderSuggestions(String[] recommendedResults) {
-        ComboBox<String> comboBox = new ComboBox<>();
-        comboBox.getItems().addAll(recommendedResults);
-        comboBox.setValue(recommendedResults[0]);
-        String select=comboBox.getValue();
-        grid.add(comboBox, 0, 1, 2, 1);
-        GridPane.setHalignment(comboBox, javafx.geometry.HPos.CENTER);
-        return select;
+    private void renderSuggestions(String[] recommendedResults) {
+        SuggestBox = new ComboBox<>();
+        SuggestBox.getItems().addAll(recommendedResults);
+        SuggestBox.setValue(recommendedResults[0]);
+        grid.add(SuggestBox, 0, 1, 2, 1);
+        GridPane.setHalignment(SuggestBox, javafx.geometry.HPos.CENTER);
     }
-    private void renderSubmitButtons(String select){
+    private void renderSubmitButtons(){
         Button submitButton = new Button("Υποβολή");
 
         submitButton.setOnAction(e->{
-            ShowCorrectPack(select,manager);
+            String option=SuggestBox.getValue();
+            ShowCorrectPack(option,manager);
         });
 
         Button cancelButton = new Button("Ακύρωση");
@@ -285,7 +285,7 @@ class SuggestionScreen extends Screen{
         try {
             SearchContent s=new SearchContent(suggestedWords,manager);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+           ScreenRedirect.launchErrorMsg("Σφάλμα Ι/Ο");
         }
     }
 }

@@ -5,9 +5,11 @@ import org.languagetool.rules.RuleMatch;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 class SearchContent {
     private String[] Keywords;
@@ -44,7 +46,6 @@ class SearchContent {
                     List<Map<String, Object>> partres = null;
 
 
-
                     String keypp="%" + Keywords[i] + "%";
                     System.out.println("Querying with: " + keypp);
                     partres = manager.fetch(stmt, new String[]{keypp});
@@ -52,8 +53,11 @@ class SearchContent {
 
                     ScreenRedirect.make_result_screen(partres,manager);
 
-                }catch(Exception e){
-                    System.out.println(e);
+                }catch(NoSuchElementException e){
+                    ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+                }
+                catch (SQLException exe){
+                    ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+exe);
                 }
 
 
