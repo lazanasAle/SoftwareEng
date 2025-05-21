@@ -47,7 +47,6 @@ class SearchContent {
 
 
                     String keypp="%" + Keywords[i] + "%";
-                    System.out.println("Querying with: " + keypp);
                     partres = manager.fetch(stmt, new String[]{keypp});
 
                     if (!partres.isEmpty()){

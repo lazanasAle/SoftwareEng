@@ -133,7 +133,6 @@ public class ScreenRedirect {
         String suggest[] = new String[suggestions.size()];
         for(int i=0;i<suggestions.size();i++){
             suggest[i]= suggestions.get(i);
-            System.out.println(suggest[i]);
         }
         SuggestionScreen suggestionScreen=new SuggestionScreen(suggest,manager);
     }
