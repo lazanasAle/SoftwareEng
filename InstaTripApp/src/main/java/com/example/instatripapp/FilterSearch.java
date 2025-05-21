@@ -31,7 +31,7 @@ class FilterSearch {
     }
 
     public List<Map<String, Object>> GetSearchWithPlace(StringWrapper content,String place,DataSourceManager manager){
-        String query="select PackageID,name,email,startDate,endDate,price,description,status,Package.maxParticipants from Package inner join TourAgency on Package.AgencyID = TourAgency.AgencyID where description like ? and Package.location=? and status='Σε εξέλιξη';";
+        String query="select PackageID,name,email,startDate,endDate,price,Package.location,description,status,Package.maxParticipants from Package inner join TourAgency on Package.AgencyID = TourAgency.AgencyID where description like ? and Package.location=? and status='Σε εξέλιξη';";
 
         PreparedStatement stmt = null;
 
@@ -60,7 +60,7 @@ class FilterSearch {
     }
 
     public List<Map<String, Object>> GetSearchWithPrice(StringWrapper content,double price,DataSourceManager manager){
-        String query="select PackageID,name,email,startDate,endDate,price,description,status,Package.maxParticipants from Package inner join TourAgency on Package.AgencyID = TourAgency.AgencyID  where description like ? and price<=? and status='Σε εξέλιξη';";
+        String query="select PackageID,name,email,startDate,endDate,price,Package.location,description,status,Package.maxParticipants from Package inner join TourAgency on Package.AgencyID = TourAgency.AgencyID  where description like ? and price<=? and status='Σε εξέλιξη';";
 
         PreparedStatement stmt = null;
 

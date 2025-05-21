@@ -126,10 +126,10 @@ public class ScreenRedirect {
                 Price=Double.parseDouble(row.get("price").toString());
             }
             else{Price=-1;}
-            if(String.valueOf(row.get("Package.location"))!=null){
-                Location=String.valueOf(row.get("Package.location"));
-            }
-            else Location=null;
+
+            Location=String.valueOf(row.get("location"));
+
+
 
 
             System.out.println("PackageID: " + PackageID);
@@ -564,7 +564,7 @@ class ScreenConnector{
     }
 
     private static void launchFilterScreen(Customer client, DataSourceManager manager, StringWrapper content) {
-        FilterScreen filter=new FilterScreen(content,manager);
+        FilterScreen filter=new FilterScreen(content,manager,client);
     }
 }
 

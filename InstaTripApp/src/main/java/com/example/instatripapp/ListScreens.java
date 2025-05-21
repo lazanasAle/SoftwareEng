@@ -93,10 +93,13 @@ class PackageOptionsScreen extends ListScreen {
 class FilterScreen extends ListScreen {
     StringWrapper contents;
     DataSourceManager manager;
-    public FilterScreen(StringWrapper contents,DataSourceManager manager) {
+    Customer customer;
+
+    public FilterScreen(StringWrapper contents, DataSourceManager manager, Customer client) {
         super("Φίλτρα", 700, 700);
         this.contents=contents;
         this.manager=manager;
+        this.customer=client;
         renderGrid(500);
         renderLabel("Επιλέξτε τα φίλτρα που θέλετε να εφαρμόσετε:");
         renderFilterOptions();
@@ -292,7 +295,7 @@ class PackageListScreen extends ListScreen<Package> {
             String buttonName = "Καλαθι";
             String[] cnamesArray = new String[columnNames.size()];
             columnNames.toArray(cnamesArray);
-            renderArray(cnamesArray,separated, cnamesArray,buttonName);
+            renderArray(cnamesArray,separated,cnamesArray,buttonName);
         }
         else{System.out.println("rendePackageList");}
     }

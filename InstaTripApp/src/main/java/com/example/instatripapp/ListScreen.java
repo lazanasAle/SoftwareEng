@@ -76,7 +76,8 @@ public class ListScreen<T extends Searchable> extends Screen{
                         });
                     } else if (buttonName.equals("Καλαθι")) {
                         button.setOnAction((e -> {
-                            //ReservationBucket bucket=new bucket();
+                            Package element= (Package) dataTable.getItems().get(getIndex());
+                            ReservationBucket bucket=new ReservationBucket(element);
                         }));
                     } else if (buttonName.equals(" ")) {
                         button.setVisible(false);
