@@ -27,9 +27,10 @@ public class ListScreen<T extends Searchable> extends Screen{
         TableView<T> dataTable = new TableView<>();
         populateTableView(dataTable, widthOfScreen, columnNames, propertyNames);
 
-        // Add "Επιλογές" column
         TableColumn<T, Void> optionsColumn = new TableColumn<>("Επιλογές");
         setOptionsColumn(optionsColumn, buttonName, dataTable, items, null);
+
+
     }
 
     protected void renderList(List<String> items) {
@@ -55,40 +56,44 @@ public class ListScreen<T extends Searchable> extends Screen{
             GridPane.setHalignment(button, javafx.geometry.HPos.CENTER); // Center the button in the grid cell
         }
     }
-    private void setOptionsColumn(TableColumn<T, Void> optionsColumn, String buttonName, TableView<T> dataTable, List<T> items, PopupWindow<T> options){
-        optionsColumn.setCellFactory(col -> new TableCell<>() {
-            private final Button button = new Button(buttonName);
+    private void setOptionsColumn(TableColumn<T, Void> optionsColumn, String buttonName, TableView<T> dataTable, List<T> items, PopupWindow<T> options) {
 
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) { // if the row is empty
-                    setGraphic(null);
-                } else {
-                    setGraphic(button);
+            optionsColumn.setCellFactory(col -> new TableCell<>() {
+                private final Button button = new Button(buttonName);
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) { // if the row is empty
+                        setGraphic(null);
+                    } else {
+                        setGraphic(button);
+                    }
+                    if (options != null) {
+                        button.setOnAction(e -> {
+                            T element = dataTable.getItems().get(getIndex());
+                            options.createPopup(element, button, element.getKey());
+                        });
+                    } else if (buttonName.equals("Καλαθι")) {
+                        button.setOnAction((e -> {
+                            //ReservationBucket bucket=new bucket();
+                        }));
+                    } else if (buttonName.equals(" ")) {
+                        button.setVisible(false);
+
+                    } else {
+                        System.out.println("setoptionsColumn");
+                    }
                 }
-                if(options!=null) {
-                    button.setOnAction(e -> {
-                        T element = dataTable.getItems().get(getIndex());
-                        options.createPopup(element, button, element.getKey());
-                    });
-                }
-                else if (buttonName.equals("Αιτήμα")){
-                    button.setOnAction((e->{
+            });
 
-                        //Pacsend_coop_suggestion_select()
-                    }));
-                }
-                else System.out.println("NOt Valid");
-            }
-        });
+            dataTable.getColumns().add(optionsColumn);
 
-        dataTable.getColumns().add(optionsColumn);
-
-        dataTable.getItems().addAll(items);
-        dataTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        grid.add(dataTable, 0, 1);
+            dataTable.getItems().addAll(items);
+            dataTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            grid.add(dataTable, 0, 1);
     }
+
 
 
     private void populateTableView( TableView<T> dataTable, int widthOfScreen, String[] columnNames, String[] propertyNames){

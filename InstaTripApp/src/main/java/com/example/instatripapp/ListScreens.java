@@ -40,10 +40,12 @@ class ResultScreen extends PackageListScreen {
     private List<Package> selectedPackages;
     DataSourceManager manager;
 
+
     public ResultScreen(List<Map<String, Object>> result,DataSourceManager manager) {
-        super(result,manager);
+        super(result,manager, "Ενεργες εκδρομες στην περιοχη σας");
         this.manager=manager;
-        renderPackageList(result,manager);
+
+        renderPackageList(result,manager,"Ενεργες εκδρομες στην περιοχη σας");
         selectedPackages=ScreenRedirect.send(result);
         Button submit=new Button("Submit");
 
@@ -234,7 +236,7 @@ class PaidPackageList extends ListScreen{
 }
 class PackageListScreen extends ListScreen<Package> {
     DataSourceManager manager;
-
+    String title;
     public PackageListScreen(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow popupWindow) {
         super("Λίστα Πακέτων", 1000, 950);
         renderGrid(900);
@@ -257,35 +259,42 @@ class PackageListScreen extends ListScreen<Package> {
     }
 
 
-    public PackageListScreen(List<Map<String, Object>> result,DataSourceManager manager) {
-        super("Λίστα Πακέτων", 1000, 950);
+    public PackageListScreen(List<Map<String, Object>> result,DataSourceManager manager,String title) {
+        super("Λίστα Πακέτων", 1400, 950);
         renderGrid(900);
         this.manager=manager;
-        renderPackageList(result,manager);
+        this.title=title;
+        renderPackageList(result,manager,title);
     }
 
-    public void renderPackageList(List<Map<String, Object>> packageQueryResult,DataSourceManager manager) {
-        renderLabel("Ενεργες εκδρομες στην περιοχη σας");
+    public void renderPackageList(List<Map<String, Object>> packageQueryResult,DataSourceManager manager,String title) {
 
-        List<Package> separated = ScreenRedirect.send(packageQueryResult);
+        if(title.equals("Ενεργες εκδρομες στην περιοχη σας")){
+            renderLabel(title);
+            List<Package> separated = ScreenRedirect.send(packageQueryResult);
 
-        List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
-        String buttonName = "Αιτήμα";
-        String[] cnamesArray = new String[columnNames.size()];
-        columnNames.toArray(cnamesArray);
-        renderArray(cnamesArray,separated, cnamesArray,buttonName);
+            List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
 
+            String[] cnamesArray = new String[columnNames.size()];
 
+            columnNames.toArray(cnamesArray);
 
-        Button keywords=new Button("Λεξεις Κλειδία");
+            renderArray(cnamesArray,separated, cnamesArray," ");
+            //αλλαγη αν ειναι null
+            Button keywords=new Button("Λεξεις Κλειδία");
 
-
-
-        grid.add(keywords,0,10);
-
-        keywords.setOnAction(e->keywords_commit(keywords,manager));
-
-
+            grid.add(keywords,0,10);
+            keywords.setOnAction(e->keywords_commit(keywords,manager));
+        } else if (title.equals("Εμφανηση ενεργων πακετων για πελατη")) {
+            renderLabel(title);
+            List<Package> separated = ScreenRedirect.send(packageQueryResult);
+            List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
+            String buttonName = "Καλαθι";
+            String[] cnamesArray = new String[columnNames.size()];
+            columnNames.toArray(cnamesArray);
+            renderArray(cnamesArray,separated, cnamesArray,buttonName);
+        }
+        else{System.out.println("rendePackageList");}
     }
 
     public void keywords_commit(Button ownerButton,DataSourceManager manager){
@@ -317,7 +326,7 @@ class PackageListScreen extends ListScreen<Package> {
         Scene scene = new Scene(layout, 300, 200);
 
         KeyPage.setScene(scene);
-        KeyPage.initModality(Modality.APPLICATION_MODAL); // Block other windows
+        KeyPage.initModality(Modality.APPLICATION_MODAL);
         KeyPage.showAndWait();
 
     }

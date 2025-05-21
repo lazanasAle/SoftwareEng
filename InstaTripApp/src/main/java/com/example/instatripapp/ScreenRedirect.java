@@ -113,11 +113,41 @@ public class ScreenRedirect {
             LocalDate endDate = end.toLocalDate();
             String description=String.valueOf(row.get("description"));
             Long maxParticipants = (Long) row.get("maxParticipants");
+            Long PackID;
+            double Price;
+            String Location;
+            voyageStatus status=voyageStatus.fromString(String.valueOf(row.get("status")));
 
+            if((Long)row.get("PackageID")!=null){
+                 PackID=(Long)row.get("PackageID");
+            }
+            else {PackID=null;}
+            if(row.get("price")!=null){
+                Price=Double.parseDouble(row.get("price").toString());
+            }
+            else{Price=-1;}
+            if(String.valueOf(row.get("Package.location"))!=null){
+                Location=String.valueOf(row.get("Package.location"));
+            }
+            else Location=null;
+
+
+            System.out.println("PackageID: " + PackageID);
+            System.out.println("Email: " + email);
+            System.out.println("Name: " + name);
+            System.out.println("Start Date: " + startDate);
+            System.out.println("End Date: " + endDate);
+            System.out.println("Description: " + description);
+            System.out.println("Max Participants: " + maxParticipants);
+            System.out.println("PackID: " + PackID);
+            System.out.println("Price: " + Price);
+            System.out.println("Location: " + Location);
+            System.out.println("Status: " + status);
+            System.out.println("----------------------------------------");
 
 
             Package newVoyage = new Package();
-            newVoyage.initializePackage(PackageID,endDate,name,description,email,startDate,maxParticipants);
+            newVoyage.initializePackage(PackageID,endDate,name,description,email,startDate,maxParticipants,Location,Price,status);
             selectedPackages.add(newVoyage);
         }
         return selectedPackages;
@@ -151,7 +181,8 @@ public class ScreenRedirect {
         SearchPackageScreen searchScreen=new SearchPackageScreen(cntnt,customer,manager);
     }
     public static void launchPackageListScreen(DataSourceManager manager,List<Map<String, Object>> result){
-        PackageListScreen packageListScreen=new PackageListScreen(result,manager);
+        String title="Εμφανηση ενεργων πακετων για πελατη";
+        PackageListScreen packageListScreen=new PackageListScreen(result,manager,title);
     }
 }
 
@@ -350,7 +381,7 @@ class ScreenConnector{
 
         String query="Select PackageID,email,TourAgency.name,startDate,endDate,description,maxParticipants from TourAgency inner join Package on TourAgency.AgencyID=Package.AgencyID where Package.location=? and status='Σε εξέλιξη';";
         PreparedStatement stmt = null;
-
+        String title="Ενεργες εκδρομες στην περιοχη σας";
         Connection db_con = manager.getDb_con();
 
 
@@ -364,7 +395,7 @@ class ScreenConnector{
 
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{location});
 
-            PackageListScreen packageListScreen=new PackageListScreen(res,manager);
+            PackageListScreen packageListScreen=new PackageListScreen(res,manager,title);
 
 
         }catch (SQLException e){

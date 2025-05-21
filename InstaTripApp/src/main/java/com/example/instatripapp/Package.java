@@ -22,6 +22,7 @@ public class Package implements Searchable{
     private String email;
 
 
+
     Package(TourAgency organizer, LivingQuarter shelter, Program program){
         this.organizer=organizer;
         this.shelter=shelter;
@@ -33,7 +34,6 @@ public class Package implements Searchable{
         name=new String();
         email=new String();
         description=new String();
-
     }
 
     public void initializePackage(String location, double price, long maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate){
@@ -58,7 +58,8 @@ public class Package implements Searchable{
         this.description=description;
     }
 
-    public void initializePackage(long key, LocalDate endDate, String name, String description, String email, LocalDate startDate, long maxParticipants){
+    //Αυτη χρησιμοποιω
+    public void initializePackage(long key, LocalDate endDate, String name, String description, String email, LocalDate startDate, long maxParticipants,String location,double price,voyageStatus status){
         this.name=name;
         this.email=email;
         this.description=description;
@@ -66,6 +67,9 @@ public class Package implements Searchable{
         this.endDate=endDate;
         this.maxParticipants=maxParticipants;
         this.key=key;
+        this.location=location;
+        this.price=price;
+        this.status=status;
     }
 
     public long getAgencyID(){
