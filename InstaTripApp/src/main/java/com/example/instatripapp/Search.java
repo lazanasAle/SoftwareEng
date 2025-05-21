@@ -22,45 +22,43 @@ class SearchContent {
         this.Keywords=keywords;
         this.spell = new SpellChecker("el");
         this.manager=manager;
-        for(int i=0;i<Keywords.length;i++){
-            List<RuleMatch> errors = spell.check_spelling(Keywords[i]);
-            if(!errors.isEmpty()) {
-                List<String> suggestions = spell.suggest_examples(errors);
+        for(int i=0;i<Keywords.length;i++) {
+            if (!keywords[i].isEmpty()) {
+                List<RuleMatch> errors = spell.check_spelling(Keywords[i]);
+                if (!errors.isEmpty()) {
+                    List<String> suggestions = spell.suggest_examples(errors);
 
-                ScreenRedirect.launchSuggestionScreen(suggestions,manager);
-            }
-            else {
+                    ScreenRedirect.launchSuggestionScreen(suggestions, manager);
+                } else {
 
-                manager.connect();
+                    manager.connect();
 
-                String query="SELECT PackageID,email, TourAgency.name, startDate, endDate, description, maxParticipants\n" +
-                        "FROM TourAgency INNER JOIN Package ON TourAgency.AgencyID = Package.AgencyID\n" +
-                        "WHERE description LIKE ? and status='Σε εξέλιξη';";
-                PreparedStatement stmt = null;
+                    String query = "SELECT PackageID,email, TourAgency.name, startDate, endDate, description, maxParticipants\n" +
+                            "FROM TourAgency INNER JOIN Package ON TourAgency.AgencyID = Package.AgencyID\n" +
+                            "WHERE description LIKE ? and status='Σε εξέλιξη';";
+                    PreparedStatement stmt = null;
 
-                Connection db_con = manager.getDb_con();
-                try {
+                    Connection db_con = manager.getDb_con();
+                    try {
 
-                    stmt = manager.getDb_con().prepareStatement(query);
+                        stmt = manager.getDb_con().prepareStatement(query);
 
-                    List<Map<String, Object>> partres = null;
+                        List<Map<String, Object>> partres = null;
 
+                        String keypp = "%" + Keywords[i] + "%";
+                        partres = manager.fetch(stmt, new String[]{keypp});
 
-                    String keypp="%" + Keywords[i] + "%";
-                    partres = manager.fetch(stmt, new String[]{keypp});
-
-                    if (!partres.isEmpty()){
-                        ScreenRedirect.make_result_screen(partres,manager);
+                        if (!partres.isEmpty()) {
+                            ScreenRedirect.make_result_screen(partres, manager);
+                        } else {
+                            ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+                        }
+                    } catch (SQLException exe) {
+                        ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: " + exe);
                     }
-                    else {
-                        ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
-                    }
-                }
-                catch (SQLException exe){
-                    ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+exe);
-                }
 
 
+                }
             }
         }
 
