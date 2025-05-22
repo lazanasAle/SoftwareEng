@@ -51,26 +51,7 @@ class PackageCoopForm extends FormScreen{
 
         send.setOnAction(e->{
             if (ExtnameArea.getText().isEmpty()|| NameAgencyArea.getText().isEmpty()|| communicationArea.getText().isEmpty()){
-                Stage anouncement=new Stage();
-                Label an=new Label("Παρακαλω εισαγεται στοιχεια σε ολα τα πεδία");
-                VBox layout = new VBox(15);
-                layout.setPadding(new Insets(20));
-                layout.setAlignment(Pos.CENTER);
-
-                layout.getChildren().add(an);
-
-                Scene scene = new Scene(layout, 300, 200);
-
-                anouncement.setScene(scene);
-                anouncement.initModality(Modality.APPLICATION_MODAL); // Block other windows
-                anouncement.showAndWait();
-
-                /*String[] commit=new String[3];
-                commit[0]=ExtnameArea.getText();
-                commit[1]=NameAgencyArea.getText();
-                commit[2]=communicationArea.getText();
-                System.out.println(commit[0]+commit[1]+commit[2]);
-                //contents_commit(); δεν χρειαζεται η εναλλακτικη*/
+                ScreenRedirect.launchErrorMsg("Δεν εισαγεται στοιχεια σε ολα τα πεδία");
             }
             else  ScreenConnector.activate(ExtnameArea.getText(),NameAgencyArea.getText(),communicationArea.getText(),packnum,manager);
 

@@ -1,10 +1,15 @@
 package com.example.instatripapp;
 
+import javafx.geometry.HPos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.instatripapp.MainScreen.manager;
+
 // Strongly recommend to do this class into 2 classes
 // One is ArrayScreen and the other is ListScreen
 // Recommendation: is to put ListScreen to be a superclass to PackageDetailsScreen, PaymentScreen,FilterScreen,
@@ -40,7 +45,7 @@ public class ListScreen<T extends Searchable> extends Screen{
             button.setMaxWidth(Double.MAX_VALUE);
             grid.add(button, 0, gridPosition, 2, 1);
             gridPosition++;
-            GridPane.setHalignment(button, javafx.geometry.HPos.CENTER); // Center the button in the grid cell
+            GridPane.setHalignment(button, HPos.CENTER); // Center the button in the grid cell
         }
     }
     protected void renderListMain(List<String> items) {
@@ -53,7 +58,7 @@ public class ListScreen<T extends Searchable> extends Screen{
 
             grid.add(button, 0, gridPosition, 2, 1);
             gridPosition++;
-            GridPane.setHalignment(button, javafx.geometry.HPos.CENTER); // Center the button in the grid cell
+            GridPane.setHalignment(button, HPos.CENTER); // Center the button in the grid cell
         }
     }
     private void setOptionsColumn(TableColumn<T, Void> optionsColumn, String buttonName, TableView<T> dataTable, List<T> items, PopupWindow<T> options) {
@@ -81,6 +86,13 @@ public class ListScreen<T extends Searchable> extends Screen{
                         }));
                     } else if (buttonName.equals(" ")) {
                         button.setVisible(false);
+
+                    } else if (buttonName.equals("Αίτημα")) {
+                        List<Package> element = new ArrayList<>();
+                        button.setOnAction(e->{
+                            element.add((Package) dataTable.getItems().get(getIndex()));
+                            PackageDetailsScreen pack=new PackageDetailsScreen(element, manager);
+                        });
 
                     } else {
                         System.out.println("setoptionsColumn");

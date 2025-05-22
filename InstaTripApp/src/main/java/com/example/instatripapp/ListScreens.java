@@ -282,12 +282,13 @@ class PackageListScreen extends ListScreen<Package> {
 
             columnNames.toArray(cnamesArray);
 
-            renderArray(cnamesArray,separated, cnamesArray," ");
-            //αλλαγη αν ειναι null
+            renderArray(cnamesArray,separated, cnamesArray,"Αίτημα");
+
             Button keywords=new Button("Λεξεις Κλειδία");
 
             grid.add(keywords,0,10);
             keywords.setOnAction(e->keywords_commit(keywords,manager));
+
         } else if (title.equals("Εμφανηση ενεργων πακετων για πελατη")) {
             renderLabel(title);
             List<Package> separated = ScreenRedirect.send(packageQueryResult);

@@ -418,7 +418,7 @@ class ScreenConnector{
     }
 
     public static void activate(String nameExtPart, String nameAgency, String emailTourAgent,long packid,DataSourceManager manager) {
-        String query="select PartnerID from ExtPartner where name=?;";
+        String query="select PartnerID,partnerType from ExtPartner where name=?;";
         String status="Σε αναμονή";
         PreparedStatement stmt = null;
 
@@ -436,9 +436,10 @@ class ScreenConnector{
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{nameExtPart});
             Map<String, Object> row = res.get(0);
             long KeyPartner=(long)row.get("PartnerID");
+            String  type=String.valueOf(row.get("partnerType"));
             System.out.println(KeyPartner + packid);
 
-            Participation participation=new Participation(KeyPartner,status,packid);
+            Participation participation=new Participation(KeyPartner,status,packid,type);
 
 
 
