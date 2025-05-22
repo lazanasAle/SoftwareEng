@@ -21,7 +21,7 @@ class PackageCoopForm extends FormScreen{
     long packnum;
     DataSourceManager manager;
     PackageCoopForm(Package pack,DataSourceManager manager){
-        super("Εισαγωγη Συνεργασιας", 700, 500);
+        super("Εισαγωγη Συνεργασιας για Εξωτερικο Συνεργατη", 700, 500);
         renderGrid(200);
         this.TourAgencyName=new String(pack.getName());
         this.Email=new String(pack.getEmail());
