@@ -136,7 +136,7 @@ class FilterScreen extends ListScreen {
         submit.setOnAction(e->{
             String Place=insert.getText();
             try {
-                FilterSearch filterSearch=new FilterSearch(Place,this.contents,manager);
+                FilterSearch filterSearch=new FilterSearch(Place,this.contents,manager,this.customer);
 
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
@@ -168,7 +168,7 @@ class FilterScreen extends ListScreen {
         submit.setOnAction(e->{
             double Price=Double.parseDouble(insert.getText());
             try {
-                FilterSearch filterSearch=new FilterSearch(Price,this.contents,manager);
+                FilterSearch filterSearch=new FilterSearch(Price,this.contents,manager,this.customer);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

@@ -180,7 +180,7 @@ public class ScreenRedirect {
 
         SearchPackageScreen searchScreen=new SearchPackageScreen(cntnt,customer,manager);
     }
-    public static void launchPackageListScreen(DataSourceManager manager,List<Map<String, Object>> result){
+    public static void launchPackageListScreen(DataSourceManager manager,List<Map<String, Object>> result,Customer customer){
         String title="Εμφανηση ενεργων πακετων για πελατη";
         PackageListScreen packageListScreen=new PackageListScreen(result,manager,title);
     }

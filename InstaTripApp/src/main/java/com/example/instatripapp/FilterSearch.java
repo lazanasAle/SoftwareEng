@@ -12,22 +12,25 @@ class FilterSearch {
     double price;
     List<Map<String, Object>> queryResult;
     DataSourceManager manager;
+    Customer customer;
 
 
-    public FilterSearch(String place,StringWrapper content,DataSourceManager manager){
+    public FilterSearch(String place, StringWrapper content, DataSourceManager manager, Customer customer){
         this.content=content;
         this.place=place;
         this.manager=manager;
+        this.customer=customer;
         queryResult=GetSearchWithPlace(content,place,manager);
-        ScreenRedirect.launchPackageListScreen(manager,queryResult);
+        ScreenRedirect.launchPackageListScreen(manager,queryResult,customer);
 
     }
-    public FilterSearch(double price,StringWrapper content,DataSourceManager manager){
+    public FilterSearch(double price, StringWrapper content, DataSourceManager manager, Customer customer){
         this.content=content;
         this.price=price;
         this.manager=manager;
+        this.customer=customer;
         queryResult=GetSearchWithPrice(content,price,manager);
-        ScreenRedirect.launchPackageListScreen(manager,queryResult);
+        ScreenRedirect.launchPackageListScreen(manager,queryResult,customer);
     }
 
     public List<Map<String, Object>> GetSearchWithPlace(StringWrapper content,String place,DataSourceManager manager){

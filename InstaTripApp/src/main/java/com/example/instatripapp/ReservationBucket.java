@@ -10,6 +10,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 public class ReservationBucket {
     private long PackageID;
     private String status="Σε αναμονή πληρωμής";
@@ -24,17 +30,19 @@ public class ReservationBucket {
     private double price;
     private String AgentName;
     private String description;
-
+     DataSourceManager manager;
+     private long CustomerId;
     
 
     private Package pack;
 
-    public ReservationBucket(Package pack){
+    public ReservationBucket(Package pack,DataSourceManager manager){
         this.pack=pack;
         price= pack.getPrice();
         AgentName= pack.getName();
         description= pack.getDescription();
         location= pack.location;
+        this.manager=manager;
         GetCustomerName();
 
         System.out.println("Price: " + price);
@@ -43,6 +51,8 @@ public class ReservationBucket {
         System.out.println("Location: " + location);
         System.out.println("CustomerName: " + CustomerFirstName);
         System.out.println("CustomerName: " + CustomerLastName);
+        System.out.println("CustomerId: " + CustomerId);
+
 
 
     }
@@ -57,7 +67,9 @@ public class ReservationBucket {
         submit.setOnAction(e->{
             CustomerFirstName=insert.getText();
             CustomerLastName=insertS.getText();
+            CustomerId=GetId();
                 KeyPage.close();
+
         });
 
         VBox layout = new VBox(15);
@@ -74,7 +86,28 @@ public class ReservationBucket {
 
     }
 
+    private long GetId() {
+        String query = "SELECT customerID from Customer where firstName=? and lastName =?";
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        try {
+            if(db_con.isClosed())
+                manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        try{
 
+            var ret = manager.fetch(stmt, new Object[]{this.CustomerFirstName,this.CustomerLastName});
+            Map<String,Object> row= ret.get(0);
+            return (long)row.get("customerID");
+        } catch (SQLException e) {
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        return -1;
+
+    }
 
 
 }
