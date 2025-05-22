@@ -184,6 +184,9 @@ public class ScreenRedirect {
         String title="Εμφανηση ενεργων πακετων για πελατη";
         PackageListScreen packageListScreen=new PackageListScreen(result,manager,title);
     }
+    public static void launchFilterScreen(Customer client, DataSourceManager manager, StringWrapper content) {
+        FilterScreen filter=new FilterScreen(content,manager,client);
+    }
 }
 
 
@@ -561,12 +564,10 @@ class ScreenConnector{
     }
 
     public static void afterCommitPerform(Customer client, DataSourceManager manager, StringWrapper content) {
-        ScreenConnector.launchFilterScreen(client, manager, content);
+        ScreenRedirect.launchFilterScreen(client, manager, content);
     }
 
-    private static void launchFilterScreen(Customer client, DataSourceManager manager, StringWrapper content) {
-        FilterScreen filter=new FilterScreen(content,manager,client);
-    }
+
 }
 
 
