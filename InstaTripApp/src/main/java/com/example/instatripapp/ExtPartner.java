@@ -118,5 +118,9 @@ public class ExtPartner implements Searchable {
     public String getEmail(){
         return email;
     }
+
+    public String getDescription() {
+        return description;
+    }
 }
 

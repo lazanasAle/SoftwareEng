@@ -20,7 +20,7 @@ class SearchContent {
 
     public SearchContent(String[] keywords,DataSourceManager manager) throws IOException {
         this.Keywords=keywords;
-        this.spell = new SpellChecker("el");
+        this.spell = new SpellChecker("el-GR");
         this.manager=manager;
         for(int i=0;i<Keywords.length;i++) {
             if (!keywords[i].isEmpty()) {
@@ -40,7 +40,8 @@ class SearchContent {
 
                     Connection db_con = manager.getDb_con();
                     try {
-
+                        if(db_con.isClosed())
+                            manager.connect();
                         stmt = manager.getDb_con().prepareStatement(query);
 
                         List<Map<String, Object>> partres = null;

@@ -145,6 +145,10 @@ public class ScreenRedirect {
         MainScreen client=new MainScreen(typeuser,username,manager,key);
 
     }
+
+    public static void launchPartnerDetailsScreen(ExtPartner partner, Button optionButton){
+        PartnerDetailsScreen partnerDetailsScreen = new PartnerDetailsScreen(partner, optionButton);
+    }
 }
 
 
@@ -325,11 +329,9 @@ class ScreenConnector{
                 detailsBtn.setOnAction(e -> {
                     if (element instanceof ExtPartner) {
                         ExtPartner partnerElement = (ExtPartner) element;
-                        Button optionBtn = new Button("Οριστικοποίηση");
-                        optionBtn.setOnAction((event) -> {
-                            ScreenConnector.changeStatus(keySearch, manager, "Ενεργοποιημένο");
-                        });
-
+                        Button optionButton = new Button("Αποστολή Αιτήματος");
+                        optionButton.setOnAction((event)->{ScreenConnector.sendMessage(pkgMember, partnerElement, manager);});
+                        ScreenRedirect.launchPartnerDetailsScreen(partnerElement, optionButton);
 
                     }
                 });
@@ -518,6 +520,36 @@ class ScreenConnector{
         }
         return partid;
 
+    }
+
+    public static void sendMessage(Package selPackage, ExtPartner partner, DataSourceManager manager){
+        String invitationQueryQuarter = "INSERT INTO quarterPackage (packageID, quarterID, status) VALUES (?, ?, 'Σε Αναμονή');";
+        String invitationQueryPartner = "INSERT INTO partnerPackage (packageID, partnerID, status) VALUES (?, ?, 'Σε αναμονή');";
+
+        Connection db_con = manager.getDb_con();
+        try{
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+            PreparedStatement stmt1 = db_con.prepareStatement(invitationQueryPartner);
+            PreparedStatement stmt2 = db_con.prepareStatement(invitationQueryQuarter);
+            boolean result;
+            if(partner.ptype==partnerType.other){
+                 result=manager.commit(stmt1, new Object[]{selPackage.getPackageID(), partner.getPartnerID()});
+                 if(!result){
+                     ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος");
+                 }
+            }
+            else{
+                result=manager.commit(stmt2, new Object[]{selPackage.getPackageID(), partner.getPartnerID()});
+                if(!result){
+                    ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος");
+                }
+            }
+        }catch (SQLException sqle){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ "+sqle);
+        }
     }
 
 }
