@@ -11,6 +11,10 @@ public class Customer {
         StringWrapper cntnt = new StringWrapper("");
         ScreenRedirect.launchSearchScreen(cntnt,manager,this);
     }
+
+    public void prepareReservation(DataSourceManager manager) {
+        ScreenConnector.getBucketDetails(manager,this.customerId);
+    }
 }
 
 

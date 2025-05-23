@@ -85,14 +85,17 @@ public class ListScreen<T extends Searchable> extends Screen{
                 } else if (buttonName.equals(" ")) {
                     button.setVisible(false);
 
-                } else if (buttonName.equals("Αίτημα")) {
+                } else if (buttonName.equals("Αίτημα") || buttonName.equals("Πληρωμη")) {
                     List<Package> element = new ArrayList<>();
                     button.setOnAction(e->{
+                        Button sumbit=new Button("Submit");
                         element.add((Package) dataTable.getItems().get(getIndex()));
-                        PackageDetailsScreen pack=new PackageDetailsScreen(element, manager);
+                        PackageDetailsScreen pack=new PackageDetailsScreen(element.get(0), sumbit);
                     });
 
-                } else {
+                }
+
+                else {
                     System.out.println("setoptionsColumn");
                 }
             }

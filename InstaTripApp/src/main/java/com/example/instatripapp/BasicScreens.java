@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import org.mindrot.jbcrypt.BCrypt;
+
 
 
 import java.util.List;
@@ -104,11 +104,15 @@ class MainScreen extends ListScreen {
 
     public static void GetFunction(String Action){
         switch (Action){
-            case "Επιλογή Πακέτου":
-                Customer cust=(Customer)user;
+            case "Επιλογή Πακέτου": {
+                Customer cust = (Customer) user;
                 cust.searchpack(manager);
+            }
                 break;
-            case "Πληρωμή Πακέτου":
+            case "Πληρωμή Πακέτου":{
+                Customer cust=(Customer)user;
+                cust.prepareReservation(manager);
+            }
                 System.out.println("Πληρωμη Πακετου");
                 break;
                 //Customer.paypack();

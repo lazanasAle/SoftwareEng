@@ -1,13 +1,19 @@
 package com.example.instatripapp;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 public class ReservationFormScreen extends FormScreen {
-    public ReservationFormScreen() {
+    private Package pkg;
+    private DataSourceManager manager;
+
+    public ReservationFormScreen(Package pkg, DataSourceManager manager) {
         super("Κράτηση Διαμονής", 700, 600);
         renderGrid(400);
         renderLabel("Φόρμα Κράτησης Διαμονής");
+        this.manager=manager;
+        this.pkg=pkg;
         renderReservationForm();
     }
 
@@ -21,11 +27,22 @@ public class ReservationFormScreen extends FormScreen {
         Label dateLabel = new Label("Ημερομηνία:");
         TextField dateTextArea = new TextField();
         Label peopleLabel = new Label("Αριθμός Ατόμων:");
-        TextField peopleTextArea = new TextField();
-        // renderForm Details
+        TextField peopleTextArea = new TextField(String.valueOf(pkg.getPeople()));
+
+
+
+
         renderFormElements(
                 new Label[]{nameLabel, emailLabel, phoneLabel, dateLabel,peopleLabel},
                 new TextField[]{nameTextArea, emailTextArea, phoneTextArea, dateTextArea, peopleTextArea});
+
+
+        submitButton.setOnAction(e-> {
+            if (nameTextArea.getText().isEmpty() || emailTextArea.getText().isEmpty() || phoneTextArea.getText().isEmpty() || dateTextArea.getText().isEmpty() || peopleTextArea.getText().isEmpty()) {
+                ScreenRedirect.launchErrorMsg("Δεν εισαγεται στοιχεια σε ολα τα πεδία");
+            }
+            else {PaymentScreen paymentScreen=new PaymentScreen(pkg);}
+        });
     }
 
 }

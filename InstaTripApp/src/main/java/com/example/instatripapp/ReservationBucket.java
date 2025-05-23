@@ -32,6 +32,7 @@ public class ReservationBucket {
     private String description;
     DataSourceManager manager;
     private long CustomerId;
+    private long packid;
 
 
     private Package pack;
@@ -42,6 +43,7 @@ public class ReservationBucket {
         AgentName= pack.getName();
         description= pack.getDescription();
         location= pack.location;
+        packid= pack.getPackageID();
         this.manager=manager;
         GetCustomerName();
 
@@ -52,8 +54,25 @@ public class ReservationBucket {
         System.out.println("CustomerName: " + CustomerFirstName);
         System.out.println("CustomerName: " + CustomerLastName);
         System.out.println("CustomerId: " + CustomerId);
+        System.out.println("PackId: " + packid);
 
+        String query = "insert into ReservationBucket (PackageId, CustomerId, people, description, price, location) VALUES (?,?,?,?,?,?);";
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
 
+        try {
+            if(db_con.isClosed()){
+                manager.connect();
+            }
+            stmt = manager.getDb_con().prepareStatement(query);
+            boolean inserted=manager.commit(stmt, new Object[]{packid,CustomerId,3,description,price,location});
+            if(!inserted){
+                ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+            }
+        } catch (SQLException e) {
+
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
 
     }
     public void GetCustomerName(){

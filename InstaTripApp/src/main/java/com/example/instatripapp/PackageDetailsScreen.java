@@ -31,11 +31,13 @@ public class PackageDetailsScreen extends Screen {;
 
         Text priceText = new Text("Price: " + pkg.getPrice());
 
+        Text People = new Text("Reserved People: " + pkg.getPeople());
+
         // Add the package details to the grid
         Text[] labels = {idText, locationText, descriptionText, priceText};
 
         optionButton.addEventHandler(ActionEvent.ACTION, event -> {
-            this.stage.close();
+            ScreenRedirect.launchReservationForm(pkg,manager);
         });
 
         Button[] buttons = {optionButton};

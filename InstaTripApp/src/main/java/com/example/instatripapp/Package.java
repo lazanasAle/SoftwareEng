@@ -20,8 +20,8 @@ public class Package implements Searchable{
     private String description;
     private String name;
     private String email;
-
-
+    private long custId;
+    private int people;
 
     Package(TourAgency organizer, LivingQuarter shelter, Program program){
         this.organizer=organizer;
@@ -59,7 +59,7 @@ public class Package implements Searchable{
     }
 
     //Αυτη χρησιμοποιω
-    public void initializePackage(long key, LocalDate endDate, String name, String description, String email, LocalDate startDate, long maxParticipants,String location,double price,voyageStatus status){
+    public void initializePackage(long key, LocalDate endDate, String name, String description, String email, LocalDate startDate, long maxParticipants, String location, double price, voyageStatus status, long custId, int people){
         this.name=name;
         this.email=email;
         this.description=description;
@@ -70,6 +70,8 @@ public class Package implements Searchable{
         this.location=location;
         this.price=price;
         this.status=status;
+        this.custId=custId;
+        this.people=people;
     }
 
     public long getAgencyID(){
@@ -107,6 +109,11 @@ public class Package implements Searchable{
     public String getName() {
         return name;
     }
+    public long getCustomerId() {
+        return custId;
+    }
+    public long getPackageId(){return key;}
+    public int getPeople(){return people;}
 
     @Override
     public long getKey(){

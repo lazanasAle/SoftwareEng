@@ -133,6 +133,7 @@ class FilterScreen extends ListScreen {
 
         submit.setOnAction(e->{
             String Place=insert.getText();
+            System.out.println(Place);
             try {
                 FilterSearch filterSearch=new FilterSearch(Place,this.contents,manager,this.customer);
 
@@ -295,8 +296,16 @@ class PackageListScreen extends ListScreen<Package> {
             String[] cnamesArray = new String[columnNames.size()];
             columnNames.toArray(cnamesArray);
             renderArray(cnamesArray,separated,cnamesArray,buttonName);
-        }
-        else{System.out.println("rendePackageList");}
+        } else if (title.equals("Εμφανηση Πακετων καλαθιου")) {
+            renderLabel(title);
+            List<Package> separated = ScreenRedirect.send(packageQueryResult);
+            List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
+            String buttonName = "Πληρωμη";
+            String[] cnamesArray = new String[columnNames.size()];
+            columnNames.toArray(cnamesArray);
+            renderArray(cnamesArray,separated,cnamesArray,buttonName);
+
+        } else{System.out.println("rendePackageList");}
     }
 
     public void keywords_commit(Button ownerButton,DataSourceManager manager){

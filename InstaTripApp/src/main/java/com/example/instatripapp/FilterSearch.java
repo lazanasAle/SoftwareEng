@@ -21,7 +21,7 @@ class FilterSearch {
         this.manager=manager;
         this.customer=customer;
         queryResult=GetSearchWithPlace(content,place,manager);
-        ScreenRedirect.launchPackageListScreen(manager,queryResult,customer);
+        ScreenRedirect.launchPackageListScreen(manager,queryResult,customer,"Εμφανηση ενεργων πακετων για πελατη");
 
     }
     public FilterSearch(double price, StringWrapper content, DataSourceManager manager, Customer customer){
@@ -30,7 +30,7 @@ class FilterSearch {
         this.manager=manager;
         this.customer=customer;
         queryResult=GetSearchWithPrice(content,price,manager);
-        ScreenRedirect.launchPackageListScreen(manager,queryResult,customer);
+        ScreenRedirect.launchPackageListScreen(manager,queryResult,customer,"Εμφανηση ενεργων πακετων για πελατη");
     }
 
     public List<Map<String, Object>> GetSearchWithPlace(StringWrapper content,String place,DataSourceManager manager){

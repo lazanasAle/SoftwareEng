@@ -105,24 +105,55 @@ public class ScreenRedirect {
     public static List<Package> send(List<Map<String, Object>> results){
         List<Package> selectedPackages = new ArrayList<>();
         for(Map<String, Object> row : results){
-            long PackageID= (long) row.get("PackageID");
+
             String email = String.valueOf(row.get("email"));
             String name = String.valueOf(row.get("name"));
+
             Date start = (Date) row.get("startDate");
-            LocalDate startDate = start.toLocalDate();
+            LocalDate startDate = null;
+            if (start != null) {
+                startDate = start.toLocalDate();
+            } else {
+                // handle missing date - maybe set default or throw
+                System.out.println("startDate is missing");
+            }
+
             Date end = (Date) row.get("endDate");
-            LocalDate endDate = end.toLocalDate();
+            LocalDate endDate = null;
+            if (end != null) {
+                endDate = end.toLocalDate();
+            } else {
+                System.out.println("endDate is missing");
+            }
+
             String description=String.valueOf(row.get("description"));
-            Long maxParticipants = (Long) row.get("maxParticipants");
-            Long PackID;
+
+            Long maxParticipantsObj = (Long) row.get("maxParticipants");
+            long maxParticipants = (maxParticipantsObj != null) ? maxParticipantsObj : 0;
+
+            long PackID;
             double Price;
             String Location;
+            Long custId;
+            int people;
             voyageStatus status=voyageStatus.fromString(String.valueOf(row.get("status")));
 
-            if((Long)row.get("PackageID")!=null){
-                PackID=(Long)row.get("PackageID");
+            if((Long)row.get("CustomerId")!=null){
+                custId=(Long)row.get("CustomerId");
             }
-            else {PackID=null;}
+            else {custId=null;}
+
+            if(row.get("people")!=null)  people=(int)row.get("people");
+            else people=-1;
+
+            Object pkgId = row.get("PackageID");
+            if (pkgId == null) pkgId = row.get("PackageId");
+            if (pkgId == null) pkgId = row.get("ReservationBucket.PackageId");
+
+            PackID = (pkgId != null) ? (Long) pkgId : -1L;
+
+            System.out.println("Row keys: " + row.keySet());
+
             if(row.get("price")!=null){
                 Price=Double.parseDouble(row.get("price").toString());
             }
@@ -133,22 +164,24 @@ public class ScreenRedirect {
 
 
 
-            System.out.println("PackageID: " + PackageID);
+            System.out.println("PackageID: " + PackID);
             System.out.println("Email: " + email);
             System.out.println("Name: " + name);
             System.out.println("Start Date: " + startDate);
             System.out.println("End Date: " + endDate);
             System.out.println("Description: " + description);
             System.out.println("Max Participants: " + maxParticipants);
-            System.out.println("PackID: " + PackID);
+
             System.out.println("Price: " + Price);
             System.out.println("Location: " + Location);
             System.out.println("Status: " + status);
+            System.out.println("CustomerId: " + custId);
+            System.out.println("people: " + people);
             System.out.println("----------------------------------------");
 
 
             Package newVoyage = new Package();
-            newVoyage.initializePackage(PackageID,endDate,name,description,email,startDate,maxParticipants,Location,Price,status);
+            newVoyage.initializePackage(PackID,endDate,name,description,email,startDate,maxParticipants,Location,Price,status,custId,people);
             selectedPackages.add(newVoyage);
         }
         return selectedPackages;
@@ -183,12 +216,16 @@ public class ScreenRedirect {
 
         SearchPackageScreen searchScreen=new SearchPackageScreen(cntnt,customer,manager);
     }
-    public static void launchPackageListScreen(DataSourceManager manager,List<Map<String, Object>> result,Customer customer){
-        String title="Εμφανηση ενεργων πακετων για πελατη";
+    public static void launchPackageListScreen(DataSourceManager manager,List<Map<String, Object>> result,Customer customer,String title){
+
         PackageListScreen packageListScreen=new PackageListScreen(result,manager,title);
     }
     public static void launchFilterScreen(Customer client, DataSourceManager manager, StringWrapper content) {
         FilterScreen filter=new FilterScreen(content,manager,client);
+    }
+
+    public static void launchReservationForm(Package pkg, DataSourceManager manager) {
+        ReservationFormScreen reservationFormScreen=new ReservationFormScreen(pkg,manager);
     }
 }
 
@@ -594,6 +631,23 @@ class ScreenConnector{
     }
 
 
+    public static void getBucketDetails(DataSourceManager manager, long customerId) {
+        String query = "SELECT PackageId,CustomerId,people,description,price,location  from ReservationBucket where CustomerId=? ;";
+
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        try {
+            if(db_con.isClosed())
+                manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+            var ret = manager.fetch(stmt, new Object[]{customerId});
+            ScreenRedirect.launchPackageListScreen(manager,ret,null,"Εμφανηση Πακετων καλαθιου");
+
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+
+    }
 }
 
 
