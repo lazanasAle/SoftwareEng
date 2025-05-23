@@ -114,41 +114,11 @@ public class ScreenRedirect {
             LocalDate endDate = end.toLocalDate();
             String description=String.valueOf(row.get("description"));
             Long maxParticipants = (Long) row.get("maxParticipants");
-            Long PackID;
-            double Price;
-            String Location;
-            voyageStatus status=voyageStatus.fromString(String.valueOf(row.get("status")));
 
-            if((Long)row.get("PackageID")!=null){
-                PackID=(Long)row.get("PackageID");
-            }
-            else {PackID=null;}
-            if(row.get("price")!=null){
-                Price=Double.parseDouble(row.get("price").toString());
-            }
-            else{Price=-1;}
-
-            Location=String.valueOf(row.get("location"));
-
-
-
-
-            System.out.println("PackageID: " + PackageID);
-            System.out.println("Email: " + email);
-            System.out.println("Name: " + name);
-            System.out.println("Start Date: " + startDate);
-            System.out.println("End Date: " + endDate);
-            System.out.println("Description: " + description);
-            System.out.println("Max Participants: " + maxParticipants);
-            System.out.println("PackID: " + PackID);
-            System.out.println("Price: " + Price);
-            System.out.println("Location: " + Location);
-            System.out.println("Status: " + status);
-            System.out.println("----------------------------------------");
 
 
             Package newVoyage = new Package();
-            newVoyage.initializePackage(PackageID,endDate,name,description,email,startDate,maxParticipants,Location,Price,status);
+            newVoyage.initializePackage(PackageID,endDate,name,description,email,startDate,maxParticipants);
             selectedPackages.add(newVoyage);
         }
         return selectedPackages;
@@ -178,17 +148,6 @@ public class ScreenRedirect {
 
     public static void launchPartnerDetailsScreen(ExtPartner partner, Button optionButton){
         PartnerDetailsScreen partnerDetailsScreen = new PartnerDetailsScreen(partner, optionButton);
-    }
-    public static void launchSearchScreen(StringWrapper cntnt, DataSourceManager manager,Customer customer) {
-
-        SearchPackageScreen searchScreen=new SearchPackageScreen(cntnt,customer,manager);
-    }
-    public static void launchPackageListScreen(DataSourceManager manager,List<Map<String, Object>> result,Customer customer){
-        String title="Εμφανηση ενεργων πακετων για πελατη";
-        PackageListScreen packageListScreen=new PackageListScreen(result,manager,title);
-    }
-    public static void launchFilterScreen(Customer client, DataSourceManager manager, StringWrapper content) {
-        FilterScreen filter=new FilterScreen(content,manager,client);
     }
 }
 
@@ -385,7 +344,7 @@ class ScreenConnector{
 
         String query="Select PackageID,email,TourAgency.name,startDate,endDate,description,maxParticipants from TourAgency inner join Package on TourAgency.AgencyID=Package.AgencyID where Package.location=? and status='Σε εξέλιξη';";
         PreparedStatement stmt = null;
-        String title="Ενεργες εκδρομες στην περιοχη σας";
+
         Connection db_con = manager.getDb_con();
 
 
@@ -399,7 +358,7 @@ class ScreenConnector{
 
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{location});
 
-            PackageListScreen packageListScreen=new PackageListScreen(res,manager,title);
+            PackageListScreen packageListScreen=new PackageListScreen(res,manager);
 
 
         }catch (SQLException e){
@@ -414,11 +373,15 @@ class ScreenConnector{
     public static void keywords_transfer(String keywords,DataSourceManager manager) throws IOException {
         String keys[]=keywords.split(",");
         SearchContent searchContent=new SearchContent(keys,manager);
-
+        //testing
+        /*System.out.println(keywords);
+        for(int i=0;i< keys.length;i++){
+            System.out.println(keys[i]);
+        }*/
     }
 
     public static void activate(String nameExtPart, String nameAgency, String emailTourAgent,long packid,DataSourceManager manager) {
-        String query="select PartnerID,partnerType from ExtPartner where name=?;";
+        String query="select PartnerID from ExtPartner where name=?;";
         String status="Σε αναμονή";
         PreparedStatement stmt = null;
 
@@ -436,10 +399,9 @@ class ScreenConnector{
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{nameExtPart});
             Map<String, Object> row = res.get(0);
             long KeyPartner=(long)row.get("PartnerID");
-            String  type=String.valueOf(row.get("partnerType"));
             System.out.println(KeyPartner + packid);
 
-            Participation participation=new Participation(KeyPartner,status,packid,type);
+            Participation participation=new Participation(KeyPartner,status,packid);
 
 
 
@@ -589,10 +551,6 @@ class ScreenConnector{
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ "+sqle);
         }
     }
-    public static void afterCommitPerform(Customer client, DataSourceManager manager, StringWrapper content) {
-        ScreenRedirect.launchFilterScreen(client, manager, content);
-    }
-
 
 }
 

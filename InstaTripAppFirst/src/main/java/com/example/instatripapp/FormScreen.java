@@ -67,19 +67,10 @@ public class FormScreen extends Screen{
         submitButton = new Button("Submit");
         clearButton = new Button("Clear");
         clearButton.setOnAction(e-> clearFields(nameField));
-
-
-        if(screenTitle.equals("Εισαγωγη Συνεργασιας για Εξωτερικο Συνεργατη")){
-            submitButton.setVisible(false);
-            grid.add(clearButton,1,6);
-            GridPane.setHalignment(clearButton, javafx.geometry.HPos.CENTER);
-        }
-        else{
-            grid.add(submitButton, 0,9);
-            grid.add(clearButton, 1, 9);
-            GridPane.setHalignment(submitButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
-            GridPane.setHalignment(clearButton, javafx.geometry.HPos.CENTER);
-        }
+        grid.add(submitButton, 0,9);
+        grid.add(clearButton, 1, 9);
+        GridPane.setHalignment(submitButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
+        GridPane.setHalignment(clearButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
     }
     private void clearFields(TextField[] textFields) {
         for (TextField textField : textFields) {

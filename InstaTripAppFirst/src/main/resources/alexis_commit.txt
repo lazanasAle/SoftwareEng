@@ -1,0 +1,389 @@
++class: DataSourceManager {
+    attributes:
+
+    + private connection db_con;
+    + public boolean success;
+
+    methods:
+
+    + public void connect();
+    + public void end();
+    + public List<Map<String, Object>> fetch(PreparedStatement stmt, Object[] args) throws SQLException;
+    + public boolean commit(PreparedStatement stmt, Object[] args) throws SQLException;
+    + public Connection getDb_con();
+}
+
+
++ enum reservation_status{finished, canceled, waiting_payment};
+
+class: Customer{
+    attributes:
+
+    + private int key;
+    + public final String firstName;
+    + public final String lastName;
+    + public final String email;
+    + public final String location;
+
+    methods:
+
+    + public Customer(int key, String firstName, String lastName, String email, String location);
+
+}
+
+class: Reservation{
+    attributes:
+
+    + private int key;
+    + public int people;
+    + public reservation_status status;
+
+    methods:
+
+    - Reservation(Customer reserver);
+    + Reservation(int key, int people, Customer reserver, Voyage voyageReferred, Room room);
+
+}
+
+
+/*Η κλάση DataBaseTester είναι εκεί για να τεστάρει απλά την σύνδεση στην βάση (για αυτό πρόσθεσα demo users)*/
+
+2ND Commit
+
++interface: SpellCheckerIf {
+    attributes:
+
+    methods:
+
+    +public List<RuleMatch> check_spelling(String expression) throws IOException;
+    +public List<String> suggest_examples(List<RuleMatch> error_rules);
+}
+
+
++class: SpellChecker extends JLanguageTool implements SpellCheckerIf{
+    attributes:
+
+    methods:
+
+    +public void removeGrammarRules();
+    @Override
+    +public List<RuleMatch> check_spelling(String expression) throws IOException;
+    @Override
+    +public List<String> suggest_examples(List<RuleMatch> error_rules);\
+    +private void generateCombinations(String currentText, List<RuleMatch> rules, int ruleIndex, int offset, List<String> results);
+}
+
+
+3RD Commit
+
+/*Η κλάση Voyage μετωνομάστηκε σε Package για να ταιριάζει με τα έγγραφα*/
+
+class: ConfirmScreen{
+    attributes:
+
+    +private Consumer<Integer> onSubmit;
+
+    methods:
+
+    -public ConfirmScreen(String title, String message);
+    +public ConfirmScreen(String title, String message, Consumer<Integer> onSubmit);
+}
+
+
+class: CreatePackageForm{
+    attributes:
+
+    methods:
+
+    -public CreatePackageForm();
+    +public CreatePackageForm(TourAgency organizer, DataSourceManager manager);
+    -private void renderPackageForm();
+    +private void renderPackageForm(TourAgency organizer, DataSourceManager manager);
+    +private void createPackageListener(TextField regionTextArea, TextField priceTextArea, TextField availablePeopleTextArea, DatePicker startDateTextAea, DatePicker endDateTextArea, Package newVoyage, DataSourceManager manager);
+}
+
+class: FormScreen{
+    attributes:
+
+    +protected Button submitButton;
+    +protected Button clearButton;
+
+    methods:
+
+    +protected void renderFormElements(Label[] labels, TextField[] textFields, DatePicker[] datePickers, Label[] dateLabels);
+}
+
+
++class ScreenRedirect{
+    attributes:
+
+    methods:
+
+    +public static void getPackageMenu(Package refered, DataSourceManager manager) throws SQLException;
+    +public static void launchErrorMsg(String Mesg);
+
+}
+
+
++class ScreenConnector{
+    attributes:
+
+    methods:
+
+    +public static void InsertPackage(Package refered, DataSourceManager manager);
+
+}
+
+
+class TourAgency{
+    attributes:
+
+    +public int key;
+
+    methods:
+
+    +public TourAgency(int key);
+    +public void createPackage(DataSourceManager manager);
+}
+
+class Package{
+    attributes:
+
+    +public String location;
+    +public double price;
+    +private voyageStatus status;
+    +public int maxParticipants;
+    +public LocalDate startDate;
+    +public LocalDate endDate;
+
+    methods:
+
+    +public void initializePackage(String location, double price, int maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate)
+}
+
+/* οι κλάσεις για testing αφαιρέθηκαν */
+
+4th Commit
+
+
+class: DataSourceManager{
+    attributes:
+
+    +public String errMesg;
+}
+
+
+class: ScreenRedirect{
+    attributes:
+
+    methods:
+
+    +public static void launchPackageListScreen(List<Map<String, Object>> elements, TourAgency agency, PopupWindow pwindow);
+
+}
+
+class: ScreenConnector{
+    attributes:
+
+    methods:
+
+    +public static List<Package> visualisePackages(List<Map<String, Object>> packageQueryResult, TourAgency organizer);
+    +public static List<Map<String, Object>> takePackages(TourAgency agency, DataSourceManager manager);
+    +public static void changeStatus(long key, DataSourceManager manager, String NewStatus);
+
+}
+
++interface: Searchable{
+    attributes:
+
+    methods:
+
+    +public abstract long getKey();
+
+}
+
+
+class: Package implements Searchable{
+    attributes:
+
+    private long key;
+
+    methods:
+
+    +public long getAgencyID();
+
+    +public LocalDate getStartDate();
+
+    +public LocalDate getEndDate();
+
+    +public double getPrice();
+
+    +public String getLocation();
+
+    +public long getPackageID();
+
+    +public long getMaxParticipants();
+
+    +public String getStatus();
+
+    @Override
+    +public long getKey();
+
+}
+
+
+/*πλέον ο τύπος του ListScreen (η οποία είναι generic κλάση) πρέπει να υλοποιεί την interface searchable και χρησιμοποιείται ως actionListener των κουμπιών στο Popup η χρήση του κλειδιού του δεδομένου που επιλέχθηκε*/
+/*Οι συναρτήσεις που εμφανίζουν το tableview με τα πακέτα παίρνουν πλέον ως όρισμα και το αντίστοιχο Popup window*/
+
+
++interface: PopupWindow<T> {
+    attributes:
+
+    methods:
+
+    public void createPopup(T element, Node anchor, long keySearch);
+}
+
+
+class: ListScreen<T extends Searchable> extends Screen{
+    attributes:
+
+    methods:
+
+    +private void setOptionsColumn(TableColumn<T, Void> optionsColumn, String buttonName, TableView<T> dataTable, List<T> items, PopupWindow<T> options);
+    +private void populateTableView( TableView<T> dataTable, int widthOfScreen, String[] columnNames, String[] propertyNames)
+
+}
+
+
+class: PackageListScreen extends ListScreen<Package> {
+    attributes:
+
+    methods:
+
+    -public PackageListScreen();
+    +public PackageListScreen(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow popupWindow) ;
+    -public PackageListScreen();
+    +public PackageListScreen(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow popupWindow);
+    -private void renderPackageList();
+    +private void renderPackageList(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow pwindow);
+}
+
+
+enum: voyageStatus{
+    attributes:
+
+    methods:
+
+    +public static voyageStatus fromString(String dbValue);
+
+    +public static String toString(voyageStatus statusValue);
+
+}
+
+
+class: TourAgency{
+    attributes:
+
+    methods:
+
+    +public void finalizePackage(DataSourceManager manager);
+
+}
+
+
+/*Προστέθηκε και ένα trigger στην ΒΔ που ελέγχει την ύπαρξη ή μη συνεργασίας με ξενοδοχείο σε πακέτα που αφορούν εκδρομές μη μονοήμερες και ο υπεύθυνος προσπάθησε να ενεργοποιήσει*/
+
+5th Commit
+
+/*Προστέθηκε λειτουργικότητα της αναζήτησης στο use case οριστικοποίησης πακέτου. Πλέον ματσάρει με την περιγραφή του εγγράφου*/
+
+class: FormScreen {
+    attributes:
+
+    methods:
+
+    +protected void renderFormElements(Label[] labels, TextField[] textFields, DatePicker[] datePickers, Label[] dateLabels, TextArea[] areas, Label[] areaLabels);
+
+}
+
+class: Package {
+    attributes:
+
+    +private String description;
+
+    methods:
+
+    -public void initializePackage(String location, double price, long maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate, long key);
+    +public void initializePackage(String location, double price, long maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate, long key, String description);
+    +public void initializePackage(String location, double price, long maxParticipants, voyageStatus status, LocalDate startDate, LocalDate endDate, String description);
+    +public String getDescription();
+
+}
+
+class: PackageDetailsScreen{
+    attributes:
+
+    methods:
+
+    -public PackageDetailsScreen();
+    +public PackageDetailsScreen(Package pkg, Button optionBtn);
+    -private void renderPackageDetails();
+    +private void renderPackageDetails(Package pkg, Button optionButton);
+}
+
+class: ScreenRedirect{
+    attributes:
+
+    methods:
+
+    +public static void launchSearchScreen(SearchContent content, TourAgency organizer, DataSourceManager manager);
+    +public static void afterSearchPerform(TourAgency organizerMember, DataSourceManager manager, SearchContent content);
+
+}
+
++class: SearchContent{
+    attributes:
+
+    methods:
+
+    +public SearchContent(String text);
+}
+
+class: SearchHistoryScreen{
+    attributes:
+
+    methods:
+
+    -public SearchHistoryScreen();
+    +public SearchHistoryScreen(SearchContent content);
+    -protected void performSearch(String query);
+    +protected void performSearch(String query, SearchContent content);
+}
+
+class: SearchPackageScreen{
+    attributes:
+
+    +private TourAgency organizerMember;
+    +private DataSourceManager manager;
+
+    methods:
+    -public SearchPackageScreen();
+    +public SearchPackageScreen(SearchContent content, TourAgency organizerMember, DataSourceManager manager);
+    -protected void performSearch(String query);
+    +protected void performSearch(String query, SearchContent content) throws IOException;
+}
+
+class: SearchScreen{
+    attributes:
+
+    methods:
+
+    -public SearchScreen(String title, int widthOfScreen, int heightOfScreen);
+    +public SearchScreen(String title, int widthOfScreen, int heightOfScreen, SearchContent content);
+    -protected void setupSearchUI();
+    +protected void setupSearchUI(SearchContent content);
+    -protected void performSearch(String query);
+    +protected void performSearch(String query, SearchContent content) throws IOException;
+}
+

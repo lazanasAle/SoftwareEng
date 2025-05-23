@@ -41,9 +41,9 @@ class ResultScreen extends PackageListScreen {
     DataSourceManager manager;
 
     public ResultScreen(List<Map<String, Object>> result,DataSourceManager manager) {
-        super(result,manager,"Ενεργες εκδρομες στην περιοχη σας");
+        super(result,manager);
         this.manager=manager;
-        renderPackageList(result,manager,"Ενεργες εκδρομες στην περιοχη σας");
+        renderPackageList(result,manager);
         selectedPackages=ScreenRedirect.send(result);
         Button submit=new Button("Submit");
 
@@ -89,103 +89,18 @@ class PackageOptionsScreen extends ListScreen {
     }
 }
 class FilterScreen extends ListScreen {
-    StringWrapper contents;
-    DataSourceManager manager;
-    Customer customer;
-
-    public FilterScreen(StringWrapper contents, DataSourceManager manager, Customer client) {
+    public FilterScreen() {
         super("Φίλτρα", 700, 700);
-        this.contents=contents;
-        this.manager=manager;
-        this.customer=client;
         renderGrid(500);
         renderLabel("Επιλέξτε τα φίλτρα που θέλετε να εφαρμόσετε:");
         renderFilterOptions();
     }
     private void renderFilterOptions() {
-        Button Place=new Button("Περιοχη");
-        Button Price=new Button("Τιμη");
 
-        Place.setMaxWidth(Double.MAX_VALUE);
-        Price.setMaxWidth(Double.MAX_VALUE);
+        // Dummy data for demonstration
+        List<String> filterOptions = List.of("Φίλτρο 1", "Φίλτρο 2", "Φίλτρο 3");
 
-        GridPane.setHalignment(Place, javafx.geometry.HPos.CENTER);
-        GridPane.setHalignment(Price, javafx.geometry.HPos.CENTER);
-
-        Place.setOnAction(e->{
-            takePlace();
-        });
-        Price.setOnAction(e->{
-            takePrice();
-        });
-
-
-        grid.add(Place, 0, 1, 2, 1);
-        grid.add(Price, 0, 2, 2, 1);
-
-    }
-    public void takePlace(){
-        Stage KeyPage=new Stage();
-
-        Label title=new Label("Εισαγεται την περιοχη");
-        TextField insert=new TextField("Περιοχη");
-        Button submit=new Button("Submit");
-
-        submit.setOnAction(e->{
-            String Place=insert.getText();
-            try {
-                FilterSearch filterSearch=new FilterSearch(Place,this.contents,manager,this.customer);
-
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            finally{
-                KeyPage.close();
-            }
-        });
-
-        VBox layout = new VBox(15);
-        layout.setPadding(new Insets(20));
-        layout.setAlignment(Pos.CENTER);
-
-        layout.getChildren().addAll(title,insert,submit);
-
-        Scene scene = new Scene(layout, 300, 200);
-
-        KeyPage.setScene(scene);
-        KeyPage.initModality(Modality.APPLICATION_MODAL); // Block other windows
-        KeyPage.showAndWait();
-    }
-    public void takePrice(){
-        Stage KeyPage=new Stage();
-
-        Label title=new Label("Εισαγεται μεγιστη τιμη για πακετο");
-        TextField insert=new TextField("Τιμη");
-        Button submit=new Button("Submit");
-
-        submit.setOnAction(e->{
-            double Price=Double.parseDouble(insert.getText());
-            try {
-                FilterSearch filterSearch=new FilterSearch(Price,this.contents,manager,this.customer);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            finally{
-                KeyPage.close();
-            }
-        });
-
-        VBox layout = new VBox(15);
-        layout.setPadding(new Insets(20));
-        layout.setAlignment(Pos.CENTER);
-
-        layout.getChildren().addAll(title,insert,submit);
-
-        Scene scene = new Scene(layout, 300, 200);
-
-        KeyPage.setScene(scene);
-        KeyPage.initModality(Modality.APPLICATION_MODAL); // Block other windows
-        KeyPage.showAndWait();
+        renderList(filterOptions);
     }
 }
 
@@ -237,7 +152,7 @@ class PaidPackageList extends ListScreen{
 }
 class PackageListScreen extends ListScreen<Package> {
     DataSourceManager manager;
-    String title;
+
     public PackageListScreen(List<Map<String, Object>> packageQueryResult, TourAgency organizer, PopupWindow popupWindow) {
         super("Λίστα Πακέτων", 1000, 950);
         renderGrid(900);
@@ -260,43 +175,34 @@ class PackageListScreen extends ListScreen<Package> {
     }
 
 
-    public PackageListScreen(List<Map<String, Object>> result,DataSourceManager manager,String title) {
-        super("Λίστα Πακέτων", 1400, 950);
+    public PackageListScreen(List<Map<String, Object>> result,DataSourceManager manager) {
+        super("Λίστα Πακέτων", 1000, 950);
         renderGrid(900);
         this.manager=manager;
-        this.title=title;
-        renderPackageList(result,manager,title);
+        renderPackageList(result,manager);
     }
 
-    public void renderPackageList(List<Map<String, Object>> packageQueryResult,DataSourceManager manager,String title) {
+    public void renderPackageList(List<Map<String, Object>> packageQueryResult,DataSourceManager manager) {
+        renderLabel("Ενεργες εκδρομες στην περιοχη σας");
+        List<Package> separated = ScreenRedirect.send(packageQueryResult);
 
-        if(title.equals("Ενεργες εκδρομες στην περιοχη σας")){
-            renderLabel(title);
-            List<Package> separated = ScreenRedirect.send(packageQueryResult);
+        List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
+        String buttonName = "Αιτήμα";
+        String[] cnamesArray = new String[columnNames.size()];
+        columnNames.toArray(cnamesArray);
+        renderArray(cnamesArray,separated, cnamesArray,buttonName);
 
-            List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
 
-            String[] cnamesArray = new String[columnNames.size()];
 
-            columnNames.toArray(cnamesArray);
+        Button keywords=new Button("Λεξεις Κλειδία");
 
-            renderArray(cnamesArray,separated, cnamesArray,"Αίτημα");
 
-            Button keywords=new Button("Λεξεις Κλειδία");
 
-            grid.add(keywords,0,10);
-            keywords.setOnAction(e->keywords_commit(keywords,manager));
+        grid.add(keywords,0,10);
 
-        } else if (title.equals("Εμφανηση ενεργων πακετων για πελατη")) {
-            renderLabel(title);
-            List<Package> separated = ScreenRedirect.send(packageQueryResult);
-            List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
-            String buttonName = "Καλαθι";
-            String[] cnamesArray = new String[columnNames.size()];
-            columnNames.toArray(cnamesArray);
-            renderArray(cnamesArray,separated,cnamesArray,buttonName);
-        }
-        else{System.out.println("rendePackageList");}
+        keywords.setOnAction(e->keywords_commit(keywords,manager));
+
+
     }
 
     public void keywords_commit(Button ownerButton,DataSourceManager manager){

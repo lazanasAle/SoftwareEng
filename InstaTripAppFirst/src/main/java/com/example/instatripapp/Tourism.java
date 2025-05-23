@@ -64,15 +64,14 @@ class Program{
 
 
 class Participation {
-    //public final TourAgency organizer;
+    //public final TourAgency organizer; //Βγαζει error
     public ExtPartner partner;
     public LivingQuarter shelter;
     private DataSourceManager manager;
     private long ExtPartnerID;
     private String Status;
     private long PackID;
-    private String type;
-    private partnerType modtype;
+
 
 
 
@@ -81,23 +80,15 @@ class Participation {
         this.partner=partner;
     }
 
-    Participation(long ExtPartnerID, String Status, long PackID, String type){
+    Participation(long ExtPartnerID,String Status,long PackID){
         this.ExtPartnerID=ExtPartnerID;
         this.Status=Status;
         this.PackID=PackID;
-        this.type=type;
-        this.modtype=partnerType.fromString(type);
         SaveToDb();
     }
 
     public void SaveToDb() {
-        String query;
-        if(modtype==partnerType.quarter){
-            query = "insert into quarterPackage (quarterID ,packageID,status) values (?,?,?)";
-        }
-        else{
-            query = "insert into partnerPackage (partnerID,packageID,status) values (?,?,?)";
-        }
+        String query = "insert into partnerPackage (partnerID,packageID,status) values (?,?,?)";
 
         PreparedStatement stmt = null;
         manager=new DataSourceManager();
@@ -107,14 +98,17 @@ class Participation {
         try {
             manager.connect();
             stmt = manager.getDb_con().prepareStatement(query);
+        } catch (SQLException e) {
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        try {
             boolean inserted=manager.commit(stmt, new Object[]{this.ExtPartnerID,this.PackID,this.Status});
             if(!inserted){
-                ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ 2");
+                ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
             }
         } catch (SQLException e) {
-            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ 1");
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
-
 
     }
 

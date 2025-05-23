@@ -87,7 +87,7 @@ class MainScreen extends ListScreen {
     static Object user;
     long particularId;
 
-
+    //crete 3 constructrors one for each user
 
     public MainScreen(String usertype,String name,DataSourceManager manager,long userID) {
         // screen methods
@@ -105,8 +105,8 @@ class MainScreen extends ListScreen {
     public static void GetFunction(String Action){
         switch (Action){
             case "Επιλογή Πακέτου":
-                Customer cust=(Customer)user;
-                cust.searchpack(manager);
+                //Customer.searchpack();
+                System.out.println("Επιλογη Πακετου");
                 break;
             case "Πληρωμή Πακέτου":
                 System.out.println("Πληρωμη Πακετου");
@@ -146,7 +146,7 @@ class MainScreen extends ListScreen {
             String[] menuOptions = {"Επιλογή Πακέτου", "Πληρωμή Πακέτου"};
             renderListMain(Arrays.asList(menuOptions));
             particularId=ScreenConnector.GetPartID(manager,usertype,userID);
-            user=new Customer(particularId);
+            user=new Customer();
 
         } else if ("tour_office".equals(this.usertype)) {
             String[] menuOptions = {"Δημιουργια Πακετου","Τα πακετα μου"};

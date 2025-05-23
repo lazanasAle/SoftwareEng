@@ -4,11 +4,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.instatripapp.MainScreen.manager;
-
 // Strongly recommend to do this class into 2 classes
 // One is ArrayScreen and the other is ListScreen
 // Recommendation: is to put ListScreen to be a superclass to PackageDetailsScreen, PaymentScreen,FilterScreen,
@@ -59,8 +55,7 @@ public class ListScreen<T extends Searchable> extends Screen{
             GridPane.setHalignment(button, javafx.geometry.HPos.CENTER); // Center the button in the grid cell
         }
     }
-    private void setOptionsColumn(TableColumn<T, Void> optionsColumn, String buttonName, TableView<T> dataTable, List<T> items, PopupWindow<T> options) {
-
+    private void setOptionsColumn(TableColumn<T, Void> optionsColumn, String buttonName, TableView<T> dataTable, List<T> items, PopupWindow<T> options){
         optionsColumn.setCellFactory(col -> new TableCell<>() {
             private final Button button = new Button(buttonName);
 
@@ -72,29 +67,19 @@ public class ListScreen<T extends Searchable> extends Screen{
                 } else {
                     setGraphic(button);
                 }
-                if (options != null) {
+                if(options!=null) {
                     button.setOnAction(e -> {
                         T element = dataTable.getItems().get(getIndex());
                         options.createPopup(element, button, element.getKey());
                     });
-                } else if (buttonName.equals("Καλαθι")) {
-                    button.setOnAction((e -> {
-                        Package element= (Package) dataTable.getItems().get(getIndex());
-                        ReservationBucket bucket=new ReservationBucket(element,manager);
-                    }));
-                } else if (buttonName.equals(" ")) {
-                    button.setVisible(false);
-
-                } else if (buttonName.equals("Αίτημα")) {
-                    List<Package> element = new ArrayList<>();
-                    button.setOnAction(e->{
-                        element.add((Package) dataTable.getItems().get(getIndex()));
-                        PackageDetailsScreen pack=new PackageDetailsScreen(element, manager);
-                    });
-
-                } else {
-                    System.out.println("setoptionsColumn");
                 }
+                else if (buttonName.equals("Αιτήμα")){
+                    button.setOnAction((e->{
+
+                        //Pacsend_coop_suggestion_select()
+                    }));
+                }
+                else System.out.println("NOt Valid");
             }
         });
 
