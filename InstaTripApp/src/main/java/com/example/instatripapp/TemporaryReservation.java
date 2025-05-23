@@ -38,11 +38,15 @@ class TemporaryReservation {
             if(!inserted){
                 ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
             }
+            ReadyToPay();
         } catch (SQLException e) {
 
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
 
+    }
+    public void ReadyToPay(){
+        CardScreen cardScreen=new CardScreen(pkg);
     }
 
 }

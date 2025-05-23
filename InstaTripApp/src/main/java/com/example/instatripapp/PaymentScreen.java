@@ -7,6 +7,7 @@ import javafx.scene.text.Text;
 
 public class PaymentScreen extends Screen {
     private  Package pkg;
+
     public PaymentScreen(Package pkg) {
         super("Μενού Πληρωμής", 1000, 750);
         renderGrid(300);
@@ -33,9 +34,11 @@ public class PaymentScreen extends Screen {
         System.out.println("Επιλεγμένος τρόπος πληρωμής: " + method);
         if(method.equals("Κάρτα")){
             TemporaryReservation temp=new TemporaryReservation(pkg);
+
         }
         else{
             FinalReservation reservation=new FinalReservation(pkg);
+
         }
 
     }
