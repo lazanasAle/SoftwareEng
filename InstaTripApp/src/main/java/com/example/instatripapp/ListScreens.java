@@ -392,23 +392,25 @@ class SuggestionScreen extends Screen{
         }
     }
 }
-class CooperationListScreen extends ListScreen {
-    public CooperationListScreen() {
-        super("Λίστα Συνεργατών", 700, 700);
-        renderGrid(500);
-        renderCooperationList();
+
+class RequestListScreen extends ListScreen<Request> {
+    public RequestListScreen(List<Map<String, Object>> requests, PopupWindow popupWindow) {
+        super("Λίστα Συνεργατών", 1000, 700);
+        renderGrid(900);
+        renderRequestList(requests, popupWindow);
     }
 
-    private void renderCooperationList() {
-        renderLabel("Η Λίστα συνεργατών σας");
-        QuarterGUI[] quarters = {
-                new QuarterGUI("Διαμέρισμα 1", "Αθήνα", "Διαμέρισμα"),
-                new QuarterGUI("Διαμέρισμα 2", "Θεσσαλονίκη", "Διαμέρισμα"),
-                new QuarterGUI("Διαμέρισμα 3", "Πάτρα", "Διαμέρισμα")
-        };
-        String[] columnNames = {"Όνομα Διαμερίσματος", "Περιοχή", "Τύπος Διαμερίσματος"};
-        String[] propertyNames = {"apartmentName", "region", "apartmentType"};
-        String buttonName = "Επιλογή";
-        renderArray(columnNames, Arrays.asList(quarters), propertyNames, buttonName, null);
+    private void renderRequestList(List<Map<String, Object>> requests, PopupWindow popupWindow) {
+        List<Request> requestList = ScreenConnector.visualiseRequests(requests);
+        try {
+            List<String> columnNames = new ArrayList<>(requests.getFirst().keySet());
+            String buttonName = "Λεπτομέρειες";
+            String[] cnamesArray = new String[columnNames.size()];
+            columnNames.toArray(cnamesArray);
+            renderArray(cnamesArray, requestList, cnamesArray, buttonName, popupWindow);
+        }catch (NoSuchElementException exe){
+            ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+        }
+
     }
 }

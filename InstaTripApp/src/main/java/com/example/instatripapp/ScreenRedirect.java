@@ -220,6 +220,11 @@ public class ScreenRedirect {
 
         PackageListScreen packageListScreen=new PackageListScreen(result,manager,title);
     }
+
+    public static void launchRequestListScreen(List<Map<String, Object>> elements, PopupWindow popupWindow){
+        RequestListScreen requestListScreen = new RequestListScreen(elements, popupWindow);
+    }
+
     public static void launchFilterScreen(Customer client, DataSourceManager manager, StringWrapper content) {
         FilterScreen filter=new FilterScreen(content,manager,client);
     }
@@ -392,6 +397,42 @@ class ScreenConnector{
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
         return null;
+    }
+
+    public static  List<Map<String, Object>> takeRequests(TourAgency agency, DataSourceManager manager){
+        String query = "SELECT cooperator_name AS cooperatorName, package_coop AS packageID, cooperation_status AS status, cooperationID AS requestID, AgencyID AS agencyID, source_type AS ptype FROM PartnerCooperationView WHERE agencyID=?";
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        try {
+            if(db_con.isClosed())
+                manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        try {
+            var ret = manager.fetch(stmt, new Object[]{agency.key});
+            System.out.println(ret.isEmpty());
+            return ret;
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        return null;
+    }
+
+    public static List<Request> visualiseRequests(List<Map<String, Object>> requestQueryResult){
+        List<Request> selectedRequests = new ArrayList<>();
+        for(Map<String, Object> row : requestQueryResult){
+            String cooperatorName = String.valueOf(row.get("cooperatorName"));
+            Long packageID = (Long) row.get("packageID");
+            String status = String.valueOf(row.get("status"));
+            Long reqID = (Long) row.get("requestID");
+            Long agencyID = (Long) row.get("agencyID");
+            String type = String.valueOf(row.get("ptype"));
+            Request nreq = new Request(cooperatorName, packageID, RequestStatus.fromString(status), reqID, agencyID, partnerType.fromString(type));
+            selectedRequests.add(nreq);
+        }
+        return selectedRequests;
     }
 
 

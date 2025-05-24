@@ -116,15 +116,20 @@ class MainScreen extends ListScreen {
                 System.out.println("Πληρωμη Πακετου");
                 break;
                 //Customer.paypack();
-            case "Δημιουργια Πακετου":{
+            case "Δημιουργία Πακέτου":{
                 TourAgency Agent=(TourAgency) user;
                 Agent.createPackage(manager);
                 //System.out.println("Δημιουργια Πακετου");
-                }
-                break;
-            case "Τα πακετα μου": {
+            }
+            break;
+            case "Τα πακέτα μου": {
                 TourAgency Agent = (TourAgency) user;
                 Agent.finalizePackage(manager);
+            }
+            break;
+            case "Αιτήματα Συνεργασίας" : {
+                TourAgency Agent = (TourAgency) user;
+                Agent.replyToRequest(manager);
             }
                 break;
             case "Αναζητηση Συνεργατη": {
@@ -153,7 +158,7 @@ class MainScreen extends ListScreen {
             user=new Customer(particularId);
 
         } else if ("tour_office".equals(this.usertype)) {
-            String[] menuOptions = {"Δημιουργια Πακετου","Τα πακετα μου"};
+            String[] menuOptions = {"Δημιουργία Πακέτου","Τα πακέτα μου", "Αιτήματα Συνεργασίας"};
             renderListMain(Arrays.asList(menuOptions));
             particularId=ScreenConnector.GetPartID(manager,usertype,userID);
             user=new TourAgency(particularId);

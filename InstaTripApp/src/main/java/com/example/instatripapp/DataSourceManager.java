@@ -63,7 +63,7 @@ public class DataSourceManager {
             while(rs.next()){
                 Map<String, Object> row = new HashMap<>();
                 for(int j=1; j<=columnCount; ++j){
-                    row.put(rsMetaData.getColumnName(j), rs.getObject(j));
+                    row.put(rsMetaData.getColumnLabel(j), rs.getObject(j));
                 }
                 results.add(row);
             }

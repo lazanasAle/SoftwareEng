@@ -41,6 +41,9 @@ public class PackageDetailsScreen extends Screen {;
                 ScreenRedirect.launchReservationForm(pkg, manager);
             });
         }
+        optionButton.addEventHandler(ActionEvent.ACTION, event -> {
+            this.stage.close();
+        });
 
         Button[] buttons = {optionButton};
         addElementsToGrid(labels, buttons);

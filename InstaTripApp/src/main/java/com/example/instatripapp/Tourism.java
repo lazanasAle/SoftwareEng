@@ -1,5 +1,8 @@
 package com.example.instatripapp;
 
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+
 import java.lang.constant.Constable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -52,6 +55,20 @@ class TourAgency{
     public void finalizePackage(DataSourceManager manager){
         StringWrapper cntnt = new StringWrapper("");
         ScreenRedirect.launchPackageSearchScreen(cntnt, this, manager);
+    }
+
+    public void replyToRequest(DataSourceManager manager){
+        List<Map<String, Object>> requests = ScreenConnector.takeRequests(this, manager);
+        ScreenRedirect.launchRequestListScreen(requests, new PopupWindow<>() {
+            @Override
+            public void createPopup(Object element, Node anchor, long keySearch) {
+                Button cancelButton = new Button("Απόρριψη");
+                cancelButton.setStyle("-fx-background-color: red; -fx-text-fill: white");
+                Button approveButton = new Button("Αποδοχή");
+                approveButton.setStyle("-fx-background-color: green; -fx-text-fill: white");
+                ScreenRedirect.createPopup(element, anchor, new Button[]{approveButton, cancelButton});
+            }
+        });
     }
 }
 
