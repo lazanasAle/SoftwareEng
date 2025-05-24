@@ -15,7 +15,7 @@ public class CardDescription {
         this.cvv=cvv;
         this.pkg=pkg;
         this.owner_name=owner_name;
-        con=bank.checkCard(this);
+        bank=new BankCommunicationAPI();
         System.out.println(con);
         confirm_reject();
     }
@@ -30,7 +30,10 @@ public class CardDescription {
     public short getCvv(){
         return cvv;
     }
+
     public void confirm_reject(){
+        con=bank.checkCard(this);
+        System.out.println(con);
         if(con){
             Random rand = new Random();
             chargeCard(this,rand.nextDouble(500));
