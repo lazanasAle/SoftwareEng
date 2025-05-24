@@ -35,10 +35,12 @@ public class PackageDetailsScreen extends Screen {;
 
         // Add the package details to the grid
         Text[] labels = {idText, locationText, descriptionText, priceText};
+        if (optionButton.getText().equals("Submit")) {
+            optionButton.addEventHandler(ActionEvent.ACTION, event -> {
 
-        optionButton.addEventHandler(ActionEvent.ACTION, event -> {
-            ScreenRedirect.launchReservationForm(pkg,manager);
-        });
+                ScreenRedirect.launchReservationForm(pkg, manager);
+            });
+        }
 
         Button[] buttons = {optionButton};
         addElementsToGrid(labels, buttons);
