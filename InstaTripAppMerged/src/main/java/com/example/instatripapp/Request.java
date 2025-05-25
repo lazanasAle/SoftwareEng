@@ -34,6 +34,7 @@ public class Request implements Searchable{
     private long requestID;
     private long agencyID;
     private partnerType ptype;
+    private String name;
 
 
 
@@ -44,6 +45,14 @@ public class Request implements Searchable{
         this.status=status;
         this.ptype=ptype;
         this.agencyID=agencyID;
+    }
+
+    public Request(String name, long packageID, RequestStatus status, long requestID){
+        this.name=name;
+        this.packageID=packageID;
+        this.status=status;
+        this.requestID=requestID;
+
     }
 
 
@@ -75,4 +84,6 @@ public class Request implements Searchable{
     public String getPtype(){
         return partnerType.toString(ptype);
     }
+
+    public String getName(){return name;}
 }

@@ -13,6 +13,7 @@ import static com.example.instatripapp.MainScreen.manager;
 // One is ArrayScreen and the other is ListScreen
 // Recommendation: is to put ListScreen to be a superclass to PackageDetailsScreen, PaymentScreen,FilterScreen,
 public class ListScreen<T extends Searchable> extends Screen{
+
     public ListScreen(String title, int width, int height) {
         // screen methods
         super(title, width, height);
@@ -92,7 +93,13 @@ public class ListScreen<T extends Searchable> extends Screen{
                         element.add((Package) dataTable.getItems().get(getIndex()));
                         PackageDetailsScreen pack=new PackageDetailsScreen(element.get(0), sumbit);
                     });
-
+                }
+                else if(buttonName.equals("Ακυρωση")){
+                    List<Request> element = new ArrayList<>();
+                    button.setOnAction(e->{
+                        element.add((Request) dataTable.getItems().get(getIndex()));
+                        ScreenRedirect.show_cancelation_form(element.get(0),manager);
+                    });
                 }
 
                 else {

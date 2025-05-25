@@ -86,6 +86,13 @@ public class ExtPartner implements Searchable {
 
     }
 
+    public void RequestShow(DataSourceManager manager){
+        List<Map<String, Object>> requests = ScreenConnector.ShowReq(manager,this);
+        ScreenRedirect.launchRequestListScreenEXT(requests);
+        //create request window
+
+    }
+
     @Override
     public long getKey() {
         return partner_id;

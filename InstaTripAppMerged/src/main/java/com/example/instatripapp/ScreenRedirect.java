@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 
 public class ScreenRedirect {
@@ -225,12 +226,20 @@ public class ScreenRedirect {
         RequestListScreen requestListScreen = new RequestListScreen(elements, popupWindow);
     }
 
+    public static void launchRequestListScreenEXT(List<Map<String, Object>> elements){
+        RequestListScreen requestListScreen = new RequestListScreen(elements);
+    }
+
     public static void launchFilterScreen(Customer client, DataSourceManager manager, StringWrapper content) {
         FilterScreen filter=new FilterScreen(content,manager,client);
     }
 
     public static void launchReservationForm(Package pkg, DataSourceManager manager) {
         ReservationFormScreen reservationFormScreen=new ReservationFormScreen(pkg,manager);
+    }
+
+    public static void show_cancelation_form(Request element,DataSourceManager manager) {
+        CancelationForm cancelationForm=new CancelationForm(element,manager);
     }
 }
 
@@ -420,6 +429,8 @@ class ScreenConnector{
         return null;
     }
 
+
+
     public static List<Request> visualiseRequests(List<Map<String, Object>> requestQueryResult){
         List<Request> selectedRequests = new ArrayList<>();
         for(Map<String, Object> row : requestQueryResult){
@@ -430,6 +441,26 @@ class ScreenConnector{
             Long agencyID = (Long) row.get("agencyID");
             String type = String.valueOf(row.get("ptype"));
             Request nreq = new Request(cooperatorName, packageID, RequestStatus.fromString(status), reqID, agencyID, partnerType.fromString(type));
+            selectedRequests.add(nreq);
+        }
+        return selectedRequests;
+    }
+
+    public static List<Request> sendReq(List<Map<String, Object>> requestQueryResult){
+        List<Request> selectedRequests = new ArrayList<>();
+        for(Map<String, Object> row : requestQueryResult){
+
+            Long reqID=(Long) row.get("requestID");
+            String cooperatorName = String.valueOf(row.get("name"));
+            Long packageID = (Long) row.get("packageID");
+            String status = String.valueOf(row.get("status"));
+
+            System.out.println("Cooperator Name: " + cooperatorName);
+            System.out.println("Package ID: " + packageID);
+            System.out.println("Status: " + status);
+
+
+            Request nreq = new Request(cooperatorName, packageID, RequestStatus.fromString(status),reqID);
             selectedRequests.add(nreq);
         }
         return selectedRequests;
@@ -688,6 +719,40 @@ class ScreenConnector{
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
 
+    }
+
+    public static List<Map<String, Object>> ShowReq(DataSourceManager manager,ExtPartner partner) {
+        String query="select  requestID,name,packageID,status  from partnerPackage inner join  ExtPartner on partnerPackage.partnerID = ExtPartner.PartnerID where ExtPartner.PartnerID=? UNION select requestID,name,packageID,status from quarterPackage inner join ExtPartner on quarterPackage.quarterID = ExtPartner.PartnerID where ExtPartner.PartnerID=?;";
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        try {
+            if(db_con.isClosed())
+                manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+            var ret = manager.fetch(stmt, new Object[]{partner.getPartnerID(),partner.getPartnerID()});
+
+            for (Map<String, Object> row : ret) {
+                Long id=(Long) row.get("requestID");
+                String cooperatorName = String.valueOf(row.get("name"));
+                Long packageID = row.get("packageID") != null ? (Long) row.get("packageID") : null;
+                String status = String.valueOf(row.get("status"));
+
+                System.out.println("RequestID: " + id + "Cooperator: " + cooperatorName + " | Package ID: " + packageID + " | Status: " + status);
+            }
+
+            return ret;
+
+
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        return null;
+    }
+
+    public static boolean check_respect(String text) {
+        Random random = new Random();
+        boolean valid = random.nextBoolean();
+        return valid;
     }
 }
 

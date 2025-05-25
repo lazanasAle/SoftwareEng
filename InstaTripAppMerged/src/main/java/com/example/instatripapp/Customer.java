@@ -15,6 +15,7 @@ public class Customer {
     public void prepareReservation(DataSourceManager manager) {
         ScreenConnector.getBucketDetails(manager,this.customerId);
     }
+
 }
 
 

@@ -413,4 +413,24 @@ class RequestListScreen extends ListScreen<Request> {
         }
 
     }
+
+    public RequestListScreen(List<Map<String, Object>> requests) {
+        super("Λιστα αιτηματων για συνεργασια", 1000, 700);
+        renderGrid(900);
+        renderRequestList(requests);
+    }
+
+    private void renderRequestList(List<Map<String, Object>> requests) {
+        List<Request> requestList = ScreenConnector.sendReq(requests);
+        try {
+            List<String> columnNames = new ArrayList<>(requests.getFirst().keySet());
+            String buttonName = "Ακυρωση";
+            String[] cnamesArray = new String[columnNames.size()];
+            columnNames.toArray(cnamesArray);
+            renderArray(cnamesArray, requestList, cnamesArray, buttonName);
+        }catch (NoSuchElementException exe){
+            ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+        }
+
+    }
 }

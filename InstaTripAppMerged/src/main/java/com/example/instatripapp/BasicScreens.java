@@ -137,6 +137,10 @@ class MainScreen extends ListScreen {
                 extPartner.SearchCooparation(manager);
             }
                 break;
+            case "Προβολη Συνεργασίας με Γραφεία":{
+                ExtPartner extPartner=(ExtPartner) user;
+                extPartner.RequestShow(manager);
+            }
             case "Τροποιηση Συνεργασιας":
                 System.out.println("Πληρωμη Πακετου");
                 break;
@@ -163,7 +167,7 @@ class MainScreen extends ListScreen {
             particularId=ScreenConnector.GetPartID(manager,usertype,userID);
             user=new TourAgency(particularId);
         } else if ("partner".equals(this.usertype)) {
-            String[] menuOptions = {"Αναζητηση Συνεργατη","Τροποιηση Συνεργασιας","Ακυρωση Συνεργαιας"};
+            String[] menuOptions = {"Αναζητηση Συνεργατη","Προβολη Συνεργασίας με Γραφεία","Τροποιηση Συνεργασιας","Ακυρωση Συνεργαιας"};
             renderListMain(Arrays.asList(menuOptions));
             particularId=ScreenConnector.GetPartID(manager,usertype,userID);
             user=new ExtPartner(particularId,manager);
