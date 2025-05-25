@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import static com.example.instatripapp.RequestListScreen.getExt;
+
 
 public class ScreenRedirect {
     public static void getCreatePackageScreen(TourAgency agency, DataSourceManager manager){
@@ -225,8 +227,8 @@ public class ScreenRedirect {
         RequestListScreen requestListScreen = new RequestListScreen(elements, popupWindow);
     }
 
-    public static void launchRequestListScreenEXT(List<Map<String, Object>> elements){
-        RequestListScreen requestListScreen = new RequestListScreen(elements);
+    public static void launchRequestListScreenEXT(List<Map<String, Object>> elements, String title, ExtPartner extPartner){
+        RequestListScreen requestListScreen = new RequestListScreen(elements,title,extPartner);
     }
 
     public static void launchFilterScreen(Customer client, DataSourceManager manager, StringWrapper content) {
@@ -755,6 +757,38 @@ class ScreenConnector{
     }
 
 
+    public static void check_coop_status(Request request, DataSourceManager manager) {
+        String status = request.getStatus();
+        if (status.equals("Ακυρωμένη")) {
+            ScreenRedirect.launchErrorMsg("Δεν μπορειτε να τροποποιησετε μια ηδη ακυρωμενη αιτηση");
+        } else {
+            ExtPartner ext = getExt();
+            Long packageID = (Long) request.getPackageID();
+
+            String q = "Select PackageID,email,TourAgency.name,startDate,endDate,description,maxParticipants from TourAgency inner join Package on TourAgency.AgencyID=Package.AgencyID where Package.PackageID=?;";
+            PreparedStatement stmt = null;
+            Connection db_con = manager.getDb_con();
+            manager.connect();
+
+            try {
+
+                if (db_con.isClosed())
+                    manager.connect();
+                stmt = manager.getDb_con().prepareStatement(q);
+
+                var ret = manager.fetch(stmt, new Object[]{packageID});
+                System.out.println("----------------------");
+                List<Package> separated = ScreenRedirect.send(ret);
+
+                //εδω εχω θεμα
+                PackageDetailsScreen detailsScreen=new PackageDetailsScreen(separated,manager);
+
+
+            } catch (Exception e) {
+                ScreenRedirect.launchErrorMsg("Δεν βρηκα το πακετο");
+            }
+        }
+    }
 }
 
 

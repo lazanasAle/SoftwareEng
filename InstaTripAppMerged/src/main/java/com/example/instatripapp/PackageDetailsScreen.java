@@ -10,6 +10,7 @@ import java.util.List;
 public class PackageDetailsScreen extends Screen {;
     private int gridPosition = 1;
     DataSourceManager manager;
+    private static Package pack;
 
     public PackageDetailsScreen(Package pkg, Button optionBtn) {
         // screen methods
@@ -20,7 +21,6 @@ public class PackageDetailsScreen extends Screen {;
     }
 
     private void renderPackageDetails(Package pkg, Button optionButton) {
-
 
 
         Text idText = new Text("ID: " + pkg.getPackageID());
@@ -61,7 +61,7 @@ public class PackageDetailsScreen extends Screen {;
         }
     }
 
-    private static Package pack;
+
     public PackageDetailsScreen(List<Package> selectedPackages,DataSourceManager manager) {
         // screen methods
         super("Package Details", 800, 700);
@@ -82,7 +82,7 @@ public class PackageDetailsScreen extends Screen {;
         // Add the package details to the grid
         Text[] labels = {TourName, descriptionText, startDate,endDate};
 
-        //Button backButton = new Button("Πληρωμή");
+
         Button cooperationButton = new Button("Συνεργασία");
         Button[] buttons = {cooperationButton};
         addElementsToGrid(labels, buttons);

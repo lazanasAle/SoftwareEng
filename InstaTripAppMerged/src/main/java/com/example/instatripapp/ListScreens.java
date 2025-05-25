@@ -394,6 +394,7 @@ class SuggestionScreen extends Screen{
 }
 
 class RequestListScreen extends ListScreen<Request> {
+    static ExtPartner extPartner;
     public RequestListScreen(List<Map<String, Object>> requests, PopupWindow popupWindow) {
         super("Λίστα Συνεργατών", 1000, 700);
         renderGrid(900);
@@ -414,23 +415,41 @@ class RequestListScreen extends ListScreen<Request> {
 
     }
 
-    public RequestListScreen(List<Map<String, Object>> requests) {
+    public RequestListScreen(List<Map<String, Object>> requests,String title,ExtPartner extPartner) {
+
         super("Λιστα αιτηματων για συνεργασια", 1000, 700);
+        this.extPartner=extPartner;
         renderGrid(900);
-        renderRequestList(requests);
+        renderRequestList(requests,title);
     }
 
-    private void renderRequestList(List<Map<String, Object>> requests) {
+    private void renderRequestList(List<Map<String, Object>> requests, String title) {
         List<Request> requestList = ScreenConnector.sendReq(requests);
-        try {
-            List<String> columnNames = new ArrayList<>(requests.getFirst().keySet());
-            String buttonName = "Ακυρωση";
-            String[] cnamesArray = new String[columnNames.size()];
-            columnNames.toArray(cnamesArray);
-            renderArray(cnamesArray, requestList, cnamesArray, buttonName);
-        }catch (NoSuchElementException exe){
-            ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+        if(title.equals("Προβολη για ακυρωση συνεργασιας")) {
+            try {
+                List<String> columnNames = new ArrayList<>(requests.getFirst().keySet());
+                String buttonName = "Ακυρωση";
+                String[] cnamesArray = new String[columnNames.size()];
+                columnNames.toArray(cnamesArray);
+                renderArray(cnamesArray, requestList, cnamesArray, buttonName);
+            } catch (NoSuchElementException exe) {
+                ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+            }
+        } else if (title.equals("Προβολη για τροποποιηση συνεργασιας")) {
+            try {
+                List<String> columnNames = new ArrayList<>(requests.getFirst().keySet());
+                String buttonName = "Τροποποιηση";
+                String[] cnamesArray = new String[columnNames.size()];
+                columnNames.toArray(cnamesArray);
+                renderArray(cnamesArray, requestList, cnamesArray, buttonName);
+            } catch (NoSuchElementException exe) {
+                ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+            }
+
         }
 
+    }
+    public static ExtPartner getExt (){
+        return extPartner;
     }
 }

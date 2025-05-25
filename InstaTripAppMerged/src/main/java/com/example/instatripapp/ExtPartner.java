@@ -86,11 +86,16 @@ public class ExtPartner implements Searchable {
 
     }
 
-    public void RequestShow(DataSourceManager manager){
+    public void CancelCoop(DataSourceManager manager){
         List<Map<String, Object>> requests = ScreenConnector.ShowReq(manager,this);
-        ScreenRedirect.launchRequestListScreenEXT(requests);
+        ScreenRedirect.launchRequestListScreenEXT(requests,"Προβολη για ακυρωση συνεργασιας",null);
         //create request window
 
+    }
+
+    public void ChangeCoop(DataSourceManager manager){
+        List<Map<String, Object>> requests = ScreenConnector.ShowReq(manager,this);
+        ScreenRedirect.launchRequestListScreenEXT(requests,"Προβολη για τροποποιηση συνεργασιας",this);
     }
 
     @Override
