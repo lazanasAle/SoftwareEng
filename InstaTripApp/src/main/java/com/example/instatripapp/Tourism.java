@@ -63,8 +63,21 @@ class TourAgency{
             @Override
             public void createPopup(Object element, Node anchor, long keySearch) {
                 Button cancelButton = new Button("Απόρριψη");
+                partnerType partner_type;
+                if(element instanceof Request){
+                    Request req = (Request) element;
+                    partner_type=partnerType.fromString(req.getPtype());
+                } else {
+                    partner_type = partnerType.other;
+                }
+                cancelButton.setOnAction(event -> {
+                    ScreenConnector.changeRequestStatus(keySearch, manager, "Ακυρωμένη", partner_type);
+                });
                 cancelButton.setStyle("-fx-background-color: red; -fx-text-fill: white");
                 Button approveButton = new Button("Αποδοχή");
+                approveButton.setOnAction(event -> {
+                    ScreenConnector.changeRequestStatus(keySearch, manager, "Σε ισχύ", partner_type);
+                });
                 approveButton.setStyle("-fx-background-color: green; -fx-text-fill: white");
                 ScreenRedirect.createPopup(element, anchor, new Button[]{approveButton, cancelButton});
             }

@@ -95,8 +95,7 @@ public class DataSourceManager {
                 return true;
             }
         }catch (SQLException excp){
-            errMesg = new String(excp.getMessage());
-
+            errMesg = new String(String.valueOf(excp));
             end();
             return false;
         }
