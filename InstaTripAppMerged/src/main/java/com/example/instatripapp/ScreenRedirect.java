@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.awt.dnd.DropTarget;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -754,6 +753,8 @@ class ScreenConnector{
         boolean valid = random.nextBoolean();
         return valid;
     }
+
+
 }
 
 

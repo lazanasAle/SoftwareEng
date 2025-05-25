@@ -15,15 +15,16 @@ class CancellationContents {
     public CancellationContents(Request req,DataSourceManager manager){
         this.req=req;
         this.manager=manager;
-        ChangeStat(req.getRequestID());
+        ChangeStat(req.getRequestID(),this.manager);
     }
 
-    public void ChangeStat(Long id){
+    public void ChangeStat(Long id,DataSourceManager manager){
         String name=req.getName();
         String query = "select partnerType from ExtPartner where name=?";
 
         PreparedStatement stmt = null;
         Connection db_con = manager.getDb_con();
+        manager.connect();
 
         try {
             
@@ -37,7 +38,8 @@ class CancellationContents {
             System.out.println(type);
             if(type.equals("Χώρος Διαμονής")){
                 String q="update quarterPackage set status=? where requestID=?";
-
+                if(db_con.isClosed())
+                    manager.connect();
                 stmt=manager.getDb_con().prepareStatement(q);
                 var result=manager.commit(stmt,new Object[]{reqstat,id});
                 if(!result){
@@ -46,7 +48,8 @@ class CancellationContents {
             }
             else{
                 String q="update partnerPackage set status=? where requestID=?";
-
+                if(db_con.isClosed())
+                    manager.connect();
                 stmt=manager.getDb_con().prepareStatement(q);
                 var result=manager.commit(stmt,new Object[]{reqstat,id});
                 if(!result){
