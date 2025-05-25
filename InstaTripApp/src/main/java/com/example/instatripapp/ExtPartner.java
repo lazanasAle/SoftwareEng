@@ -15,7 +15,7 @@ enum partnerType {
     }
 
     public static partnerType fromString(String str){
-        return (str.equals("Χώρος Διαμονής"))?  quarter : other;
+        return (str.equals("Χώρος Διαμονής") || str.equals("quarter"))?  quarter : other;
     }
 }
 

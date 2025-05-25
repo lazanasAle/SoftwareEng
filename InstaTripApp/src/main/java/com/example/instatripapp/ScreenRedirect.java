@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.awt.dnd.DropTarget;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -302,7 +301,7 @@ class ScreenConnector{
         return null;
     }
 
-    public static void changeStatus(long key, DataSourceManager manager, String NewStatus){
+    public static void changePackageStatus(long key, DataSourceManager manager, String NewStatus){
         String query = "UPDATE Package SET status=? WHERE PackageID=?;";
         PreparedStatement stmt = null;
         Connection db_con = manager.getDb_con();
@@ -323,6 +322,33 @@ class ScreenConnector{
         }
     }
 
+    public static void changeRequestStatus(long key, DataSourceManager manager, String newStatus, partnerType ptype){
+        String query;
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        if(ptype==partnerType.quarter){
+            query = "UPDATE quarterPackage SET status=? WHERE requestID=?";
+        }
+        else{
+            query = "UPDATE partnerPackage SET status=? WHERE requestID=?";
+        }
+        try {
+            if(db_con.isClosed())
+                manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        try {
+            boolean updated = manager.commit(stmt, new Object[]{newStatus, key});
+            if(!updated){
+                ScreenRedirect.launchErrorMsg("Αδυναμία αποδοχής");
+            }
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+e.getMessage());
+        }
+    }
+
     public static void afterPackageSearchPerform(TourAgency organizerMember, DataSourceManager manager, StringWrapper content){
         List<Map<String, Object>> packages = ScreenConnector.takePackages(organizerMember, manager, content);
         ScreenRedirect.launchPackageListScreen(packages, organizerMember, new PopupWindow<>() {
@@ -335,7 +361,7 @@ class ScreenConnector{
                 cancelBtn.setStyle("-fx-background-color: red; -fx-text-fill: white;");
 
                 cancelBtn.setOnAction(e -> {
-                    ScreenConnector.changeStatus(keySearch, manager, "Ακυρωμένο");
+                    ScreenConnector.changePackageStatus(keySearch, manager, "Ακυρωμένο");
                 });
                 Package packageElement = (Package) element;
 
@@ -343,7 +369,7 @@ class ScreenConnector{
 
                         Button optionBtn = new Button("Οριστικοποίηση");
                         optionBtn.setOnAction((event) -> {
-                            ScreenConnector.changeStatus(keySearch, manager, "Ενεργοποιημένο");
+                            ScreenConnector.changePackageStatus(keySearch, manager, "Ενεργοποιημένο");
                         });
 
                         PackageDetailsScreen pds = new PackageDetailsScreen(packageElement, optionBtn);
@@ -412,7 +438,6 @@ class ScreenConnector{
         }
         try {
             var ret = manager.fetch(stmt, new Object[]{agency.key});
-            System.out.println(ret.isEmpty());
             return ret;
         }catch (SQLException e){
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
