@@ -51,7 +51,7 @@ class ResultScreen extends PackageListScreen {
 
         submit.setOnAction(e->{
             selectedPackages=ScreenRedirect.send(result);
-            PackageDetailsScreen pack=new PackageDetailsScreen(selectedPackages,manager);
+            PackageDetailsScreen pack=new PackageDetailsScreen(selectedPackages,manager,"Λεπτομέρειες Πακέτου");
         });
 
     }

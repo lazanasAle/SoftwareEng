@@ -214,6 +214,31 @@ class ErrorMessage extends Screen {
     }
 }
 
+
+class SuccessMsg extends Screen {
+    public SuccessMsg(String message) {
+        // screen methods
+        super("Παράθυρο Επιτυχιας Ενεργειας", 800, 300);
+        renderGrid(50);
+        renderLabel("Επιτυχία:");
+        displayMessage(message);
+
+    }
+    public void displayMessage(String message) {
+        Text successMessage = new Text(message);
+        Button okButton = new Button("OK");
+        successMessage.setId("error_message");
+//        errorMessage.setStyle("-fx-background-color: red;");
+
+        okButton.setOnAction(e -> stage.close());
+        // place the error message and button in the grid
+        grid.add(successMessage, 0, 1,2,1);
+        grid.add(okButton, 0, 2,2,1);
+        GridPane.setHalignment(successMessage, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
+        GridPane.setHalignment(okButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
+    }
+}
+
 class LoginPage extends FormScreen{
     String username;
     String password;

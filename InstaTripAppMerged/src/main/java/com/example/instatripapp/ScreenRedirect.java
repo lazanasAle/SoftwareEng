@@ -136,14 +136,16 @@ public class ScreenRedirect {
             long PackID;
             double Price;
             String Location;
-            Long custId;
+            Long customerId;
             int people;
             voyageStatus status=voyageStatus.fromString(String.valueOf(row.get("status")));
 
             if((Long)row.get("CustomerId")!=null){
-                custId=(Long)row.get("CustomerId");
+                customerId=(Long)row.get("CustomerId");
             }
-            else {custId=null;}
+            else {customerId=null;}
+
+            long custId = (customerId!= null) ? customerId.longValue() : -1L;
 
             if(row.get("people")!=null)  people=(int)row.get("people");
             else people=-1;
@@ -241,6 +243,10 @@ public class ScreenRedirect {
 
     public static void show_cancelation_form(Request element,DataSourceManager manager) {
         CancelationForm cancelationForm=new CancelationForm(element,manager);
+    }
+
+    public static void launchSuccessMsg(String mess) {
+        SuccessMsg succ =new SuccessMsg(mess);
     }
 }
 
@@ -765,7 +771,7 @@ class ScreenConnector{
             ExtPartner ext = getExt();
             Long packageID = (Long) request.getPackageID();
 
-            String q = "Select PackageID,email,TourAgency.name,startDate,endDate,description,maxParticipants from TourAgency inner join Package on TourAgency.AgencyID=Package.AgencyID where Package.PackageID=?;";
+            String q = "Select PackageID,email,price,TourAgency.name,startDate,endDate,description,maxParticipants from TourAgency inner join Package on TourAgency.AgencyID=Package.AgencyID where Package.PackageID=?;";
             PreparedStatement stmt = null;
             Connection db_con = manager.getDb_con();
             manager.connect();
@@ -781,13 +787,20 @@ class ScreenConnector{
                 List<Package> separated = ScreenRedirect.send(ret);
 
                 //εδω εχω θεμα
-                PackageDetailsScreen detailsScreen=new PackageDetailsScreen(separated,manager);
+                PackageDetailsScreen detailsScreen=new PackageDetailsScreen(separated,manager,"Λεπτομέρειες Πακέτου για τροποιηση");
 
 
             } catch (Exception e) {
-                ScreenRedirect.launchErrorMsg("Δεν βρηκα το πακετο");
+                System.out.println(e);
+                //ScreenRedirect.launchErrorMsg("Δεν βρηκα το πακετο");
             }
         }
+    }
+
+    public static boolean check_bounds(double v) {
+        Random random = new Random();
+        boolean value = random.nextBoolean();
+        return value;
     }
 }
 
