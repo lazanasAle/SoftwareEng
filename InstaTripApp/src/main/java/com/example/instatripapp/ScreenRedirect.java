@@ -374,15 +374,21 @@ class ScreenConnector{
 
                         PackageDetailsScreen pds = new PackageDetailsScreen(packageElement, optionBtn);
                 });
+
+                Button[] actionButtons;
+                voyageStatus status =voyageStatus.fromString(packageElement.getStatus());
                 Button cooperationButton = new Button("Αναζήτηση Συνεργασιών");
+                if (status == voyageStatus.saved)
+                    actionButtons = new Button[]{detailsBtn, cancelBtn, cooperationButton};
+                else
+                    actionButtons = new Button[]{detailsBtn, cancelBtn};
                 cooperationButton.setOnAction(event -> {
-                    voyageStatus status =voyageStatus.fromString(packageElement.getStatus());
                     if (status == voyageStatus.saved)
                         ScreenRedirect.launchPartnerSearchScreen(content, packageElement, manager);
                 });
 
                 cooperationButton.setStyle("-fx-background-color: blue; -fx-text-fill: white");
-                ScreenRedirect.createPopup(element, anchor, new Button[]{detailsBtn, cancelBtn, cooperationButton});
+                ScreenRedirect.createPopup(element, anchor, actionButtons);
             }
         });
     }
