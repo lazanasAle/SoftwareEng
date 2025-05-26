@@ -110,6 +110,10 @@ public class ReservationBucket {
         try{
 
             var ret = manager.fetch(stmt, new Object[]{this.CustomerFirstName,this.CustomerLastName});
+            if (ret.isEmpty()){
+                ScreenRedirect.launchErrorMsg("Μάλλον δώσατε λανθασμένο όνομα");
+                return -1;
+            }
             Map<String,Object> row= ret.get(0);
             return (long)row.get("customerID");
         } catch (SQLException e) {

@@ -474,6 +474,20 @@ class ScreenConnector{
                     if (element instanceof ExtPartner) {
                         ExtPartner partnerElement = (ExtPartner) element;
                         Button optionButton = new Button("Αποστολή Αιτήματος");
+                        if(partnerElement.ptype==partnerType.quarter){
+                            Connection db_con = manager.getDb_con();
+                            try {
+                                if (db_con.isClosed()) {
+                                    manager.connect();
+                                }
+                                PreparedStatement stmt = manager.getDb_con().prepareStatement("SELECT quarterID FROM LivingQuarter WHERE partnerID=?");
+                                var res = manager.fetch(stmt, new Object[]{partnerElement.partner_id});
+                                var row = res.getFirst();
+                                partnerElement.partner_id=(long) row.get("quarterID");
+                            }catch (SQLException sqe){
+                                ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+                            }
+                        }
                         optionButton.setOnAction((event)->{ScreenConnector.sendMessage(pkgMember, partnerElement, manager);});
                         ScreenRedirect.launchPartnerDetailsScreen(partnerElement, optionButton);
 
@@ -639,11 +653,23 @@ class ScreenConnector{
 
             }
             else if ("partner".equals(usertype)) {
-                String query="Select PartnerID from ExtPartner where UserID=? ";
+                String query="Select PartnerID, partnerType from ExtPartner where UserID=? ";
                 stmt=db_con.prepareStatement(query);
                 List<Map<String,Object>> res =manager.fetch(stmt,new Long[]{userID});
                 Map<String, Object> row = res.get(0);
                 partid=(long) row.get("PartnerID");
+                partnerType ptype = partnerType.fromString(String.valueOf(row.get("partnerType")));
+                if(ptype==partnerType.quarter){
+                    query = "Select quarterID from LivingQuarter where partnerID=?";
+                    if(db_con.isClosed()){
+                        manager.connect();
+                        db_con=manager.getDb_con();
+                    }
+                    stmt=db_con.prepareStatement(query);
+                    List<Map<String,Object>> result =manager.fetch(stmt,new Long[]{partid});
+                    var nrow = result.getFirst();
+                    partid = (long) nrow.get("quarterID");
+                }
 
             }
             else {
@@ -673,13 +699,14 @@ class ScreenConnector{
             if(partner.ptype==partnerType.other){
                  result=manager.commit(stmt1, new Object[]{selPackage.getPackageID(), partner.getPartnerID()});
                  if(!result){
-                     ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος");
+                     ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος"+manager.errMesg);
+
                  }
             }
             else{
                 result=manager.commit(stmt2, new Object[]{selPackage.getPackageID(), partner.getPartnerID()});
                 if(!result){
-                    ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος");
+                    ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος"+manager.errMesg);
                 }
             }
         }catch (SQLException sqle){
@@ -778,6 +805,42 @@ class ScreenConnector{
             } catch (Exception e) {
                 ScreenRedirect.launchErrorMsg("Δεν βρηκα το πακετο: "+e);
             }
+        }
+    }
+
+    public static void approveRequest(Request req, DataSourceManager manager){
+        String requestName = req.getName();
+        String query_ptype = "SELECT partnerType FROM ExtPartner WHERE name = ?";
+
+        Connection db_con = manager.getDb_con();
+        try{
+            if(db_con.isClosed()){
+                manager.connect();
+                db_con=manager.getDb_con();
+            }
+            PreparedStatement stmt = db_con.prepareStatement(query_ptype);
+            List<Map<String, Object>> queryResult = manager.fetch(stmt, new Object[]{requestName});
+            if(!queryResult.isEmpty()){
+                Map<String, Object> row = queryResult.getFirst();
+                partnerType ptype = partnerType.fromString(String.valueOf(row.get("partnerType")));
+                String query2;
+                if(ptype==partnerType.quarter){
+                    query2 = "UPDATE quarterPackage SET status='Σε ισχύ' WHERE requestID=?";
+                }
+                else
+                    query2 = "UPDATE partnerPackage SET status='Σε ισχύ' WHERE requestID=?";
+                if(db_con.isClosed()){
+                    manager.connect();
+                    db_con=manager.getDb_con();
+                }
+                PreparedStatement stmt2 = db_con.prepareStatement(query2);
+                boolean result = manager.commit(stmt2, new Object[]{req.getRequestID()});
+                if(!result){
+                    ScreenRedirect.launchErrorMsg("Αδυναμία αποδοχής");
+                }
+            }
+        }catch (SQLException sqe){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
     }
 

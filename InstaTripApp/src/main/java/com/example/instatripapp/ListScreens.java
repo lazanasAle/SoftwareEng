@@ -429,7 +429,8 @@ class RequestListScreen extends ListScreen<Request> {
             } catch (NoSuchElementException exe) {
                 ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
             }
-        } else if (title.equals("Προβολη για τροποποιηση συνεργασιας")) {
+        }
+        else if (title.equals("Προβολη για τροποποιηση συνεργασιας")) {
             try {
                 List<String> columnNames = new ArrayList<>(requests.getFirst().keySet());
                 String buttonName = "Τροποποιηση";
@@ -440,6 +441,13 @@ class RequestListScreen extends ListScreen<Request> {
                 ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
             }
 
+        }
+        else if(title.equals("Προβολή για αποδοχή συνεργασίας")){
+            List<String> columnNames = new ArrayList<>(requests.getFirst().keySet());
+            String buttonName = "Αποδοχή";
+            String[] cnamesArray = new String[columnNames.size()];
+            columnNames.toArray(cnamesArray);
+            renderArray(cnamesArray, requestList, cnamesArray, buttonName);
         }
 
     }

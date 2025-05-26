@@ -24,8 +24,6 @@ public class ReservationFormScreen extends FormScreen {
         TextField emailTextArea = new TextField();
         Label phoneLabel = new Label("Τηλέφωνο:");
         TextField phoneTextArea = new TextField();
-        Label dateLabel = new Label("Ημερομηνία:");
-        TextField dateTextArea = new TextField();
         Label peopleLabel = new Label("Αριθμός Ατόμων:");
         TextField peopleTextArea = new TextField(String.valueOf(pkg.getPeople()));
 
@@ -33,12 +31,12 @@ public class ReservationFormScreen extends FormScreen {
 
 
         renderFormElements(
-                new Label[]{nameLabel, emailLabel, phoneLabel, dateLabel,peopleLabel},
-                new TextField[]{nameTextArea, emailTextArea, phoneTextArea, dateTextArea, peopleTextArea});
+                new Label[]{nameLabel, emailLabel, phoneLabel, peopleLabel},
+                new TextField[]{nameTextArea, emailTextArea, phoneTextArea, peopleTextArea});
 
 
         submitButton.setOnAction(e-> {
-            if (nameTextArea.getText().isEmpty() || emailTextArea.getText().isEmpty() || phoneTextArea.getText().isEmpty() || dateTextArea.getText().isEmpty() || peopleTextArea.getText().isEmpty()) {
+            if (nameTextArea.getText().isEmpty() || emailTextArea.getText().isEmpty() || phoneTextArea.getText().isEmpty() || peopleTextArea.getText().isEmpty()) {
                 ScreenRedirect.launchErrorMsg("Δεν εισαγεται στοιχεια σε ολα τα πεδία");
             }
             else {PaymentScreen paymentScreen=new PaymentScreen(pkg);}

@@ -137,7 +137,7 @@ class MainScreen extends ListScreen {
                 break;
             case "Aπαντηση σε αιτημα":{
                 ExtPartner extPartner = (ExtPartner) user;
-                //extPartner.Reply(manager);
+                extPartner.approveCoop(manager);
             }
                 break;
             case "Τροποιηση Συνεργασιας":

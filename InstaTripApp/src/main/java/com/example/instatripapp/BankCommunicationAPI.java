@@ -1,6 +1,5 @@
 package com.example.instatripapp;
 
-import java.sql.*;
 import java.util.Random;
 
 
@@ -13,7 +12,7 @@ public class BankCommunicationAPI {
     }
 
 
-    public boolean tryCharging(CardDescription card, double money){
+    public boolean tryCharging(CardDescription card){
         Random rand = new Random();
         return rand.nextBoolean();
     }

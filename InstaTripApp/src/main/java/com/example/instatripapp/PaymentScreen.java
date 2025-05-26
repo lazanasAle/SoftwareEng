@@ -31,10 +31,12 @@ public class PaymentScreen extends Screen {
 
     private void handlePaymentSelection(String method) {
         if(method.equals("Κάρτα")){
-            TemporaryReservation temp=new TemporaryReservation(pkg);
+            CardScreen cs = new CardScreen(pkg);
+            this.stage.close();
         }
         else{
-            FinalReservation reservation=new FinalReservation(pkg);
+            TemporaryReservation temporaryReservation = new TemporaryReservation(pkg);
+            this.stage.close();
         }
 
     }
