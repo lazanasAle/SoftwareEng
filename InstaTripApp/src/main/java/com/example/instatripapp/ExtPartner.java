@@ -122,5 +122,15 @@ public class ExtPartner implements Searchable {
     public String getDescription() {
         return description;
     }
+
+    public void ChangeCoop(DataSourceManager manager){
+        List<Map<String, Object>> requests = ScreenConnector.ShowReq(manager,this);
+        ScreenRedirect.launchRequestListScreenEXT(requests,"Προβολη για τροποποιηση συνεργασιας",this);
+    }
+
+    public void CancelCoop(DataSourceManager manager){
+        List<Map<String, Object>> requests = ScreenConnector.ShowReq(manager,this);
+        ScreenRedirect.launchRequestListScreenEXT(requests,"Προβολη για ακυρωση συνεργασιας",null);
+    }
 }
 

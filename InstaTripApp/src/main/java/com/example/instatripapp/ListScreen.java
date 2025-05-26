@@ -94,6 +94,20 @@ public class ListScreen<T extends Searchable> extends Screen{
                     });
 
                 }
+                else if(buttonName.equals("Τροποποιηση")){
+                    List<Request> element = new ArrayList<>();
+                    button.setOnAction(e->{
+                        element.add((Request) dataTable.getItems().get(getIndex()));
+                        ScreenConnector.check_coop_status(element.get(0),manager);
+                    });
+                }
+                else if(buttonName.equals("Ακυρωση")){
+                    List<Request> element = new ArrayList<>();
+                    button.setOnAction(e->{
+                        element.add((Request) dataTable.getItems().get(getIndex()));
+                        ScreenRedirect.show_cancelation_form(element.get(0),manager);
+                    });
+                }
 
                 else {
                     System.out.println("setoptionsColumn");

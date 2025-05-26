@@ -21,20 +21,29 @@ class FilterSearch {
         this.manager=manager;
         this.customer=customer;
         queryResult=GetSearchWithPlace(content,place,manager);
-        ScreenRedirect.launchPackageListScreen(manager,queryResult,customer,"Εμφανηση ενεργων πακετων για πελατη");
+        if (queryResult.isEmpty()){
+            ScreenRedirect.launchErrorMsg("Δεν υπαρχει πακετο με αυτα τα στοιχεια");
+            return;
+        }
+        else ScreenRedirect.launchPackageListScreen(manager,queryResult,customer,"Εμφανηση ενεργων πακετων για πελατη");
 
     }
     public FilterSearch(double price, StringWrapper content, DataSourceManager manager, Customer customer){
         this.content=content;
+        System.out.println(content.content);
         this.price=price;
         this.manager=manager;
         this.customer=customer;
         queryResult=GetSearchWithPrice(content,price,manager);
-        ScreenRedirect.launchPackageListScreen(manager,queryResult,customer,"Εμφανηση ενεργων πακετων για πελατη");
+        if (queryResult.isEmpty()){
+            ScreenRedirect.launchErrorMsg("Δεν υπαρχει πακετο με αυτα τα στοιχεια");
+            return;
+        }
+        else ScreenRedirect.launchPackageListScreen(manager,queryResult,customer,"Εμφανηση ενεργων πακετων για πελατη");
     }
 
     public List<Map<String, Object>> GetSearchWithPlace(StringWrapper content,String place,DataSourceManager manager){
-        String query="select PackageID,name,email,startDate,endDate,price,Package.location,description,status,Package.maxParticipants from Package inner join TourAgency on Package.AgencyID = TourAgency.AgencyID where description like ? and Package.location=? and status='Σε εξέλιξη';";
+        String query="select PackageID,name,email,startDate,endDate,price,Package.location,description,status,Package.maxParticipants from Package inner join TourAgency on Package.AgencyID = TourAgency.AgencyID where description like ? and Package.location=? and status='Ενεργοποιημένο';";
 
         PreparedStatement stmt = null;
 
@@ -63,7 +72,7 @@ class FilterSearch {
     }
 
     public List<Map<String, Object>> GetSearchWithPrice(StringWrapper content,double price,DataSourceManager manager){
-        String query="select PackageID,name,email,startDate,endDate,price,Package.location,description,status,Package.maxParticipants from Package inner join TourAgency on Package.AgencyID = TourAgency.AgencyID  where description like ? and price<=? and status='Σε εξέλιξη';";
+        String query="select PackageID,name,email,startDate,endDate,price,Package.location,description,status,Package.maxParticipants from Package inner join TourAgency on Package.AgencyID = TourAgency.AgencyID  where description like ? and price<=? and status='Ενεργοποιημένο';";
 
         PreparedStatement stmt = null;
 
@@ -78,7 +87,9 @@ class FilterSearch {
 
             String desc="%"+content.content+"%";
 
+
             var ret = manager.fetch(stmt, new Object[]{desc,price});
+            System.out.println(ret.isEmpty());
             return ret;
 
 

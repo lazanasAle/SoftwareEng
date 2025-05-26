@@ -51,7 +51,7 @@ class ResultScreen extends PackageListScreen {
 
         submit.setOnAction(e->{
             selectedPackages=ScreenRedirect.send(result);
-            PackageDetailsScreen pack=new PackageDetailsScreen(selectedPackages,manager);
+            PackageDetailsScreen pack=new PackageDetailsScreen(selectedPackages,manager,"Λεπτομέρειες Πακέτου");
         });
 
     }
@@ -137,8 +137,8 @@ class FilterScreen extends ListScreen {
             try {
                 FilterSearch filterSearch=new FilterSearch(Place,this.contents,manager,this.customer);
 
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
+            } catch (NoSuchElementException ex) {
+                ScreenRedirect.launchErrorMsg("Δεν υπαρχοθν αντικειμενα με αυτην την περιγραφη");
             }
             finally{
                 KeyPage.close();
@@ -166,10 +166,11 @@ class FilterScreen extends ListScreen {
 
         submit.setOnAction(e->{
             double Price=Double.parseDouble(insert.getText());
+            System.out.println(Price);
             try {
                 FilterSearch filterSearch=new FilterSearch(Price,this.contents,manager,this.customer);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
+            } catch (NoSuchElementException ex) {
+                ScreenRedirect.launchErrorMsg("Δεν υπαρχει αντικειμενο με αυτη την περιγραφη");
             }
             finally{
                 KeyPage.close();
@@ -274,21 +275,16 @@ class PackageListScreen extends ListScreen<Package> {
         if(title.equals("Ενεργες εκδρομες στην περιοχη σας")){
             renderLabel(title);
             List<Package> separated = ScreenRedirect.send(packageQueryResult);
-
             List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
-
             String[] cnamesArray = new String[columnNames.size()];
-
             columnNames.toArray(cnamesArray);
-
             renderArray(cnamesArray,separated, cnamesArray,"Αίτημα");
-
             Button keywords=new Button("Λεξεις Κλειδία");
-
             grid.add(keywords,0,10);
             keywords.setOnAction(e->keywords_commit(keywords,manager));
 
-        } else if (title.equals("Εμφανηση ενεργων πακετων για πελατη")) {
+        }
+        else if (title.equals("Εμφανηση ενεργων πακετων για πελατη")) {
             renderLabel(title);
             List<Package> separated = ScreenRedirect.send(packageQueryResult);
             List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
@@ -296,7 +292,8 @@ class PackageListScreen extends ListScreen<Package> {
             String[] cnamesArray = new String[columnNames.size()];
             columnNames.toArray(cnamesArray);
             renderArray(cnamesArray,separated,cnamesArray,buttonName);
-        } else if (title.equals("Εμφανηση Πακετων καλαθιου")) {
+        }
+        else if (title.equals("Εμφανηση Πακετων καλαθιου")) {
             renderLabel(title);
             List<Package> separated = ScreenRedirect.send(packageQueryResult);
             List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
@@ -394,6 +391,7 @@ class SuggestionScreen extends Screen{
 }
 
 class RequestListScreen extends ListScreen<Request> {
+    static ExtPartner extPartner;
     public RequestListScreen(List<Map<String, Object>> requests, PopupWindow popupWindow) {
         super("Λίστα Συνεργατών", 1000, 700);
         renderGrid(900);
@@ -412,5 +410,42 @@ class RequestListScreen extends ListScreen<Request> {
             ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
         }
 
+    }
+    public RequestListScreen(List<Map<String, Object>> requests,String title,ExtPartner extPartner) {
+
+        super("Λιστα αιτηματων για συνεργασια", 1000, 700);
+        this.extPartner=extPartner;
+        renderGrid(900);
+        renderRequestList(requests,title);
+    }
+
+    private void renderRequestList(List<Map<String, Object>> requests, String title) {
+        List<Request> requestList = ScreenConnector.sendReq(requests);
+        if(title.equals("Προβολη για ακυρωση συνεργασιας")) {
+            try {
+                List<String> columnNames = new ArrayList<>(requests.getFirst().keySet());
+                String buttonName = "Ακυρωση";
+                String[] cnamesArray = new String[columnNames.size()];
+                columnNames.toArray(cnamesArray);
+                renderArray(cnamesArray, requestList, cnamesArray, buttonName);
+            } catch (NoSuchElementException exe) {
+                ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+            }
+        } else if (title.equals("Προβολη για τροποποιηση συνεργασιας")) {
+            try {
+                List<String> columnNames = new ArrayList<>(requests.getFirst().keySet());
+                String buttonName = "Τροποποιηση";
+                String[] cnamesArray = new String[columnNames.size()];
+                columnNames.toArray(cnamesArray);
+                renderArray(cnamesArray, requestList, cnamesArray, buttonName);
+            } catch (NoSuchElementException exe) {
+                ScreenRedirect.launchErrorMsg("Δεν υπάρχουν αντικείμενα με αυτή την περιγραφή");
+            }
+
+        }
+
+    }
+    public static ExtPartner getExt (){
+        return extPartner;
     }
 }

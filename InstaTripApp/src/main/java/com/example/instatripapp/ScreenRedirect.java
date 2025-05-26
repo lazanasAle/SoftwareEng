@@ -23,6 +23,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+
+import static com.example.instatripapp.RequestListScreen.getExt;
 
 
 public class ScreenRedirect {
@@ -133,14 +136,16 @@ public class ScreenRedirect {
             long PackID;
             double Price;
             String Location;
-            Long custId;
+            Long customerId;
             int people;
             voyageStatus status=voyageStatus.fromString(String.valueOf(row.get("status")));
 
             if((Long)row.get("CustomerId")!=null){
-                custId=(Long)row.get("CustomerId");
+                customerId=(Long)row.get("CustomerId");
             }
-            else {custId=null;}
+            else {customerId=null;}
+
+            long custId = (customerId!= null) ? customerId.longValue() : -1L;
 
             if(row.get("people")!=null)  people=(int)row.get("people");
             else people=-1;
@@ -230,6 +235,18 @@ public class ScreenRedirect {
 
     public static void launchReservationForm(Package pkg, DataSourceManager manager) {
         ReservationFormScreen reservationFormScreen=new ReservationFormScreen(pkg,manager);
+    }
+
+    public static void launchRequestListScreenEXT(List<Map<String, Object>> elements, String title, ExtPartner extPartner){
+        RequestListScreen requestListScreen = new RequestListScreen(elements,title,extPartner);
+    }
+
+    public static void launchSuccessMsg(String mess) {
+        SuccessMsg succ =new SuccessMsg(mess);
+    }
+
+    public static void show_cancelation_form(Request element,DataSourceManager manager) {
+        CancelationForm cancelationForm=new CancelationForm(element,manager);
     }
 }
 
@@ -719,6 +736,100 @@ class ScreenConnector{
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
 
+    }
+
+    public static List<Map<String, Object>> ShowReq(DataSourceManager manager,ExtPartner partner) {
+        String query="select  requestID,name,packageID,status  from partnerPackage inner join  ExtPartner on partnerPackage.partnerID = ExtPartner.PartnerID where ExtPartner.PartnerID=? UNION select requestID,name,packageID,status from quarterPackage inner join ExtPartner on quarterPackage.quarterID = ExtPartner.PartnerID where ExtPartner.PartnerID=?;";
+        PreparedStatement stmt = null;
+        Connection db_con = manager.getDb_con();
+        try {
+            if(db_con.isClosed())
+                manager.connect();
+            stmt=manager.getDb_con().prepareStatement(query);
+            var ret = manager.fetch(stmt, new Object[]{partner.getPartnerID(),partner.getPartnerID()});
+
+            for (Map<String, Object> row : ret) {
+                Long id=(Long) row.get("requestID");
+                String cooperatorName = String.valueOf(row.get("name"));
+                Long packageID = row.get("packageID") != null ? (Long) row.get("packageID") : null;
+                String status = String.valueOf(row.get("status"));
+
+                System.out.println("RequestID: " + id + "Cooperator: " + cooperatorName + " | Package ID: " + packageID + " | Status: " + status);
+            }
+
+            return ret;
+
+
+        }catch (SQLException e){
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+        }
+        return null;
+    }
+
+    public static List<Request> sendReq(List<Map<String, Object>> requestQueryResult){
+        List<Request> selectedRequests = new ArrayList<>();
+        for(Map<String, Object> row : requestQueryResult){
+
+            Long reqID=(Long) row.get("requestID");
+            String cooperatorName = String.valueOf(row.get("name"));
+            Long packageID = (Long) row.get("packageID");
+            String status = String.valueOf(row.get("status"));
+
+            System.out.println("Cooperator Name: " + cooperatorName);
+            System.out.println("Package ID: " + packageID);
+            System.out.println("Status: " + status);
+
+
+            Request nreq = new Request(cooperatorName, packageID, RequestStatus.fromString(status),reqID);
+            selectedRequests.add(nreq);
+        }
+        return selectedRequests;
+    }
+
+    public static void check_coop_status(Request request, DataSourceManager manager) {
+        String status = request.getStatus();
+        if (status.equals("Ακυρωμένη")) {
+            ScreenRedirect.launchErrorMsg("Δεν μπορειτε να τροποποιησετε μια ηδη ακυρωμενη αιτηση");
+        } else {
+            ExtPartner ext = getExt();
+            Long packageID = (Long) request.getPackageID();
+
+            String q = "Select PackageID,email,price,TourAgency.name,startDate,endDate,description,maxParticipants from TourAgency inner join Package on TourAgency.AgencyID=Package.AgencyID where Package.PackageID=?;";
+            PreparedStatement stmt = null;
+            Connection db_con = manager.getDb_con();
+            manager.connect();
+
+            try {
+
+                if (db_con.isClosed())
+                    manager.connect();
+                stmt = manager.getDb_con().prepareStatement(q);
+
+                var ret = manager.fetch(stmt, new Object[]{packageID});
+                System.out.println("----------------------");
+                List<Package> separated = ScreenRedirect.send(ret);
+
+                //εδω εχω θεμα
+                PackageDetailsScreen detailsScreen=new PackageDetailsScreen(separated,manager,"Λεπτομέρειες Πακέτου για τροποιηση");
+
+
+            } catch (Exception e) {
+                System.out.println(e);
+                //ScreenRedirect.launchErrorMsg("Δεν βρηκα το πακετο");
+            }
+        }
+    }
+
+    public static boolean check_bounds(double v) {
+        Random random = new Random();
+        boolean value = random.nextBoolean();
+        return value;
+    }
+
+    public static boolean check_respect(String text) {
+        Random random = new Random();
+        boolean valid = random.nextBoolean();
+        return valid;
     }
 }
 

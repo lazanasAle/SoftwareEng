@@ -12,7 +12,7 @@ class CancelationForm  extends FormScreen {
         super("Φορμα ακυρωσης συνεργασιας", 700, 700);
         renderGrid(500);
         this.req=req;
-    this.manager=manager;
+        this.manager=manager;
         renderCancelForm();
     }
     public void renderCancelForm(){

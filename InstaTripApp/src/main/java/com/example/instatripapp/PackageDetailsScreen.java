@@ -1,15 +1,27 @@
 package com.example.instatripapp;
 
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 public class PackageDetailsScreen extends Screen {;
     private int gridPosition = 1;
     DataSourceManager manager;
+    private String title;
+    private static Package pack;
 
     public PackageDetailsScreen(Package pkg, Button optionBtn) {
         // screen methods
@@ -61,41 +73,118 @@ public class PackageDetailsScreen extends Screen {;
         }
     }
 
-    private static Package pack;
-    public PackageDetailsScreen(List<Package> selectedPackages,DataSourceManager manager) {
+
+    public PackageDetailsScreen(List<Package> selectedPackages,DataSourceManager manager,String title) {
         // screen methods
         super("Package Details", 800, 700);
         renderGrid(600);
-        renderLabel("Λεπτομέρειες Πακέτου");
+        this.title=title;
+        renderLabel(title);
         this.manager=manager;
-        renderPackageDetails(selectedPackages);
+        renderPackageDetails(selectedPackages,title);
     }
 
 
     //its only for extpartner
-    private void renderPackageDetails(List<Package> selectedPackages) {
-        pack=selectedPackages.get(0);
-        Text TourName = new Text("Name: " + pack.getName());
-        Text descriptionText = new Text("Description: " + pack.getDescription());
-        Text startDate=new Text("The starting Day:"+pack.startDate);
-        Text endDate=new Text("End Day is:"+pack.endDate);
-        // Add the package details to the grid
-        Text[] labels = {TourName, descriptionText, startDate,endDate};
+    private void renderPackageDetails(List<Package> selectedPackages,String title) {
+        if(title.equals("Λεπτομέρειες Πακέτου")) {
+            pack = selectedPackages.get(0);
+            Text TourName = new Text("Name: " + pack.getName());
+            Text descriptionText = new Text("Description: " + pack.getDescription());
+            Text startDate = new Text("The starting Day:" + pack.startDate);
+            Text endDate = new Text("End Day is:" + pack.endDate);
 
-        //Button backButton = new Button("Πληρωμή");
-        Button cooperationButton = new Button("Συνεργασία");
-        Button[] buttons = {cooperationButton};
-        addElementsToGrid(labels, buttons);
+            Text[] labels = {TourName, descriptionText, startDate, endDate};
 
-        cooperationButton.setOnAction(e->{
-            send_coop_suggestion_selelct(selectedPackages,manager);
-        });
+
+            Button cooperationButton = new Button("Συνεργασία");
+            Button[] buttons = {cooperationButton};
+            addElementsToGrid(labels, buttons);
+
+            cooperationButton.setOnAction(e -> {
+                send_coop_suggestion_selelct(selectedPackages, manager);
+            });
+        }
+        else if(title.equals("Λεπτομέρειες Πακέτου για τροποιηση")){
+            pack = selectedPackages.get(0);
+            Text TourName = new Text("Name: " + pack.getName());
+            Text descriptionText = new Text("Description: " + pack.getDescription());
+            Text startDate = new Text("The starting Day:" + pack.startDate);
+            Text endDate = new Text("End Day is:" + pack.endDate);
+            Text price = new Text("Price:" + pack.price);
+
+            Text[] labels = {TourName, descriptionText, startDate, endDate,price};
+
+
+            Button chengecoop = new Button("Tροποποιηση");
+            Button[] buttons = {chengecoop};
+            addElementsToGrid(labels, buttons);
+
+            chengecoop.setOnAction(e -> {
+                new_price_commit(selectedPackages, manager);
+            });
+        }
     }
+
+
 
     public void send_coop_suggestion_selelct(List<Package> selectedPackages,DataSourceManager manager){
         pack=selectedPackages.get(0);
         ScreenRedirect.create_coop_form_screen(pack,manager);
 
+    }
+    public void new_price_commit(List<Package> selectedPackages,DataSourceManager manager){
+        Stage KeyPage=new Stage();
+
+        Label title=new Label("Εισαγετε το ποσο χρηματων που επιθυμητε να λαβετε");
+        TextField insert=new TextField("money");
+        Button submit=new Button("Submit");
+
+        submit.setOnAction(e->{
+            Double money=Double.parseDouble(insert.getText());
+            Double nowmoney=Double.parseDouble(String.valueOf(pack.price));
+            Double total_money=money+nowmoney;
+            try {
+                boolean valid = ScreenConnector.check_bounds(Double.parseDouble(insert.getText()));
+                if (valid) {
+                    String q = "update Package set price=? where PackageID=?";
+                    PreparedStatement stmt = null;
+                    Connection db_con = manager.getDb_con();
+                    try {
+                        if (db_con.isClosed())
+                            manager.connect();
+                        stmt = manager.getDb_con().prepareStatement(q);
+                        var ret = manager.commit(stmt, new Object[]{total_money, (Long) pack.getPackageId()});
+                        if (!ret) {
+                            ScreenRedirect.launchErrorMsg("Αποτυχια Τροποποιησης Λογω Βασης");
+                        }
+                        ScreenRedirect.launchSuccessMsg("Επιτυχια Τροποποιησης");
+                    } catch (Exception eXp) {
+                        ScreenRedirect.launchErrorMsg("Αποτυχια Τροποποιησης Λογω Βασης");
+                    }
+                }
+                else{
+                    ScreenRedirect.launchErrorMsg("Αποτυχια Τροποποιησης");
+                }
+            } catch (Exception ex) {
+                ScreenRedirect.launchErrorMsg("Αποτυχια");
+            }finally {
+                KeyPage.close();
+            }
+
+        });
+
+        VBox layout = new VBox(15);
+        layout.setPadding(new Insets(20));
+        layout.setAlignment(Pos.CENTER);
+
+        layout.getChildren().addAll(title,insert,submit);
+
+        Scene scene = new Scene(layout, 300, 200);
+
+        KeyPage.setScene(scene);
+        KeyPage.initModality(Modality.APPLICATION_MODAL); // Block other windows
+        KeyPage.showAndWait();
     }
 
 }

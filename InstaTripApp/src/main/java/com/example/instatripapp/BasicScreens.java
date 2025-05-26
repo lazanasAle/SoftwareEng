@@ -115,7 +115,7 @@ class MainScreen extends ListScreen {
             }
                 System.out.println("Πληρωμη Πακετου");
                 break;
-                //Customer.paypack();
+
             case "Δημιουργία Πακέτου":{
                 TourAgency Agent=(TourAgency) user;
                 Agent.createPackage(manager);
@@ -131,17 +131,29 @@ class MainScreen extends ListScreen {
                 TourAgency Agent = (TourAgency) user;
                 Agent.replyToRequest(manager);
             }
-                break;
+
+            break;
             case "Αναζητηση Συνεργατη": {
                 ExtPartner extPartner = (ExtPartner) user;
                 extPartner.SearchCooparation(manager);
             }
                 break;
+            case "Aπαντηση σε αιτημα":{
+                ExtPartner extPartner = (ExtPartner) user;
+                //extPartner.Reply(manager);
+            }
+                break;
             case "Τροποιηση Συνεργασιας":
-                System.out.println("Πληρωμη Πακετου");
+            {
+                ExtPartner extPartner=(ExtPartner) user;
+                extPartner.ChangeCoop(manager);
+            }
                 break;
             case "Ακυρωση Συνεργαιας":
-                System.out.println("Πληρωμη Πακετου");
+            {
+                ExtPartner extPartner=(ExtPartner) user;
+                extPartner.CancelCoop(manager);
+            }
                 break;
             default:
                 System.out.println("problem");
@@ -163,7 +175,7 @@ class MainScreen extends ListScreen {
             particularId=ScreenConnector.GetPartID(manager,usertype,userID);
             user=new TourAgency(particularId);
         } else if ("partner".equals(this.usertype)) {
-            String[] menuOptions = {"Αναζητηση Συνεργατη","Τροποιηση Συνεργασιας","Ακυρωση Συνεργαιας"};
+            String[] menuOptions = {"Αναζητηση Συνεργατη","Aπαντηση σε αιτημα","Τροποιηση Συνεργασιας","Ακυρωση Συνεργαιας"};
             renderListMain(Arrays.asList(menuOptions));
             particularId=ScreenConnector.GetPartID(manager,usertype,userID);
             user=new ExtPartner(particularId,manager);
@@ -207,6 +219,31 @@ class ErrorMessage extends Screen {
         GridPane.setHalignment(okButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
     }
 }
+
+class SuccessMsg extends Screen {
+    public SuccessMsg(String message) {
+        // screen methods
+        super("Παράθυρο Επιτυχιας Ενεργειας", 800, 300);
+        renderGrid(50);
+        renderLabel("Επιτυχία:");
+        displayMessage(message);
+
+    }
+    public void displayMessage(String message) {
+        Text successMessage = new Text(message);
+        Button okButton = new Button("OK");
+        successMessage.setId("error_message");
+//        errorMessage.setStyle("-fx-background-color: red;");
+
+        okButton.setOnAction(e -> stage.close());
+        // place the error message and button in the grid
+        grid.add(successMessage, 0, 1,2,1);
+        grid.add(okButton, 0, 2,2,1);
+        GridPane.setHalignment(successMessage, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
+        GridPane.setHalignment(okButton, javafx.geometry.HPos.CENTER); // Center the label in the grid cell
+    }
+}
+
 
 class LoginPage extends FormScreen{
     String username;

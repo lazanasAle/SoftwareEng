@@ -27,7 +27,7 @@ class CancellationContents {
         manager.connect();
 
         try {
-            
+
             if(db_con.isClosed())
                 manager.connect();
             stmt=manager.getDb_con().prepareStatement(query);
