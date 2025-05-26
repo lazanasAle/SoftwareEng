@@ -66,22 +66,20 @@ public class ExtPartner implements Searchable {
 
             var row=res.getFirst();
 
-            //partnerName=new String(String.valueOf(row.get("name")));
             addressName=new String(String.valueOf(row.get("address")));
             location=new String(String.valueOf(row.get("location")));
             phone=new String(String.valueOf(row.get("phone")));
             email=new String(String.valueOf(row.get("email")));
 
-            //System.out.println(address + location + phone + email);
 
         }catch (Exception e){
-            System.out.println(e);
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ:"+e);
 
         }
     }
 
     public void SearchCooparation(DataSourceManager manager){
-        //System.out.println(this.location);
+
         ScreenConnector.search_coop_msg(this.location,manager);
 
     }

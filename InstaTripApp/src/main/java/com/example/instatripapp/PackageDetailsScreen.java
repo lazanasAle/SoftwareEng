@@ -23,11 +23,12 @@ public class PackageDetailsScreen extends Screen {;
     private String title;
     private static Package pack;
 
-    public PackageDetailsScreen(Package pkg, Button optionBtn) {
+    public PackageDetailsScreen(Package pkg, Button optionBtn, DataSourceManager manager) {
         // screen methods
         super("Package Details", 1000, 700);
         renderGrid(600);
         renderLabel("Λεπτομέρειες Πακέτου");
+        this.manager=manager;
         renderPackageDetails(pkg, optionBtn);
     }
 
@@ -51,6 +52,11 @@ public class PackageDetailsScreen extends Screen {;
             optionButton.addEventHandler(ActionEvent.ACTION, event -> {
 
                 ScreenRedirect.launchReservationForm(pkg, manager);
+            });
+        }
+        if (optionButton.getText().equals("Αποστολή")){
+            optionButton.addEventHandler(ActionEvent.ACTION, event ->{
+                PackageCoopForm pcoop = new PackageCoopForm(pkg, manager);
             });
         }
         optionButton.addEventHandler(ActionEvent.ACTION, event -> {

@@ -86,11 +86,12 @@ public class ListScreen<T extends Searchable> extends Screen{
                     button.setVisible(false);
 
                 } else if (buttonName.equals("Αίτημα") || buttonName.equals("Πληρωμη")) {
+                    String text = (buttonName.equals("Αίτημα"))? "Αποστολή" : "Submit";
                     List<Package> element = new ArrayList<>();
                     button.setOnAction(e->{
-                        Button sumbit=new Button("Submit");
+                        Button sumbit=new Button(text);
                         element.add((Package) dataTable.getItems().get(getIndex()));
-                        PackageDetailsScreen pack=new PackageDetailsScreen(element.get(0), sumbit);
+                        PackageDetailsScreen pack=new PackageDetailsScreen(element.get(0), sumbit, manager);
                     });
 
                 }
@@ -107,10 +108,6 @@ public class ListScreen<T extends Searchable> extends Screen{
                         element.add((Request) dataTable.getItems().get(getIndex()));
                         ScreenRedirect.show_cancelation_form(element.get(0),manager);
                     });
-                }
-
-                else {
-                    System.out.println("setoptionsColumn");
                 }
             }
         });

@@ -113,13 +113,10 @@ class MainScreen extends ListScreen {
                 Customer cust=(Customer)user;
                 cust.prepareReservation(manager);
             }
-                System.out.println("Πληρωμη Πακετου");
-                break;
-
+            break;
             case "Δημιουργία Πακέτου":{
                 TourAgency Agent=(TourAgency) user;
                 Agent.createPackage(manager);
-                //System.out.println("Δημιουργια Πακετου");
             }
             break;
             case "Τα πακέτα μου": {
@@ -156,13 +153,11 @@ class MainScreen extends ListScreen {
             }
                 break;
             default:
-                System.out.println("problem");
                 break;
         }
     }
 
     private void renderMenu() {
-        //System.out.println(usertype);
         if("client".equals(this.usertype)){
             String[] menuOptions = {"Επιλογή Πακέτου", "Πληρωμή Πακέτου"};
             renderListMain(Arrays.asList(menuOptions));

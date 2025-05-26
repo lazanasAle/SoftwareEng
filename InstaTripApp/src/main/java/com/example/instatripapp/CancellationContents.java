@@ -35,7 +35,7 @@ class CancellationContents {
             var ret = manager.fetch(stmt, new Object[]{name});
             var row=ret.get(0);
             String type=String.valueOf(row.get("partnerType"));
-            System.out.println(type);
+
             if(type.equals("Χώρος Διαμονής")){
                 String q="update quarterPackage set status=? where requestID=?";
                 if(db_con.isClosed())
@@ -58,8 +58,7 @@ class CancellationContents {
             }
 
         }catch (SQLException e){
-            System.out.println(e);
-            //ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+e);
         }
 
     }

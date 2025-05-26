@@ -27,8 +27,6 @@ class PackageCoopForm extends FormScreen{
         this.Email=new String(pack.getEmail());
         this.packnum= pack.getKey();
         this.manager=manager;
-        System.out.println(NameExtParner);
-        //this.Place=new String(pack.location);
         renderLabel("Συμπληρώστε τα στοιχεία της Συνεργασιας");
         renderPackageForm();
     }
@@ -53,14 +51,10 @@ class PackageCoopForm extends FormScreen{
             if (ExtnameArea.getText().isEmpty()|| NameAgencyArea.getText().isEmpty()|| communicationArea.getText().isEmpty()){
                 ScreenRedirect.launchErrorMsg("Δεν εισαγεται στοιχεια σε ολα τα πεδία");
             }
-            else  ScreenConnector.activate(ExtnameArea.getText(),NameAgencyArea.getText(),communicationArea.getText(),packnum,manager);
-            //Θελει φτιαξιμο για να κλεινουν ολες οι οθονες μετα το περας
-            //((Stage) send.getScene().getWindow()).close();
-            //for (Window window : Window.getWindows()) {
-              //  if (window instanceof Stage) {
-                //    ((Stage) window).close();
-                //}
-            //}
+            else {
+                ScreenConnector.activate(ExtnameArea.getText(),NameAgencyArea.getText(),communicationArea.getText(),packnum,manager);
+                this.stage.close();
+            }
             
         });
 

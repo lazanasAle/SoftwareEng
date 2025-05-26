@@ -47,15 +47,6 @@ public class ReservationBucket {
         this.manager=manager;
         GetCustomerName();
 
-        System.out.println("Price: " + price);
-        System.out.println("Agent Name: " + AgentName);
-        System.out.println("Description: " + description);
-        System.out.println("Location: " + location);
-        System.out.println("CustomerName: " + CustomerFirstName);
-        System.out.println("CustomerName: " + CustomerLastName);
-        System.out.println("CustomerId: " + CustomerId);
-        System.out.println("PackId: " + packid);
-
         String query = "insert into ReservationBucket (PackageId, CustomerId, people, description, price, location) VALUES (?,?,?,?,?,?);";
         PreparedStatement stmt = null;
         Connection db_con = manager.getDb_con();

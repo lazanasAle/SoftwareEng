@@ -22,7 +22,6 @@ class FinalReservation {
         packid=pkg.getPackageId();
         Random rand = new Random();
         roomid=rand.nextLong(6);
-        System.out.println(roomid);
         SaveTo();
     }
     public void SaveTo(){

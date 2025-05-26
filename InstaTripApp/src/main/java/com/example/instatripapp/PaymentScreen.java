@@ -30,7 +30,6 @@ public class PaymentScreen extends Screen {
     }
 
     private void handlePaymentSelection(String method) {
-        System.out.println("Επιλεγμένος τρόπος πληρωμής: " + method);
         if(method.equals("Κάρτα")){
             TemporaryReservation temp=new TemporaryReservation(pkg);
         }

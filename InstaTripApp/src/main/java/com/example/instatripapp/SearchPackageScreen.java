@@ -49,7 +49,7 @@ public class SearchPackageScreen extends SearchScreen {
                     ScreenConnector.afterCommitPerform(client,manager,content);
                 }
                 else{
-                    System.out.println("error");
+                    ScreenRedirect.launchErrorMsg("");
                 }
             }
         } else {
@@ -70,9 +70,6 @@ public class SearchPackageScreen extends SearchScreen {
                 }
                 else if(this.client!=null){
                     ScreenConnector.afterCommitPerform(client,manager,content);
-                }
-                else{
-                    System.out.println("error");
                 }
 
             }

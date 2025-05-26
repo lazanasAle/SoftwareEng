@@ -133,7 +133,6 @@ class FilterScreen extends ListScreen {
 
         submit.setOnAction(e->{
             String Place=insert.getText();
-            System.out.println(Place);
             try {
                 FilterSearch filterSearch=new FilterSearch(Place,this.contents,manager,this.customer);
 
@@ -166,7 +165,6 @@ class FilterScreen extends ListScreen {
 
         submit.setOnAction(e->{
             double Price=Double.parseDouble(insert.getText());
-            System.out.println(Price);
             try {
                 FilterSearch filterSearch=new FilterSearch(Price,this.contents,manager,this.customer);
             } catch (NoSuchElementException ex) {
@@ -302,7 +300,8 @@ class PackageListScreen extends ListScreen<Package> {
             columnNames.toArray(cnamesArray);
             renderArray(cnamesArray,separated,cnamesArray,buttonName);
 
-        } else{System.out.println("rendePackageList");}
+        }
+
     }
 
     public void keywords_commit(Button ownerButton,DataSourceManager manager){
@@ -381,7 +380,6 @@ class SuggestionScreen extends Screen{
     }
     public void ShowCorrectPack(String select,DataSourceManager manager){
         this.suggestedWords[0]= select;
-        System.out.println("Selected"+select);
         try {
             SearchContent s=new SearchContent(suggestedWords,manager);
         } catch (IOException e) {

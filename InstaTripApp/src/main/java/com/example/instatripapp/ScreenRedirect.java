@@ -116,18 +116,14 @@ public class ScreenRedirect {
             if (start != null) {
                 startDate = start.toLocalDate();
             } else {
-                // handle missing date - maybe set default or throw
-                System.out.println("startDate is missing");
+                startDate=LocalDate.now();
             }
 
             Date end = (Date) row.get("endDate");
             LocalDate endDate = null;
             if (end != null) {
                 endDate = end.toLocalDate();
-            } else {
-                System.out.println("endDate is missing");
             }
-
             String description=String.valueOf(row.get("description"));
 
             Long maxParticipantsObj = (Long) row.get("maxParticipants");
@@ -156,32 +152,13 @@ public class ScreenRedirect {
 
             PackID = (pkgId != null) ? (Long) pkgId : -1L;
 
-            System.out.println("Row keys: " + row.keySet());
 
             if(row.get("price")!=null){
-                Price=Double.parseDouble(row.get("price").toString());
+                Price=Double.parseDouble(String.valueOf(row.get("price")));
             }
             else{Price=-1;}
 
             Location=String.valueOf(row.get("location"));
-
-
-
-
-            System.out.println("PackageID: " + PackID);
-            System.out.println("Email: " + email);
-            System.out.println("Name: " + name);
-            System.out.println("Start Date: " + startDate);
-            System.out.println("End Date: " + endDate);
-            System.out.println("Description: " + description);
-            System.out.println("Max Participants: " + maxParticipants);
-
-            System.out.println("Price: " + Price);
-            System.out.println("Location: " + Location);
-            System.out.println("Status: " + status);
-            System.out.println("CustomerId: " + custId);
-            System.out.println("people: " + people);
-            System.out.println("----------------------------------------");
 
 
             Package newVoyage = new Package();
@@ -389,7 +366,7 @@ class ScreenConnector{
                             ScreenConnector.changePackageStatus(keySearch, manager, "Ενεργοποιημένο");
                         });
 
-                        PackageDetailsScreen pds = new PackageDetailsScreen(packageElement, optionBtn);
+                        PackageDetailsScreen pds = new PackageDetailsScreen(packageElement, optionBtn, manager);
                 });
 
                 Button[] actionButtons;
@@ -509,7 +486,7 @@ class ScreenConnector{
 
     public static void search_coop_msg(String location, DataSourceManager manager){
 
-        String query="Select PackageID,email,TourAgency.name,startDate,endDate,description,maxParticipants from TourAgency inner join Package on TourAgency.AgencyID=Package.AgencyID where Package.location=? and status='Σε εξέλιξη';";
+        String query="Select PackageID,email,TourAgency.name,startDate,endDate,description,maxParticipants,price from TourAgency inner join Package on TourAgency.AgencyID=Package.AgencyID where Package.location=? and status='Σε εξέλιξη';";
         PreparedStatement stmt = null;
         String title="Ενεργες εκδρομες στην περιοχη σας";
         Connection db_con = manager.getDb_con();
@@ -529,8 +506,7 @@ class ScreenConnector{
 
 
         }catch (SQLException e){
-            //ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
-            System.out.println(e);
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+e);
         }
 
 
@@ -563,7 +539,6 @@ class ScreenConnector{
             Map<String, Object> row = res.get(0);
             long KeyPartner=(long)row.get("PartnerID");
             String  type=String.valueOf(row.get("partnerType"));
-            System.out.println(KeyPartner + packid);
 
             Participation participation=new Participation(KeyPartner,status,packid,type);
 
@@ -571,8 +546,7 @@ class ScreenConnector{
 
 
         }catch (SQLException e){
-            //ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
-            System.out.println(e);
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+e);
         }
     }
 
@@ -599,7 +573,6 @@ class ScreenConnector{
             key= (long) row.get("UserID");
 
             if (BCrypt.checkpw(password, pass)) {
-                System.out.println("✅ Login successful");
                 return key;
 
             } else {
@@ -629,11 +602,9 @@ class ScreenConnector{
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{username});
             Map<String, Object> row = res.get(0);
             type=String.valueOf(row.get("type"));
-            System.out.println(type);
 
         }catch (SQLException e){
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
-            System.out.println(e);
             type=null;
             
         }
@@ -753,8 +724,6 @@ class ScreenConnector{
                 String cooperatorName = String.valueOf(row.get("name"));
                 Long packageID = row.get("packageID") != null ? (Long) row.get("packageID") : null;
                 String status = String.valueOf(row.get("status"));
-
-                System.out.println("RequestID: " + id + "Cooperator: " + cooperatorName + " | Package ID: " + packageID + " | Status: " + status);
             }
 
             return ret;
@@ -774,10 +743,6 @@ class ScreenConnector{
             String cooperatorName = String.valueOf(row.get("name"));
             Long packageID = (Long) row.get("packageID");
             String status = String.valueOf(row.get("status"));
-
-            System.out.println("Cooperator Name: " + cooperatorName);
-            System.out.println("Package ID: " + packageID);
-            System.out.println("Status: " + status);
 
 
             Request nreq = new Request(cooperatorName, packageID, RequestStatus.fromString(status),reqID);
@@ -806,16 +771,12 @@ class ScreenConnector{
                 stmt = manager.getDb_con().prepareStatement(q);
 
                 var ret = manager.fetch(stmt, new Object[]{packageID});
-                System.out.println("----------------------");
                 List<Package> separated = ScreenRedirect.send(ret);
-
-                //εδω εχω θεμα
                 PackageDetailsScreen detailsScreen=new PackageDetailsScreen(separated,manager,"Λεπτομέρειες Πακέτου για τροποιηση");
 
 
             } catch (Exception e) {
-                System.out.println(e);
-                //ScreenRedirect.launchErrorMsg("Δεν βρηκα το πακετο");
+                ScreenRedirect.launchErrorMsg("Δεν βρηκα το πακετο: "+e);
             }
         }
     }

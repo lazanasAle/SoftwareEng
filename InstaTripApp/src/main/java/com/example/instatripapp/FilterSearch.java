@@ -30,7 +30,6 @@ class FilterSearch {
     }
     public FilterSearch(double price, StringWrapper content, DataSourceManager manager, Customer customer){
         this.content=content;
-        System.out.println(content.content);
         this.price=price;
         this.manager=manager;
         this.customer=customer;
@@ -89,15 +88,11 @@ class FilterSearch {
 
 
             var ret = manager.fetch(stmt, new Object[]{desc,price});
-            System.out.println(ret.isEmpty());
             return ret;
 
 
-
-
         }catch (SQLException e){
-            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
-            System.out.println(e);
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+e);
         }
         return null;
     }
