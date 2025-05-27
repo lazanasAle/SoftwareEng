@@ -114,6 +114,9 @@ public class Package implements Searchable{
     }
     public long getPackageId(){return key;}
     public int getPeople(){return people;}
+    public void setPeople(int people){
+        this.people=people;
+    }
 
     @Override
     public long getKey(){

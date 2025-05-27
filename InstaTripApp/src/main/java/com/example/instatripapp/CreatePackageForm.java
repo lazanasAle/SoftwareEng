@@ -82,7 +82,7 @@ public class CreatePackageForm extends FormScreen{
                         ScreenRedirect.launchErrorMsg("Συμπληρώστε Σωστά τα πεδία της φόρμας");
                         return;
                     }
-                    newVoyage.initializePackage(region, Double.parseDouble(priceString), voyagers, voyageStatus.saved, startDate, endDate, description);
+                    newVoyage.initializePackage(region, price, voyagers, voyageStatus.saved, startDate, endDate, description);
                     stage.close();
                     ScreenRedirect.getPackageMenu(newVoyage, manager);
                 }

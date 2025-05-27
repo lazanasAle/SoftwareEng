@@ -1,6 +1,5 @@
 package com.example.instatripapp;
 
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
@@ -32,14 +31,30 @@ public class ReservationFormScreen extends FormScreen {
 
         renderFormElements(
                 new Label[]{nameLabel, emailLabel, phoneLabel, peopleLabel},
-                new TextField[]{nameTextArea, emailTextArea, phoneTextArea, peopleTextArea});
-
+                new TextField[]{nameTextArea, emailTextArea, phoneTextArea, peopleTextArea}
+        );
 
         submitButton.setOnAction(e-> {
-            if (nameTextArea.getText().isEmpty() || emailTextArea.getText().isEmpty() || phoneTextArea.getText().isEmpty() || peopleTextArea.getText().isEmpty()) {
+            boolean condition = nameTextArea.getText().isEmpty() || emailTextArea.getText().isEmpty() || phoneTextArea.getText().isEmpty() || peopleTextArea.getText().isEmpty();
+            String name = nameTextArea.getText();
+            String phone = phoneTextArea.getText();
+            Integer people;
+            try{
+                people=Integer.parseInt(peopleTextArea.getText());
+            }catch (NumberFormatException nme){
+                ScreenRedirect.launchErrorMsg("Εισάγετε σωστά τα στοιχεία της φόρμας");
+                return;
+            }
+            if (condition) {
                 ScreenRedirect.launchErrorMsg("Δεν εισαγεται στοιχεια σε ολα τα πεδία");
             }
-            else {PaymentScreen paymentScreen=new PaymentScreen(pkg);}
+            else if (name.matches(".*\\d.*") || !phone.matches("\\d+")){
+                ScreenRedirect.launchErrorMsg("Εισάγετε σωστά τα στοιχεία της φόρμας");
+            }
+            else {
+                pkg.setPeople(people);
+                PaymentScreen paymentScreen=new PaymentScreen(pkg);
+            }
         });
     }
 

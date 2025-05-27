@@ -164,11 +164,16 @@ class FilterScreen extends ListScreen {
         Button submit=new Button("Submit");
 
         submit.setOnAction(e->{
-            double Price=Double.parseDouble(insert.getText());
+
             try {
+                double Price=Double.parseDouble(insert.getText());
                 FilterSearch filterSearch=new FilterSearch(Price,this.contents,manager,this.customer);
-            } catch (NoSuchElementException ex) {
+            }
+            catch (NoSuchElementException ex) {
                 ScreenRedirect.launchErrorMsg("Δεν υπαρχει αντικειμενο με αυτη την περιγραφη");
+            }
+            catch (NumberFormatException nme){
+                ScreenRedirect.launchErrorMsg("Συμπληρώστε σωστά μια τιμή");
             }
             finally{
                 KeyPage.close();

@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 public class PackageDetailsScreen extends Screen {;
@@ -147,10 +148,12 @@ public class PackageDetailsScreen extends Screen {;
         Button submit=new Button("Submit");
 
         submit.setOnAction(e->{
-            Double money=Double.parseDouble(insert.getText());
-            Double nowmoney=Double.parseDouble(String.valueOf(pack.price));
-            Double total_money=money+nowmoney;
+
             try {
+                Double money=Double.parseDouble(insert.getText());
+                Double nowmoney=Double.parseDouble(String.valueOf(pack.price));
+                Double total_money=money+nowmoney;
+
                 boolean valid = ScreenConnector.check_bounds(Double.parseDouble(insert.getText()));
                 if (valid) {
                     String q = "update Package set price=? where PackageID=?";
@@ -165,14 +168,18 @@ public class PackageDetailsScreen extends Screen {;
                             ScreenRedirect.launchErrorMsg("Αποτυχια Τροποποιησης Λογω Βασης");
                         }
                         ScreenRedirect.launchSuccessMsg("Επιτυχια Τροποποιησης");
-                    } catch (Exception eXp) {
+                    } catch (SQLException eXp) {
                         ScreenRedirect.launchErrorMsg("Αποτυχια Τροποποιησης Λογω Βασης");
                     }
                 }
                 else{
                     ScreenRedirect.launchErrorMsg("Αποτυχια Τροποποιησης");
                 }
-            } catch (Exception ex) {
+            }
+            catch (NumberFormatException nme){
+                ScreenRedirect.launchErrorMsg("Συμπληρώστε σωστά ένα ποσό");
+            }
+            catch (Exception ex) {
                 ScreenRedirect.launchErrorMsg("Αποτυχια");
             }finally {
                 KeyPage.close();
