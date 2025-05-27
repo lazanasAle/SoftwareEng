@@ -706,14 +706,14 @@ class ScreenConnector{
             if(partner.ptype==partnerType.other){
                  result=manager.commit(stmt1, new Object[]{selPackage.getPackageID(), partner.getPartnerID()});
                  if(!result){
-                     ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος"+manager.errMesg);
+                     ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος");
 
                  }
             }
             else{
                 result=manager.commit(stmt2, new Object[]{selPackage.getPackageID(), partner.getQuarterID()});
                 if(!result){
-                    ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος"+manager.errMesg);
+                    ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος");
                 }
             }
         }catch (SQLException sqle){
