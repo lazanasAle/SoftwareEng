@@ -20,6 +20,7 @@ import javafx.scene.control.TextField;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 // super class for all screens
 class Screen{
@@ -161,19 +162,25 @@ class MainScreen extends ListScreen {
         if("client".equals(this.usertype)){
             String[] menuOptions = {"Επιλογή Πακέτου", "Πληρωμή Πακέτου"};
             renderListMain(Arrays.asList(menuOptions));
-            particularId=ScreenConnector.GetPartID(manager,usertype,userID);
+            AtomicLong partPartID = new AtomicLong();
+            particularId=ScreenConnector.GetPartID(manager,usertype,userID,partPartID);
             user=new Customer(particularId);
 
         } else if ("tour_office".equals(this.usertype)) {
             String[] menuOptions = {"Δημιουργία Πακέτου","Τα πακέτα μου", "Αιτήματα Συνεργασίας"};
             renderListMain(Arrays.asList(menuOptions));
-            particularId=ScreenConnector.GetPartID(manager,usertype,userID);
+            AtomicLong partPartID = new AtomicLong();
+            particularId=ScreenConnector.GetPartID(manager,usertype,userID, partPartID);
             user=new TourAgency(particularId);
         } else if ("partner".equals(this.usertype)) {
             String[] menuOptions = {"Αναζητηση Συνεργατη","Aπαντηση σε αιτημα","Τροποιηση Συνεργασιας","Ακυρωση Συνεργαιας"};
             renderListMain(Arrays.asList(menuOptions));
-            particularId=ScreenConnector.GetPartID(manager,usertype,userID);
-            user=new ExtPartner(particularId,manager);
+            AtomicLong quarterID = new AtomicLong();
+            particularId=ScreenConnector.GetPartID(manager,usertype,userID,quarterID);
+            if (quarterID.get()==0)
+                user=new ExtPartner(particularId,manager, quarterID.get(), partnerType.other);
+            else
+                user = new ExtPartner(particularId, manager, quarterID.get(), partnerType.quarter);
         }
         else{
             ScreenRedirect.launchErrorMsg("Not Valid");

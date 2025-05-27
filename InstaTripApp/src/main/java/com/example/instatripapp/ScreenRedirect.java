@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static com.example.instatripapp.RequestListScreen.getExt;
 
@@ -625,7 +626,7 @@ class ScreenConnector{
         return type;
     }
 
-    public static long GetPartID(DataSourceManager manager, String usertype, long userID) {
+    public static long GetPartID(DataSourceManager manager, String usertype, long userID, AtomicLong partPartID) {
         PreparedStatement stmt = null;
         Connection db_con = manager.getDb_con();
         long partid=-1;
@@ -668,7 +669,7 @@ class ScreenConnector{
                     stmt=db_con.prepareStatement(query);
                     List<Map<String,Object>> result =manager.fetch(stmt,new Long[]{partid});
                     var nrow = result.getFirst();
-                    partid = (long) nrow.get("quarterID");
+                    partPartID.set((long) nrow.get("quarterID"));
                 }
 
             }
@@ -704,7 +705,7 @@ class ScreenConnector{
                  }
             }
             else{
-                result=manager.commit(stmt2, new Object[]{selPackage.getPackageID(), partner.getPartnerID()});
+                result=manager.commit(stmt2, new Object[]{selPackage.getPackageID(), partner.getQuarterID()});
                 if(!result){
                     ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος"+manager.errMesg);
                 }
@@ -737,14 +738,23 @@ class ScreenConnector{
     }
 
     public static List<Map<String, Object>> ShowReq(DataSourceManager manager,ExtPartner partner) {
-        String query="select  requestID,name,packageID,status  from partnerPackage inner join  ExtPartner on partnerPackage.partnerID = ExtPartner.PartnerID where ExtPartner.PartnerID=? UNION select requestID,name,packageID,status from quarterPackage inner join ExtPartner on quarterPackage.quarterID = ExtPartner.PartnerID where ExtPartner.PartnerID=?;";
+        String query;
+        Long pusID;
+        if(partner.ptype==partnerType.quarter){
+            query = "SELECT quarterPackage.requestID, ExtPartner.name, quarterPackage.packageID, quarterPackage.status FROM quarterPackage JOIN LivingQuarter ON quarterPackage.quarterID = LivingQuarter.quarterID JOIN ExtPartner  on ExtPartner.PartnerID = LivingQuarter.partnerID WHERE quarterPackage.quarterID=?";
+            pusID = partner.getQuarterID();
+        }
+        else{
+            query = "SELECT partnerPackage.requestID, ExtPartner.name, partnerPackage.packageID, partnerPackage.status FROM partnerPackage JOIN ExtPartner  on ExtPartner.PartnerID = partnerPackage.partnerID WHERE partnerPackage.partnerID=?";
+            pusID=partner.getPartnerID();
+        }
         PreparedStatement stmt = null;
         Connection db_con = manager.getDb_con();
         try {
             if(db_con.isClosed())
                 manager.connect();
             stmt=manager.getDb_con().prepareStatement(query);
-            var ret = manager.fetch(stmt, new Object[]{partner.getPartnerID(),partner.getPartnerID()});
+            var ret = manager.fetch(stmt, new Object[]{pusID});
 
             for (Map<String, Object> row : ret) {
                 Long id=(Long) row.get("requestID");

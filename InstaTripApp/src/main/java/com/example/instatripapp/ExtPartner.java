@@ -30,6 +30,7 @@ public class ExtPartner implements Searchable {
     String email;
     String description;
     partnerType ptype;
+    Long quarterID;
 
 
     public ExtPartner(Long partner_id, String partnerName, String addressName, String location, String schedule, String phone, String email, String description, partnerType ptype){
@@ -44,10 +45,11 @@ public class ExtPartner implements Searchable {
         this.ptype=ptype;
     }
 
-    public ExtPartner(long key,DataSourceManager manager) {
+    public ExtPartner(long key,DataSourceManager manager, long quarterID, partnerType ptype) {
         this.partner_id=key;
         getExt(key,manager);
-
+        this.ptype=ptype;
+        this.quarterID = quarterID;
     }
 
     public void getExt(long partner_id,DataSourceManager manager){
@@ -134,6 +136,10 @@ public class ExtPartner implements Searchable {
     public void approveCoop(DataSourceManager manager){
         List<Map<String, Object>> requests = ScreenConnector.ShowReq(manager,this);
         ScreenRedirect.launchRequestListScreenEXT(requests,"Προβολή για αποδοχή συνεργασίας",null);
+    }
+
+    public Long getQuarterID() {
+        return quarterID;
     }
 }
 
