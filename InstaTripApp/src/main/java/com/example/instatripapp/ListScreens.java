@@ -278,32 +278,48 @@ class PackageListScreen extends ListScreen<Package> {
         if(title.equals("Ενεργες εκδρομες στην περιοχη σας")){
             renderLabel(title);
             List<Package> separated = ScreenRedirect.send(packageQueryResult);
-            List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
-            String[] cnamesArray = new String[columnNames.size()];
-            columnNames.toArray(cnamesArray);
-            renderArray(cnamesArray,separated, cnamesArray,"Αίτημα");
-            Button keywords=new Button("Λεξεις Κλειδία");
-            grid.add(keywords,0,10);
-            keywords.setOnAction(e->keywords_commit(keywords,manager));
+            try {
+                List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
+                String[] cnamesArray = new String[columnNames.size()];
+                columnNames.toArray(cnamesArray);
+                renderArray(cnamesArray,separated, cnamesArray,"Αίτημα");
+                Button keywords=new Button("Λεξεις Κλειδία");
+                grid.add(keywords,0,10);
+                keywords.setOnAction(e->keywords_commit(keywords,manager));
+            }
+            catch (NoSuchElementException nse){
+                ScreenRedirect.launchErrorMsg("Δεν Υπάρχουν αντικείμενα με αυτή την περιγραφή");
+                this.stage.close();
+            }
 
         }
         else if (title.equals("Εμφανηση ενεργων πακετων για πελατη")) {
             renderLabel(title);
             List<Package> separated = ScreenRedirect.send(packageQueryResult);
-            List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
-            String buttonName = "Καλαθι";
-            String[] cnamesArray = new String[columnNames.size()];
-            columnNames.toArray(cnamesArray);
-            renderArray(cnamesArray,separated,cnamesArray,buttonName);
+            try {
+                List<String> columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
+                String buttonName = "Καλαθι";
+                String[] cnamesArray = new String[columnNames.size()];
+                columnNames.toArray(cnamesArray);
+                renderArray(cnamesArray, separated, cnamesArray, buttonName);
+            }catch (NoSuchElementException nse){
+                ScreenRedirect.launchErrorMsg("Δεν Υπάρχουν αντικείμενα με αυτή την περιγραφή");
+                this.stage.close();
+            }
         }
         else if (title.equals("Εμφανηση Πακετων καλαθιου")) {
             renderLabel(title);
             List<Package> separated = ScreenRedirect.send(packageQueryResult);
-            List<String>columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
-            String buttonName = "Πληρωμη";
-            String[] cnamesArray = new String[columnNames.size()];
-            columnNames.toArray(cnamesArray);
-            renderArray(cnamesArray,separated,cnamesArray,buttonName);
+            try {
+                List<String> columnNames = new ArrayList<>(packageQueryResult.getFirst().keySet());
+                String buttonName = "Πληρωμη";
+                String[] cnamesArray = new String[columnNames.size()];
+                columnNames.toArray(cnamesArray);
+                renderArray(cnamesArray, separated, cnamesArray, buttonName);
+            }catch (NoSuchElementException nse){
+                ScreenRedirect.launchErrorMsg("Δεν Υπάρχουν αντικείμενα με αυτή την περιγραφή");
+                this.stage.close();
+            }
 
         }
 
