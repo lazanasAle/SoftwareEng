@@ -57,11 +57,10 @@ public class ReservationBucket {
             }
             stmt = manager.getDb_con().prepareStatement(query);
             boolean inserted=manager.commit(stmt, new Object[]{packid,CustomerId,3,description,price,location});
-            if(!inserted){
+            if(!inserted && CustomerId>=0){
                 ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
             }
         } catch (SQLException e) {
-
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
 
