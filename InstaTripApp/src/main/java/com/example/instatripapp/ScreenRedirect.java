@@ -397,16 +397,18 @@ class ScreenConnector{
             String schedule = String.valueOf(row.get("schedule"));
             String phone = String.valueOf(row.get("phone"));
             String email = String.valueOf(row.get("email"));
+            Long qID = (row.get("quarterID")==null)? null : (Long) row.get("quarterID");
             String description = String.valueOf(row.get("description"));
             partnerType ptype = partnerType.fromString(String.valueOf(row.get("partnerType")));
             ExtPartner partner = new ExtPartner(partner_id, partnerName, addressName, location, schedule, phone, email, description, ptype);
+            partner.quarterID=qID;
             selectedPartners.add(partner);
         }
         return selectedPartners;
     }
 
     public static List<Map<String, Object>> takePartners(Package pkg, DataSourceManager manager, StringWrapper cntnt){
-        String query = "SELECT PartnerID, name, address, location, schedule, phone, email, description, partnerType FROM ExtPartner WHERE location=? AND (description LIKE ? OR name LIKE ?);";
+        String query = "SELECT ExtPartner.PartnerID, name, address, location, schedule, phone, email, description, partnerType, quarterID FROM ExtPartner LEFT JOIN LivingQuarter ON ExtPartner.PartnerID = LivingQuarter.partnerID WHERE location=? AND (description LIKE ? OR name LIKE ?)";
         PreparedStatement stmt = null;
         Connection db_con = manager.getDb_con();
         try {
@@ -711,7 +713,7 @@ class ScreenConnector{
             else{
                 result=manager.commit(stmt2, new Object[]{selPackage.getPackageID(), partner.getQuarterID()});
                 if(!result){
-                    ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος");
+                    ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος"+manager.errMesg);
                 }
             }
         }catch (SQLException sqle){
