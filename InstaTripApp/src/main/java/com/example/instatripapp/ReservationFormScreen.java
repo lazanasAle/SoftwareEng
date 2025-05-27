@@ -49,7 +49,7 @@ public class ReservationFormScreen extends FormScreen {
             if (condition) {
                 ScreenRedirect.launchErrorMsg("Δεν εισαγεται στοιχεια σε ολα τα πεδία");
             }
-            else if (name.matches(".*\\d.*") || !phone.matches("\\d+") || !email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")){
+            else if (name.matches(".*\\d.*") || !phone.matches("(\\+\\d{3})?\\d{5,}") || !email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$") || people<=0){
                 ScreenRedirect.launchErrorMsg("Εισάγετε σωστά τα στοιχεία της φόρμας");
             }
             else {

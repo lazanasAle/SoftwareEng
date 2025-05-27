@@ -32,6 +32,10 @@ public class CardScreen extends FormScreen {
                 }
                 try {
                     long cardNumber = Long.parseLong(cardNumberField.getText());
+                    if(cardNumber<=0){
+                        ScreenRedirect.launchErrorMsg("Συμπληρώστε σωστά τα στοιχεία της φόρμας");
+                        return;
+                    }
                     String ownersName = ownerField.getText();
                     if(ownersName.matches(".*\\d.")){
                         ScreenRedirect.launchErrorMsg("Συμπληρώστε σωστά τα στοιχεία της φόρμας");
