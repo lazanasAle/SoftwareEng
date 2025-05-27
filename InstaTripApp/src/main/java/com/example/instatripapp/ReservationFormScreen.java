@@ -38,6 +38,7 @@ public class ReservationFormScreen extends FormScreen {
             boolean condition = nameTextArea.getText().isEmpty() || emailTextArea.getText().isEmpty() || phoneTextArea.getText().isEmpty() || peopleTextArea.getText().isEmpty();
             String name = nameTextArea.getText();
             String phone = phoneTextArea.getText();
+            String email = emailTextArea.getText();
             Integer people;
             try{
                 people=Integer.parseInt(peopleTextArea.getText());
@@ -48,7 +49,7 @@ public class ReservationFormScreen extends FormScreen {
             if (condition) {
                 ScreenRedirect.launchErrorMsg("Δεν εισαγεται στοιχεια σε ολα τα πεδία");
             }
-            else if (name.matches(".*\\d.*") || !phone.matches("\\d+")){
+            else if (name.matches(".*\\d.*") || !phone.matches("\\d+") || !email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")){
                 ScreenRedirect.launchErrorMsg("Εισάγετε σωστά τα στοιχεία της φόρμας");
             }
             else {
