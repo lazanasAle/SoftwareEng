@@ -139,7 +139,7 @@ class Participation {
             stmt = manager.getDb_con().prepareStatement(query);
             boolean inserted=manager.commit(stmt, new Object[]{this.ExtPartnerID,this.PackID,this.Status});
             if(!inserted){
-                ScreenRedirect.launchErrorMsg("Αδυναμία αποστολής αιτήματος"+manager.errMesg);
+                ScreenRedirect.launchErrorMsg("Αδυναμία αποστολής αιτήματος");
             }
         } catch (SQLException e) {
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");

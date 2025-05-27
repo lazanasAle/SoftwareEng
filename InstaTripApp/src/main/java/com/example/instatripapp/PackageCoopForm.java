@@ -36,8 +36,10 @@ class PackageCoopForm extends FormScreen{
         TextField ExtnameArea = new TextField();
         Label NameAgency = new Label("Ονομα Τξιδιωτικου Γραφειου");
         TextField NameAgencyArea = new TextField(TourAgencyName);
+        NameAgencyArea.setEditable(false);
         Label communication = new Label("Email επικοινωνιας");
         TextField communicationArea = new TextField(Email);
+        communicationArea.setEditable(false);
 
         Button send = new Button("Αποστολη");
 

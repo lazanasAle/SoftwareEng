@@ -75,7 +75,7 @@ public class ExtPartner implements Searchable {
 
 
         }catch (Exception e){
-            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ:"+e);
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ:");
 
         }
     }

@@ -565,7 +565,7 @@ class ScreenConnector{
 
 
         }catch (SQLException e){
-            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+e);
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
     }
 
@@ -681,7 +681,7 @@ class ScreenConnector{
                 ScreenRedirect.launchErrorMsg("Not valid");
             }
         }catch (SQLException e){
-            ScreenRedirect.launchErrorMsg("Σφαλμα στη ΒΔ "+e);
+            ScreenRedirect.launchErrorMsg("Σφάλμα στη ΒΔ ");
 
         }
         return partid;
@@ -711,11 +711,11 @@ class ScreenConnector{
             else{
                 result=manager.commit(stmt2, new Object[]{selPackage.getPackageID(), partner.getQuarterID()});
                 if(!result){
-                    ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος"+manager.errMesg);
+                    ScreenRedirect.launchErrorMsg("Αποτυχία αποστολής αιτήματος");
                 }
             }
         }catch (SQLException sqle){
-            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ "+sqle);
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
     }
     public static void afterCommitPerform(Customer client, DataSourceManager manager, StringWrapper content) {
