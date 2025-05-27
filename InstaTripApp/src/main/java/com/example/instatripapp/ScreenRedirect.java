@@ -551,6 +551,10 @@ class ScreenConnector{
 
 
             List<Map<String,Object>> res =manager.fetch(stmt,new String[]{nameExtPart});
+            if(res.isEmpty()){
+                ScreenRedirect.launchErrorMsg("Συμπληρώστε το όνομα όπως το δηλώσατε στην εγγραφή σας (προσοχή πληκτρολογήστε full name και όχι username)");
+                return;
+            }
             Map<String, Object> row = res.get(0);
             long KeyPartner=(long)row.get("PartnerID");
             String  type=String.valueOf(row.get("partnerType"));
