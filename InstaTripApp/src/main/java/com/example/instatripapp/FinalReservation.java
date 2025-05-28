@@ -36,11 +36,11 @@ class FinalReservation {
             stmt = manager.getDb_con().prepareStatement(query);
             boolean inserted=manager.commit(stmt, new Object[]{people,status,custId,packid,roomid});
             if(!inserted){
-                ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+                ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ ");
             }
         } catch (SQLException e) {
 
-            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
+            ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ ");
         }
 
     }

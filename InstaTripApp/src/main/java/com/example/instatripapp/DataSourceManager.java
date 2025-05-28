@@ -12,6 +12,7 @@ public class DataSourceManager {
     public boolean success;
     public String errMesg;
     public void connect(){
+        errMesg="";
         db_con=null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");

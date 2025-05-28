@@ -32,21 +32,24 @@ public class CardScreen extends FormScreen {
                 }
                 try {
                     long cardNumber = Long.parseLong(cardNumberField.getText());
-                    if(cardNumber<=0){
-                        ScreenRedirect.launchErrorMsg("Συμπληρώστε σωστά τα στοιχεία της φόρμας");
+                    if((cardNumber<Long.parseLong("1000000000000000") || cardNumber>Long.parseLong("9999999999999999"))){
+                        ScreenRedirect.launchErrorMsg("Συμπληρώστε σωστά τον αριθμό στα στοιχεία της φόρμας");
                         return;
                     }
                     String ownersName = ownerField.getText();
-                    if(ownersName.matches(".*\\d.")){
-                        ScreenRedirect.launchErrorMsg("Συμπληρώστε σωστά τα στοιχεία της φόρμας");
+                    if(ownersName.matches(".*\\d.*")){
+                        ScreenRedirect.launchErrorMsg("Συμπληρώστε σωστά το όνομα κατόχου από τα στοιχεία της φόρμας");
                         return;
                     }
                     String expDate = expiryDateField.getText();
-                    if (!expDate.matches("\\d{2}/\\d{2}")){
-                        ScreenRedirect.launchErrorMsg("Συμπληρώστε σωστά τα στοιχεία της φόρμας");
+                    if (!expDate.matches("(0[1-9]|1[0-2])/\\d{2}")){
+                        ScreenRedirect.launchErrorMsg("Συμπληρώστε σωστά την ημερομηνία λήξης από τα στοιχεία της φόρμας");
                         return;
                     }
                     short cvv = Short.parseShort(cvvField.getText());
+                    if(cvv<100 || cvv>999){
+                        ScreenRedirect.launchErrorMsg("Συμπληρώστε σωστά τα στοιχεία της φόρμας");
+                    }
                     CardDescription cd = new CardDescription(cardNumber, ownersName, cvv);
                     BankCommunicationAPI api = new BankCommunicationAPI();
                     if(api.checkCard(cd)){
