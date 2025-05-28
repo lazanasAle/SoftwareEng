@@ -166,6 +166,7 @@ public class PackageDetailsScreen extends Screen {;
                         var ret = manager.commit(stmt, new Object[]{total_money, (Long) pack.getPackageId()});
                         if (!ret) {
                             ScreenRedirect.launchErrorMsg("Αποτυχια Τροποποιησης Λογω Βασης");
+                            return;
                         }
                         ScreenRedirect.launchSuccessMsg("Επιτυχια Τροποποιησης");
                     } catch (SQLException eXp) {
