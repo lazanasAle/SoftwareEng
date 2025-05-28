@@ -33,7 +33,7 @@ class SearchContent {
 
                     manager.connect();
 
-                    String query = "SELECT PackageID,email, TourAgency.name, startDate, endDate, description, maxParticipants\n" +
+                    String query = "SELECT PackageID,email, TourAgency.name, startDate, Package.location, endDate, description, maxParticipants\n" +
                             "FROM TourAgency INNER JOIN Package ON TourAgency.AgencyID = Package.AgencyID\n" +
                             "WHERE description LIKE ? and status='Σε εξέλιξη';";
                     PreparedStatement stmt = null;
