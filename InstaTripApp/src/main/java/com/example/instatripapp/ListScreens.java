@@ -12,30 +12,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.*;
 
-// Strongly recommend to do this class into 2 classes
-// One is ArrayScreen and the other is ListScreen
-// Recommendation: is to put ListScreen to be a superclass to PackageDetailsScreen, PaymentScreen,FilterScreen,
-
-class HistoryListScreen extends ListScreen {
-    public HistoryListScreen() {
-        super("Ιστορικό Πακέτων", 600, 600);
-        renderGrid(500);
-        renderLabel("Η Λίστα ιστορικού πακέτων σας");
-        renderHistoryList();
-    }
-
-    private void renderHistoryList() {
-        PackageGUI[] packages = {
-                new PackageGUI("1", "Πακέτο 1", "Περιγραφή 1", "100€"),
-                new PackageGUI("2", "Πακέτο 2", "Περιγραφή 2", "200€"),
-                new PackageGUI("3", "Πακέτο 3", "Περιγραφή 3", "300€")
-        };
-        String[] columnNames = {"ID", "Όνομα Πακέτου", "Περιγραφή", "Τιμή"};
-        String[] propertyNames = {"id", "name", "description", "price"};
-        String buttonName = "Λεπτομέρειες";
-        renderArray(columnNames, java.util.Arrays.asList(packages), propertyNames, buttonName, null);
-    }
-}
 class ResultScreen extends PackageListScreen {
     private List<Package> selectedPackages;
     DataSourceManager manager;
@@ -57,19 +33,6 @@ class ResultScreen extends PackageListScreen {
     }
 }
 
-class PackageOptionsScreen extends ListScreen {
-    public PackageOptionsScreen() {
-        super("Επιλογές Πακέτου", 800, 500);
-        renderGrid(300);
-        renderPackageOptions();
-    }
-
-    private void renderPackageOptions() {
-        renderLabel("Επιλέξτε μια ενέργεια για το συγκεκριμμένο πακέτο:");
-        List<String> options = List.of("Επιλογή Πακέτου", "Πληρωμή Πακέτου", "Ακύρωση Πακέτου", "Αξιολόγηση Πακέτου");
-        renderList(options);
-    }
-}
 class FilterScreen extends ListScreen {
     StringWrapper contents;
     DataSourceManager manager;
@@ -202,26 +165,6 @@ class PartnerListScreen extends ListScreen<ExtPartner>{
 
 }
 
-class PaidPackageList extends ListScreen{
-    public PaidPackageList() {
-        super("Λίστα Πακέτων", 1000, 1000);
-        renderGrid(700);
-        renderPackageList();
-    }
-
-    private void renderPackageList() {
-        renderLabel("Η Λίστα πληρωμένων πακέτων σας");
-        PackageGUI [] packages = {
-                new PackageGUI("1", "Πακέτο 1", "Περιγραφή 1", "100€"),
-                new PackageGUI("2", "Πακέτο 2", "Περιγραφή 2", "200€"),
-                new PackageGUI("3", "Πακέτο 3", "Περιγραφή 3", "300€")
-        };
-        String[] columnNames = {"ID", "Όνομα Πακέτου", "Περιγραφή", "Τιμή"};
-        String[] propertyNames = {"id", "name", "description", "price"};
-        String buttonName = "Κριτική";
-        renderArray(columnNames, Arrays.asList(packages), propertyNames,buttonName, null);
-    }
-}
 class PackageListScreen extends ListScreen<Package> {
     DataSourceManager manager;
     String title;
