@@ -335,9 +335,10 @@ class ScreenConnector{
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ");
         }
         try {
+            String str = (newStatus.equals("Σε ισχύ"))? "Αποδοχής":"Απόρριψης";
             boolean updated = manager.commit(stmt, new Object[]{newStatus, key});
             if(!updated){
-                ScreenRedirect.launchErrorMsg("Αδυναμία αποδοχής");
+                ScreenRedirect.launchErrorMsg("Αδυναμία "+str);
             }
         }catch (SQLException e){
             ScreenRedirect.launchErrorMsg("Σφάλμα στην ΒΔ: "+e.getMessage());
