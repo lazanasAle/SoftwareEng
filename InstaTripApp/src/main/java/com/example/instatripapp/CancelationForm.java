@@ -23,6 +23,7 @@ class CancelationForm  extends FormScreen {
 
         submitButton.setOnAction(e->{
             if(ScreenConnector.check_respect(ReasonToCancelField.getText())){
+                this.stage.close();
                 //αποθηκευση στην βαση
                 CancellationContents cancel=new CancellationContents(req,manager);
             }
